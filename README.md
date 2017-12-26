@@ -12,8 +12,11 @@ Get Together is an open source event manager for local communities.
 To start running the service use the following commands:
 
 `virtualenv --python=python3 ./env`
+
 `./env/bin/python manage.py migrate`
+
 `./env/bin/python manage.py createsuperuser`
+
 `./env/bin/python manage.py runserver`
 
 ## Getting Involved
