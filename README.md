@@ -21,6 +21,12 @@ To start running the service use the following commands:
 
 `./env/bin/python manage.py runserver`
 
+## Test Federation
+You can import sample event data into your "Searchable" table with this command:
+
+`./env/bin/python manage.py import http://people.ubuntu.com/~mhall119/searchable_test.json`
+
+
 ## Getting Involved
 
 To contibute to Get Together, you can file issues here on GitHub, work on
