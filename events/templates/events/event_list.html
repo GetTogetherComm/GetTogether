@@ -1,0 +1,15 @@
+<center>{% if events_list %}
+    <table border="0" width="960px">
+    {% for event in events_list %}
+	<tr>
+		<td><a href="{{ event.get_absolute_url }}/">{{ event.name }}</a></td>
+		<td>{{ event.team }}</td>
+		<td>{{ event.start_time }}</td>
+		<td>{{ event.place }}</td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No events are available.</p>
+{% endif %}
+</center>
