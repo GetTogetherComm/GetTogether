@@ -13,6 +13,8 @@ To start running the service use the following commands:
 
 `virtualenv --python=python3 ./env`
 
+`./env/bin/pip install -r requirements.txt`
+
 `./env/bin/python manage.py migrate`
 
 `./env/bin/python manage.py createsuperuser`
