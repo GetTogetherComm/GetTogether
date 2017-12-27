@@ -1,4 +1,17 @@
+certifi==2017.11.5
+chardet==3.0.4
+defusedxml==0.5.0
 Django==2.0
 djangorestframework==3.7.7
+idna==2.6
+oauthlib==2.0.6
+PyJWT==1.5.3
+python3-openid==3.1.0
 pytz==2017.3
+requests==2.18.4
+requests-oauthlib==0.8.0
 simplejson==3.13.2
+six==1.11.0
+social-auth-app-django==2.1.0
+social-auth-core==1.6.0
+urllib3==1.22

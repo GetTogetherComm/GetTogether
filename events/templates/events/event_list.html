@@ -1,3 +1,13 @@
+{% if request.user.is_authenticated %}
+Welcome {{ request.user.username }}
+{% else %}
+Login:
+<a href="{% url 'social:begin' 'google-oauth2' %}">Google</a>
+<a href="{% url 'social:begin' 'facebook' %}">Facebook</a>
+<a href="{% url 'social:begin' 'twitter' %}">Twitter</a>
+<a href="{% url 'social:begin' 'github' %}">GitHub</a>
+<br>
+{% endif %}
 <center>{% if events_list %}
     <table border="0" width="960px">
     {% for event in events_list %}
