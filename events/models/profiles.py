@@ -45,8 +45,12 @@ class UserProfile(models.Model):
         local = self.timezone.localize(dt)
         return local.astimezone(pytz.utc)
 
+def get_user_timezone(username):
+    # TODO: find a smarter way to get timezone
+    return 'UTC'
+
 def _getUserProfile(self):
-    if not self.is_authenticated():
+    if not self.is_authenticated:
         return UserProfile()
 
     profile, created = UserProfile.objects.get_or_create(user=self)
@@ -84,11 +88,11 @@ class Team(models.Model):
     created_date = models.DateField(_("Date Created"), null=True, blank=True)
 
     owner_profile = models.ForeignKey(UserProfile, related_name='owner', null=True, on_delete=models.CASCADE)
-    admin_profiles = models.ManyToManyField(UserProfile, related_name='admins')
-    contact_profiles = models.ManyToManyField(UserProfile, related_name='contacts')
+    admin_profiles = models.ManyToManyField(UserProfile, related_name='admins', blank=True)
+    contact_profiles = models.ManyToManyField(UserProfile, related_name='contacts', blank=True)
 
     cover_img = models.URLField(_("Team Photo"), null=True, blank=True)
-    languages = models.ManyToManyField(Language)
+    languages = models.ManyToManyField(Language, blank=True)
     active = models.BooleanField(_("Active Team"), default=True)
     tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
 

@@ -15,12 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from events import views
+from events import views as event_views
+from . import views
 
 urlpatterns = [
+    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
-    path('searchables/', views.searchable_list),
-    path('events/', views.events_list, name='home'),
+    path('searchables/', event_views.searchable_list),
+
+    path('events/', views.events_list, name='events'),
+    path('create-team/', views.create_team, name='create-team'),
+    path('team/<int:team_id>/', views.show_team, name='show-team'),
+    path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
     path('oauth/', include('social_django.urls', namespace='social')),
 ]

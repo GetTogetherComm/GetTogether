@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import reverse
 
 from .locale import *
 from .profiles import *
@@ -49,7 +50,7 @@ class Event(models.Model):
     #replies
 
     def get_absolute_url(self):
-        return "/events/%s/%s" % (self.id, slugify(self.name))
+        return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': slugify(self.name)})
 
     def __str__(self):
         return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
 
+    'get_together',
     'events',
 ]
 

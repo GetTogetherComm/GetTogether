@@ -1,0 +1,8 @@
+{% if request.user.is_authenticated %}
+
+Welcome {{ request.user.username }}
+{% else %}
+{% endif %}
+
+{% block content %}{% endblock %}
+

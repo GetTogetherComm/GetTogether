@@ -1,0 +1,10 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Welcome to {{ team.name }}</h2>
+
+<h3>Upcoming Events</h3>
+{% include "events/event_list.html" %}
+
+{% endblock %}
+
