@@ -21,6 +21,15 @@ To start running the service use the following commands:
 
 `./env/bin/python manage.py runserver`
 
+
+### Using the docker container
+```
+docker build -t get_together .
+docker run -p 8000:8000 get_together
+```
+
+You can then connect to the container by going to localhost:8000
+
 ## Test Federation
 You can import sample event data into your "Searchable" table with this command:
 
