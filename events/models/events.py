@@ -59,7 +59,6 @@ class Event(models.Model):
         super().save(*args, **kwargs)  # Call the "real" save() method.
         update_event_searchable(self)
 
-
 def update_event_searchable(event):
     site = Site.objects.get(id=1)
     event_url = "https://%s%s" % (site.domain, event.get_absolute_url())
@@ -84,8 +83,8 @@ def update_event_searchable(event):
         searchable.latitude = event.place.latitude
     else:
         searchable.location_name = ""
-        searchable.longitude = null
-        searchable.latitude = null
+        searchable.longitude = None
+        searchable.latitude = None
     searchable.save()
 
 def slugify(s, ok=SLUG_OK, lower=True, spaces=False):

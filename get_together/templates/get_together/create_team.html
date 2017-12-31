@@ -1,12 +1,12 @@
 {% extends "get_together/base.html" %}
 
 {% block content %}
-<h2>Create a new team:</h2>
+<h2>Get Together with friends</h2>
 <form action="{% url "create-team" %}" method="post">
 {% csrf_token %}
 {% include "events/team_form.html" %}
 	<br />
-<input type="submit" value="Start a Get Together!" />
+<input type="submit" value="Gather your crew!" />
 </form>
 {% endblock %}
 

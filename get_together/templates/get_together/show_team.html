@@ -5,6 +5,9 @@
 
 <h3>Upcoming Events</h3>
 {% include "events/event_list.html" %}
-
+<br />
+<form action="{% url 'create-event' team.id %}" method="get">
+<input type="submit" value="Plan a Get Together!" />
+</form>
 {% endblock %}
 

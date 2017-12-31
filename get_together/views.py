@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team
-from events.forms import TeamForm, NewTeamForm
+from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm
 
 from events.models.events import Event
 
+import datetime
 import simplejson
 
 # Create your views here.
@@ -58,6 +59,32 @@ def show_team(request, team_id, *args, **kwargs):
         'events_list': team_events,
     }
     return render(request, 'get_together/show_team.html', context)
+
+def create_event(request, team_id):
+    team = Team.objects.get(id=team_id)
+    if request.method == 'GET':
+        form = NewTeamEventForm()
+
+        context = {
+            'team': team,
+            'event_form': form,
+        }
+        return render(request, 'get_together/create_event.html', context)
+    elif request.method == 'POST':
+        form = NewTeamEventForm(request.POST)
+        if form.is_valid:
+            form.instance.team = team
+            form.instance.created_by = request.user.profile
+            new_event = form.save()
+            return redirect(new_event.get_absolute_url())
+        else:
+            context = {
+                'team': team,
+                'event_form': form,
+            }
+            return render(request, 'get_together/create_event.html', context)
+    else:
+     return redirect('home')
 
 def show_event(request, event_id, event_slug):
     event = Event.objects.get(id=event_id)
