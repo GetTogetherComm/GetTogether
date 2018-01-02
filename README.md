@@ -25,7 +25,8 @@ To start running the service use the following commands:
 ### Using the docker container
 ```
 docker build -t get_together .
-docker run -p 8000:8000 get_together
+docker run -d --name get_together -p 8000:8000 get_together
+docker exec -it get_together python3 manage.py createsuperuser
 ```
 
 You can then connect to the container by going to localhost:8000
