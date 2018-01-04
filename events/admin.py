@@ -12,14 +12,21 @@ admin.site.register(Country)
 
 class SPRAdmin(admin.ModelAdmin):
     raw_id_fields = ('country',)
+    list_filter =('country',)
+    search_fields = ('name', 'country__name')
 admin.site.register(SPR, SPRAdmin)
 
 class CityAdmin(admin.ModelAdmin):
     raw_id_fields = ('spr',)
+    list_filter =('spr__country',)
+    search_fields = ('name', 'spr__name')
 admin.site.register(City, CityAdmin)
 
 admin.site.register(UserProfile)
-admin.site.register(Organization)
+
+class OrgAdmin(admin.ModelAdmin):
+    list_display = ('name', 'site')
+admin.site.register(Organization, OrgAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')

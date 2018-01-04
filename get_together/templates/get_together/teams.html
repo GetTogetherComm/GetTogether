@@ -1,0 +1,13 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+{% include "events/team_list.html" %}
+
+{% if request.user.is_authenticated %}
+<br/>
+<form action="{% url 'create-team' %}" method="get">
+	<button type="submit" class="btn btn-primary">Start a Team</button>
+</form>
+{% endif %}
+{% endblock %}
+

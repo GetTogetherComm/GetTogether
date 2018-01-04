@@ -3,7 +3,7 @@
 {% block content %}
 <h2>About {{ event.name }}</h2>
 
-<h3>Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></h3>
+<h4>Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></h4>
 {% include "events/event_details.html" %}
 
 {% endblock %}

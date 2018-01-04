@@ -22,7 +22,7 @@ def home(request, *args, **kwards):
         return render(request, 'get_together/index.html')
 
 def events_list(request, *args, **kwargs):
-    events = Event.objects.all()
+    events = Event.objects.order_by('start_time').all()
     context = {
         'events_list': events,
     }
@@ -51,12 +51,21 @@ def create_team(request, *args, **kwargs):
     else:
      return redirect('home')
 
+def teams_list(request, *args, **kwargs):
+    teams = Team.objects.all()
+    context = {
+        'teams_list': teams,
+    }
+    return render(request, 'get_together/teams.html', context)
+
+
 def show_team(request, team_id, *args, **kwargs):
     team = Team.objects.get(id=team_id)
     team_events = Event.objects.filter(team=team)
     context = {
         'team': team,
         'events_list': team_events,
+        'can_create_event': request.user.profile.can_create_event(team),
     }
     return render(request, 'get_together/show_team.html', context)
 

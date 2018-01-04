@@ -1,0 +1,18 @@
+
+{% if teams_list %}
+    <table border="0" width="960px">
+    {% for team in teams_list %}
+	<tr>
+		<td><a href="{% url 'show-team' team.id %}">{{ team.name }}</a></td>
+		<td>{{ team.country.name|default:'' }}</td>
+		<td>{{ team.spr.name|default:'' }}</td>
+		<td>{{ team.city.name|default:'' }}</td>
+		<td>{{ team.owner_profile }}</td>
+		<td>{{ team.created_time }}</td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No team available.</p>
+{% endif %}
+

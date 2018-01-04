@@ -4,11 +4,11 @@
 <center>
 <h2>Welcome to Get Together!</h2>
 
-<h3>Login with:</h3>
-<a href="{% url 'social:begin' 'google-oauth2' %}">Google</a><br/>
-<a href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/>
-<a href="{% url 'social:begin' 'twitter' %}">Twitter</a><br/>
-<a href="{% url 'social:begin' 'github' %}">GitHub</a><br/>
+<h3>Login</h3>
+<a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Google</a>&nbsp; &nbsp;
+<a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/><br/>
+<a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
+<a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">GitHub</a><br/>
 <br>
 </center>
 {% endblock %}

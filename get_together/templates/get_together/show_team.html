@@ -3,11 +3,13 @@
 {% block content %}
 <h2>Welcome to {{ team.name }}</h2>
 
-<h3>Upcoming Events</h3>
+<h4>Upcoming Events</h4>
 {% include "events/event_list.html" %}
+{% if can_create_event %}
 <br />
 <form action="{% url 'create-event' team.id %}" method="get">
-<input type="submit" value="Plan a Get Together!" />
+<button type="submit" class="btn btn-primary">Plan a Get Together</button>
 </form>
+{% endif %}
 {% endblock %}
 

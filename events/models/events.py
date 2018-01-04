@@ -50,7 +50,11 @@ class Event(models.Model):
     #replies
 
     def get_absolute_url(self):
-        return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': slugify(self.name)})
+        return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
+
+    @property
+    def slug(self):
+        return slugify(self.name)
 
     def __str__(self):
         return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
