@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from .locale import *
 
 import pytz
+import datetime
 
 class UserProfile(models.Model):
     " Store profile information about a user "
@@ -109,6 +110,21 @@ class Team(models.Model):
     active = models.BooleanField(_("Active Team"), default=True)
     tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
 
+    members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
+
     def __str__(self):
         return u'%s' % (self.name)
 
+class Member(models.Model):
+    NORMAL=0
+    MODERATOR=1
+    ADMIN=2
+    ROLES = [
+        (NORMAL, _("Normal")),
+        (MODERATOR, _("Moderator")),
+        (ADMIN, _("Administrator"))
+    ]
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    role = models.SmallIntegerField(_("Member Role"), choices=ROLES, default=NORMAL, db_index=True)
+    joined_date = models.DateTimeField(default=datetime.datetime.now)

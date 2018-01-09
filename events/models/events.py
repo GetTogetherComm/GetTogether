@@ -29,6 +29,23 @@ class Place(models.Model):
     def __str__(self):
         return u'%s, %s' % (self.name, self.city.name)
 
+class PlaceSerializer(serializers.ModelSerializer):
+    city = serializers.CharField(read_only=True)
+    class Meta:
+        model = Place
+        fields = (
+            'id',
+            'name',
+            'city',
+            'address',
+            'longitude',
+            'latitude',
+            'tz',
+            'place_url',
+            'cover_img'
+        )
+
+
 class Event(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
