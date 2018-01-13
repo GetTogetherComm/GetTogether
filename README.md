@@ -11,16 +11,47 @@ Get Together is an open source event manager for local communities.
 ## Getting Started
 To start running the service use the following commands:
 
-`virtualenv --python=python3 ./env`
+```
+virtualenv --python=python3 ./env
+./env/bin/pip install -r requirements.txt
+./env/bin/python manage.py migrate
+./env/bin/python manage.py createsuperuser
+./env/bin/python manage.py runserver
+```
 
-`./env/bin/pip install -r requirements.txt`
+### Loading City data
 
-`./env/bin/python manage.py migrate`
+In order to make it easier to create Places and Teams without having to manually
+enter records for Country, SPR (State/Province/Region) and City, you can preload
+them using data files from http://download.geonames.org/export/dump/
 
-`./env/bin/python manage.py createsuperuser`
+The provided `load_spr` and `load_cities` commands will only load data if the
+parent country (or SPR for cities) exists in the database. This lets you choose
+whether you want to load every city, only cities for select countries, or only
+for select SPRs.
 
-`./env/bin/python manage.py runserver`
+**Countries**
+Download the [countryInfo.txt](http://download.geonames.org/export/dump/countryInfo.txt)
+file from GeoNames, then run:
+`./env/bin/python manage.py load_countries countryInfo.txt`
 
+**SPR**
+Download the [admin1CodesASCII.txt](http://download.geonames.org/export/dump/admin1CodesASCII.txt)
+file from GeoNames, then run:
+`./env/bin/python manage.py load_spr admin1CodesASCII.txt`
+
+**Cities**
+You have a few choices for City data files. GeoNames provides data files for
+cities with [more than 15,000](http://download.geonames.org/export/dump/cities15000.zip)
+residents, cities with [more than 5,000](http://download.geonames.org/export/dump/cities5000.zip)
+residents, and cities [with more than 1,000](http://download.geonames.org/export/dump/cities1000.zip)
+residents. The smaller the number, the more cities there will be in the data
+file (and the longer it will take to import them all).
+
+Download the file you want from the links above. They will be zip files that you
+must unzip before using. Then import the cities by running (for your downloaded
+file):
+`./env/bin/python manage.py load_cities cities15000.txt`
 
 ### Using the docker container
 ```
