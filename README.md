@@ -30,17 +30,22 @@ parent country (or SPR for cities) exists in the database. This lets you choose
 whether you want to load every city, only cities for select countries, or only
 for select SPRs.
 
-**Countries**
+#### Countries
+
 Download the [countryInfo.txt](http://download.geonames.org/export/dump/countryInfo.txt)
 file from GeoNames, then run:
+
 `./env/bin/python manage.py load_countries countryInfo.txt`
 
-**SPR**
+#### SPR
+
 Download the [admin1CodesASCII.txt](http://download.geonames.org/export/dump/admin1CodesASCII.txt)
 file from GeoNames, then run:
+
 `./env/bin/python manage.py load_spr admin1CodesASCII.txt`
 
-**Cities**
+#### Cities
+
 You have a few choices for City data files. GeoNames provides data files for
 cities with [more than 15,000](http://download.geonames.org/export/dump/cities15000.zip)
 residents, cities with [more than 5,000](http://download.geonames.org/export/dump/cities5000.zip)
@@ -51,6 +56,7 @@ file (and the longer it will take to import them all).
 Download the file you want from the links above. They will be zip files that you
 must unzip before using. Then import the cities by running (for your downloaded
 file):
+
 `./env/bin/python manage.py load_cities cities15000.txt`
 
 ### Using the docker container
