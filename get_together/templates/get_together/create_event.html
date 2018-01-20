@@ -12,3 +12,21 @@
 </form>
 {% endblock %}
 
+{% block javascript %}
+{% with event_form.fields.place.widget as widget %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#{{ widget.name }}_search").keyup(function() {
+	var searchText = this.value;
+	$.getJSON("{{ widget.source }}?q="+searchText, function(data) {
+	    var selectField = $("#{{ widget.name }}_select");
+	    selectField.empty();
+	    $.each(data, function(){
+		selectField.append('<option value="'+ this.{{ widget.key }} +'">'+ this.name+' '+this.city + '</option>')
+	    });
+	});
+    });
+});
+</script>
+{% endwith %}
+{% endblock %}

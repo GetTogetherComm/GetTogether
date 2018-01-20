@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import reverse
 
+from rest_framework import serializers
+
 from .locale import *
 from .profiles import *
 from .search import *

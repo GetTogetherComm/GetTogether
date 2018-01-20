@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework import serializers
+
 import pytz
 
 class Language(models.Model):
@@ -41,6 +43,15 @@ class Country(models.Model):
         else:
             return 'no_country'
 
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = (
+            'id',
+            'name',
+            'code'
+        )
+
 class SPR(models.Model):
     name = models.CharField(_("Name"), max_length=100)
     code = models.CharField(_("Admin Code"), max_length=8)
@@ -58,6 +69,17 @@ class SPR(models.Model):
             return self.name.replace(',', '').replace(' ', '_')
         else:
             return 'no_spr'
+
+class SPRSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SPR
+        fields = (
+            'id',
+            'name',
+            'code',
+            'country',
+            'slug'
+        )
 
 class City(models.Model):
     class Meta:
@@ -79,4 +101,14 @@ class City(models.Model):
             return 'no_city'
 
 
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = (
+            'id',
+            'name',
+            'spr',
+            'tz',
+            'slug'
+        )
 
