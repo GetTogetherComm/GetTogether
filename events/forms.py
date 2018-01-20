@@ -1,6 +1,6 @@
 from django.utils.safestring import mark_safe
 from django.forms import ModelForm, Field
-from django.forms.widgets import Select, Media
+from django.forms.widgets import TextInput, Select, Media
 from .models.profiles import Team
 from .models.events import Event
 
@@ -21,8 +21,8 @@ $(document).ready(function(){
 });
 </script>''')
 
-class Lookup(Select):
-    input_type = 'select'
+class Lookup(TextInput):
+    input_type = 'text'
     template_name = 'forms/widgets/lookup.html'
     add_id_index = False
     checked_attribute = {'selected': True}
@@ -56,6 +56,7 @@ class NewTeamForm(ModelForm):
             'spr': Lookup(source='/api/spr/', label='name'),
             'city': Lookup(source='/api/cities/', label='name'),
         }
+        raw_id_fields = ('country','spr','city')
 
 class TeamEventForm(ModelForm):
     class Meta:
