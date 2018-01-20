@@ -89,7 +89,7 @@ class Organization(models.Model):
         return u'%s' % (self.name)
 
 class Team(models.Model):
-    name = models.CharField(max_length=256, null=False, blank=False)
+    name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
 
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
