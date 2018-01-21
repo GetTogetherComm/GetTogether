@@ -92,6 +92,7 @@ def show_team(request, team_id, *args, **kwargs):
         'team': team,
         'events_list': team_events,
         'can_create_event': request.user.profile.can_create_event(team),
+        'can_edit_team': request.user.profile.can_edit_team(team),
     }
     return render(request, 'get_together/show_team.html', context)
 
@@ -180,5 +181,6 @@ def show_event(request, event_id, event_slug):
     context = {
         'team': event.team,
         'event': event,
+        'can_edit_event': request.user.profile.can_edit_event(event),
     }
     return render(request, 'get_together/show_event.html', context)

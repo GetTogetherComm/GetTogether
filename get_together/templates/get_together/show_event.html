@@ -6,7 +6,7 @@
 <h4>Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></h4>
 {% include "events/event_details.html" %}
 
-{% if request.user.profile == event.created_by %}
+{% if can_edit_event %}
 <form action="{% url 'edit-event' event.id %}" method="get">
 <button type="submit" class="btn btn-secondary">Edit Event</button>
 </form>

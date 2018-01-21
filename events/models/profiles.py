@@ -47,6 +47,8 @@ class UserProfile(models.Model):
         return local.astimezone(pytz.utc)
 
     def can_create_event(self, team):
+        if self.user.is_superuser:
+            return True
         if not self.user_id:
             return False
         if self.user.is_superuser:
@@ -56,6 +58,27 @@ class UserProfile(models.Model):
         if self in team.admin_profiles.all():
             return True
         if self in team.contact_profiles.all():
+            return True
+        return False
+
+    def can_edit_event(self, event):
+        if self.user.is_superuser:
+            return True
+        if event.created_by == self:
+            return True
+        if event.team.owner_profile == self:
+            return True
+        if self in event.team.admin_profiles.all():
+            return True
+        return False
+
+    def can_edit_team(self, team):
+        print("Checking team edit permission for: %s" % team)
+        if self.user.is_superuser:
+            return True
+        if team.owner_profile == self:
+            return True
+        if self in team.admin_profiles.all():
             return True
         return False
 
