@@ -38,7 +38,6 @@ class Lookup(TextInput):
         self.source = source
         self.key = key
         self.label = label
-        self.name = 'place'
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
@@ -47,8 +46,14 @@ class Lookup(TextInput):
         context['widget']['label'] = self.label
         return context
 
+    def format_value(self, value):
+        if value is not None:
+            return mark_safe('<option value="%s">%s</option>' % (value, _('No change')))
+        else:
+            return mark_safe('<option value="">--------</option>')
+
 class DateWidget(DateInput):
-    """A more-friendly date widget with a pop-up calendar.
+    """A more-friendly date widget with a p% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %op-up calendar.
     """
     template_name = 'forms/widgets/date.html'
     def __init__(self, attrs=None):
@@ -144,7 +149,13 @@ class DateTimeWidget(SplitDateTimeWidget):
 class TeamForm(ModelForm):
     class Meta:
         model = Team
-        fields = '__all__'
+        fields = ['name', 'country', 'spr', 'city', 'web_url', 'tz']
+        widgets = {
+            'country': Lookup(source='/api/country/', label='name'),
+            'spr': Lookup(source='/api/spr/', label='name'),
+            'city': Lookup(source='/api/cities/', label='name'),
+        }
+        raw_id_fields = ('country','spr','city')
 
 class NewTeamForm(ModelForm):
     class Meta:
@@ -162,9 +173,9 @@ class TeamEventForm(ModelForm):
         model = Event
         fields = ['name', 'start_time', 'end_time', 'summary', 'place', 'web_url', 'announce_url', 'tags']
         widgets = {
-            'country': Lookup(source='/api/country/', label='name'),
-            'spr': Lookup(source='/api/spr/', label='name'),
-            'city': Lookup(source='/api/cities/', label='name'),
+            'place': Lookup(source='/api/places/', label='name'),
+            'start_time': DateTimeWidget,
+            'end_time': DateTimeWidget
         }
 
 class NewTeamEventForm(ModelForm):

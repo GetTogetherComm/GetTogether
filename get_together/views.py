@@ -51,6 +51,32 @@ def create_team(request, *args, **kwargs):
     else:
      return redirect('home')
 
+def edit_team(request, team_id):
+    team = Team.objects.get(id=team_id)
+    if request.method == 'GET':
+        form = TeamForm(instance=team)
+
+        context = {
+            'team': team,
+            'team_form': form,
+        }
+        return render(request, 'get_together/edit_team.html', context)
+    elif request.method == 'POST':
+        form = TeamForm(request.POST, instance=team)
+        if form.is_valid:
+            new_team = form.save()
+            new_team.owner_profile = request.user.profile
+            new_team.save()
+            return redirect('show-team', team_id=new_team.pk)
+        else:
+            context = {
+                'team': team,
+                'team_form': form,
+            }
+            return render(request, 'get_together/edit_team.html', context)
+    else:
+     return redirect('home')
+
 def teams_list(request, *args, **kwargs):
     teams = Team.objects.all()
     context = {
@@ -68,6 +94,32 @@ def show_team(request, team_id, *args, **kwargs):
         'can_create_event': request.user.profile.can_create_event(team),
     }
     return render(request, 'get_together/show_team.html', context)
+
+def edit_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.method == 'GET':
+        form = TeamEventForm(instance=event)
+
+        context = {
+            'team': event.team,
+            'event': event,
+            'event_form': form,
+        }
+        return render(request, 'get_together/edit_event.html', context)
+    elif request.method == 'POST':
+        form = TeamEventForm(request.POST,instance=event)
+        if form.is_valid:
+            new_event = form.save()
+            return redirect(new_event.get_absolute_url())
+        else:
+            context = {
+                'team': event.team,
+                'event': event,
+                'event_form': form,
+            }
+            return render(request, 'get_together/edit_event.html', context)
+    else:
+     return redirect('home')
 
 def create_event(request, team_id):
     team = Team.objects.get(id=team_id)

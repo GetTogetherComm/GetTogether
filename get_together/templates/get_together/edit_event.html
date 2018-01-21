@@ -1,0 +1,43 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Updating {{event.name}}</h2>
+<form action="{% url "edit-event" event.id%}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{% include "events/event_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+{% with event_form.fields.place.widget as widget %}
+    $("#{{ widget.name }}_search").keyup(function() {
+	var searchText = this.value;
+	$.getJSON("{{ widget.source }}?q="+searchText, function(data) {
+	    var selectField = $("#{{ widget.name }}_select");
+	    selectField.empty();
+	    $.each(data, function(){
+		selectField.append('<option value="'+ this.{{ widget.key }} +'">'+ this.name+' '+this.city + '</option>')
+	    });
+	});
+    });
+{% endwith %}
+
+    $.datepicker.setDefaults({
+        showOn: 'focus',
+        dateFormat: 'yy-mm-dd',
+    });
+
+    $("#id_start_time_0").datepicker({altField: "#id_end_time_0", altFormat: "yy-mm-dd"});
+
+    $("#id_end_time_0").datepicker();
+
+});
+
+</script>
+{% endblock %}

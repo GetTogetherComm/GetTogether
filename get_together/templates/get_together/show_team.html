@@ -10,6 +10,10 @@
 <form action="{% url 'create-event' team.id %}" method="get">
 <button type="submit" class="btn btn-primary">Plan a Get Together</button>
 </form>
+
+<form action="{% url 'edit-team' team.id %}" method="get">
+<button type="submit" class="btn btn-secondary">Edit Team</button>
+</form>
 {% endif %}
 {% endblock %}
 

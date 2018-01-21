@@ -31,7 +31,9 @@ urlpatterns = [
     path('create-team/', views.create_team, name='create-team'),
     path('teams/', views.teams_list, name='teams'),
     path('team/<int:team_id>/', views.show_team, name='show-team'),
+    path('team/<int:team_id>/edit/', views.edit_team, name='edit-team'),
     path('team/<int:team_id>/create-event/', views.create_event, name='create-event'),
+    path('events/<int:event_id>/edit/', views.edit_event, name='edit-event'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
     path('places/', views.places_list, name='places'),
