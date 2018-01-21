@@ -3,9 +3,9 @@
     <table border="0" width="960px">
     {% for place in places_list %}
 	<tr>
-		<td>{{ place.name }}</td>
-		<td>{{ team.address|default:'' }}</td>
-		<td>{{ team.city.name|default:'' }}</td>
+		<td width="20%">{{ place.name }}</td>
+		<td width="40%">{{ place.address|default:'' }}</td>
+		<td width="40%">{{ place.city|default:'' }}</td>
 	</tr>
     {% endfor %}
     </table>
