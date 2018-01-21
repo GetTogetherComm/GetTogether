@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block javascript %}
-{% with event_form.fields.place.widget as widget %}
 <script type="text/javascript">
 $(document).ready(function(){
+{% with event_form.fields.place.widget as widget %}
     $("#{{ widget.name }}_search").keyup(function() {
 	var searchText = this.value;
 	$.getJSON("{{ widget.source }}?q="+searchText, function(data) {
@@ -26,7 +26,18 @@ $(document).ready(function(){
 	    });
 	});
     });
-});
-</script>
 {% endwith %}
+
+    $.datepicker.setDefaults({
+        showOn: 'focus',
+        dateFormat: 'yy-mm-dd',
+    });
+
+    $("#id_start_time_0").datepicker({altField: "#id_end_time_0", altFormat: "yy-mm-dd"});
+
+    $("#id_end_time_0").datepicker();
+
+});
+
+</script>
 {% endblock %}
