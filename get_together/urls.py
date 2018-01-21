@@ -34,5 +34,8 @@ urlpatterns = [
     path('team/<int:team_id>/create-event/', views.create_event, name='create-event'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
+    path('places/', views.places_list, name='places'),
+    path('create-place/', views.create_place, name='create-place'),
+
     path('oauth/', include('social_django.urls', namespace='social')),
 ]

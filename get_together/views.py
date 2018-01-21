@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team
-from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm
+from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm, NewPlaceForm
 
-from events.models.events import Event
+from events.models.events import Event, Place
 
 import datetime
 import simplejson
@@ -92,6 +92,34 @@ def create_event(request, team_id):
                 'event_form': form,
             }
             return render(request, 'get_together/create_event.html', context)
+    else:
+     return redirect('home')
+
+def places_list(request, *args, **kwargs):
+    places = Place.objects.all()
+    context = {
+        'places_list': places,
+    }
+    return render(request, 'get_together/places.html', context)
+
+def create_place(request):
+    if request.method == 'GET':
+        form = NewPlaceForm()
+
+        context = {
+            'place_form': form,
+        }
+        return render(request, 'get_together/create_place.html', context)
+    elif request.method == 'POST':
+        form = NewPlaceForm(request.POST)
+        if form.is_valid:
+            new_place = form.save()
+            return redirect('places')
+        else:
+            context = {
+                'place_form': form,
+            }
+            return render(request, 'get_together/create_place.html', context)
     else:
      return redirect('home')
 

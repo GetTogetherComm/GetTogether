@@ -2,7 +2,7 @@ from django.utils.safestring import mark_safe
 from django.forms import ModelForm, Field
 from django.forms.widgets import TextInput, Select, Media
 from .models.profiles import Team
-from .models.events import Event
+from .models.events import Event, Place
 
 class LookupMedia(Media):
     def render(self):
@@ -76,4 +76,11 @@ class NewTeamEventForm(ModelForm):
             'place': Lookup(source='/api/places/', label='name'),
         }
 
+class NewPlaceForm(ModelForm):
+    class Meta:
+        model = Place
+        fields = ['name', 'address', 'city', 'longitude', 'latitude', 'place_url', 'tz']
+        widgets = {
+            'city': Lookup(source='/api/cities/', label='name'),
+        }
 

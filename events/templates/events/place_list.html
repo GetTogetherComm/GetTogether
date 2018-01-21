@@ -1,0 +1,15 @@
+
+{% if places_list %}
+    <table border="0" width="960px">
+    {% for place in places_list %}
+	<tr>
+		<td>{{ place.name }}</td>
+		<td>{{ team.address|default:'' }}</td>
+		<td>{{ team.city.name|default:'' }}</td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No places available.</p>
+{% endif %}
+

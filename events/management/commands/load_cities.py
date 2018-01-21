@@ -43,7 +43,7 @@ class Command(BaseCommand):
             for city_line in cities_file.readlines():
                 city = city_line.split("\t")
                 if len(city) == 19:
-                    if city[FEATURE_CODE] == "PPL" or city[FEATURE_CODE] == "PPLA":
+                    if city[FEATURE_CODE].startswith("PPL"):
                         country = COUNTRY_CACHE.get(city[COUNTRY_CODE])
                         spr = SPR_CACHE.get("%s.%s"%(city[COUNTRY_CODE], city[ADMIN1]))
                         if country is not None and spr is not None:
