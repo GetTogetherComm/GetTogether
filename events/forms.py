@@ -7,6 +7,7 @@ from .models.profiles import Team
 from .models.events import Event, Place
 
 from datetime import time
+from time import strptime, strftime
 
 class LookupMedia(Media):
     def render(self):
@@ -135,6 +136,10 @@ class DateTimeWidget(SplitDateTimeWidget):
 
     def format_output(self, rendered_widgets):
         return '%s %s' % (rendered_widgets[0], rendered_widgets[1])
+
+    def value_from_datadict(self, data, files, name):
+        values = super(DateTimeWidget, self).value_from_datadict(data, files, name)
+        return ' '.join(values)
 
 class TeamForm(ModelForm):
     class Meta:
