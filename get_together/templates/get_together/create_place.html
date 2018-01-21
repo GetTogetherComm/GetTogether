@@ -18,10 +18,15 @@ $(document).ready(function(){
     $("#city_search").keyup(function() {
 	var searchText = this.value;
 	$.getJSON("/api/cities/?q="+searchText, function(data) {
+	    var searchField = $("#city_search")[0];
+	    var q = this.url.match(/q=([^&]+)/)[1]
+	    var c = searchField.value
+	    if (c != q) return;
+
 	    var selectField = $("#city_select");
 	    selectField.empty();
 	    $.each(data, function(){
-		selectField.append('<option value="'+ this.id +'">'+ this.name+ '</option>')
+		selectField.append('<option value="'+ this.id +'">'+ this.display+ '</option>')
 	    });
 	});
     });

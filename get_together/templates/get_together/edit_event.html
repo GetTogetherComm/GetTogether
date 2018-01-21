@@ -15,18 +15,21 @@
 {% block javascript %}
 <script type="text/javascript">
 $(document).ready(function(){
-{% with event_form.fields.place.widget as widget %}
-    $("#{{ widget.name }}_search").keyup(function() {
+    $("#place_search").keyup(function() {
 	var searchText = this.value;
-	$.getJSON("{{ widget.source }}?q="+searchText, function(data) {
-	    var selectField = $("#{{ widget.name }}_select");
+	$.getJSON("/api/places/?q="+searchText, function(data, status) {
+	    var searchField = $("#place_search")[0];
+	    var q = this.url.match(/q=([^&]+)/)[1]
+	    var c = searchField.value
+	    if (c != q) return;
+
+	    var selectField = $("#place_select");
 	    selectField.empty();
 	    $.each(data, function(){
-		selectField.append('<option value="'+ this.{{ widget.key }} +'">'+ this.name+' '+this.city + '</option>')
+		selectField.append('<option value="'+ this.id +'">'+ this.name+' '+this.city + '</option>')
 	    });
 	});
     });
-{% endwith %}
 
     $.datepicker.setDefaults({
         showOn: 'focus',

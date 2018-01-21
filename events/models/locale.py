@@ -71,6 +71,7 @@ class SPR(models.Model):
             return 'no_spr'
 
 class SPRSerializer(serializers.ModelSerializer):
+    display = serializers.CharField(source='__str__', read_only=True)
     class Meta:
         model = SPR
         fields = (
@@ -78,7 +79,8 @@ class SPRSerializer(serializers.ModelSerializer):
             'name',
             'code',
             'country',
-            'slug'
+            'slug',
+            'display'
         )
 
 class City(models.Model):
@@ -102,6 +104,7 @@ class City(models.Model):
 
 
 class CitySerializer(serializers.ModelSerializer):
+    display = serializers.CharField(source='__str__', read_only=True)
     class Meta:
         model = City
         fields = (
@@ -109,6 +112,7 @@ class CitySerializer(serializers.ModelSerializer):
             'name',
             'spr',
             'tz',
-            'slug'
+            'slug',
+            'display'
         )
 
