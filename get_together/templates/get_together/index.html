@@ -6,11 +6,12 @@
 
 <h4>Login</h4>
 <!--
-<a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Google</a>&nbsp; &nbsp;
 <a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/><br/>
 <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
 -->
-<a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">GitHub</a><br/>
+{% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Google</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">GitHub</a></span>{% endif %}
+{% if settings.DEBUG %}<span><a class="btn btn-primary" href="{% url 'admin:login' %}">Local</a></span>{% endif %}
 <br>
 </center>
 {% endblock %}

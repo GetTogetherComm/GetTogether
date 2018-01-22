@@ -151,6 +151,8 @@ GOOGLE_ANALYTICS_ID=None
 SETTINGS_EXPORT = [
     'DEBUG',
     'GOOGLE_ANALYTICS_ID',
+    'SOCIAL_AUTH_GITHUB_KEY',
+    'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY',
 ]
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments
