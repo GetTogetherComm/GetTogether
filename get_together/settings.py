@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'django_settings_export.settings_export',
              ],
         },
     },
@@ -145,6 +146,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+GOOGLE_ANALYTICS_ID=None
+
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'GOOGLE_ANALYTICS_ID',
+]
+
+# Keep this at the end of settings.py to allow overriding settings in local deployments
 try:
     from local_settings import *
 

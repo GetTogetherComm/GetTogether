@@ -16,3 +16,4 @@ social-auth-app-django==2.1.0
 social-auth-core==1.6.0
 urllib3==1.22
 dj-database-url==0.4.2
+django-settings-export==1.2.1
