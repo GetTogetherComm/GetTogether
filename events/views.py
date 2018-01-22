@@ -12,7 +12,7 @@ import simplejson
 
 # Create your views here.
 def searchable_list(request, *args, **kwargs):
-    searchables = Searchable.objects.all()
+    searchables = Searchable.objects.exclude(location_name='')
     serializer = SearchableSerializer(searchables, many=True)
     return JsonResponse(serializer.data, safe=False)
 

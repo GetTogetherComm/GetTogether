@@ -69,9 +69,9 @@ docker exec -it get_together python3 manage.py createsuperuser
 You can then connect to the container by going to localhost:8000
 
 ## Test Federation
-You can import sample event data into your "Searchable" table with this command:
+You can import live event data into your "Searchable" table with this command:
 
-`./env/bin/python manage.py import http://people.ubuntu.com/~mhall119/searchable_test.json`
+`./env/bin/python manage.py import https://gettogether.community/searchables/`
 
 
 ## Getting Involved
