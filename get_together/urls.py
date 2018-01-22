@@ -15,6 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from django.conf import settings
+from django.conf.urls.static import static
+
 from events import views as event_views
 from . import views
 
@@ -41,3 +45,5 @@ urlpatterns = [
 
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

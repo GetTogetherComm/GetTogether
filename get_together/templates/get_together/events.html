@@ -1,7 +1,50 @@
 {% extends "get_together/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link href="http://getbootstrap.com/docs/4.0/examples/album/album.css" rel="stylesheet"/>
+    <style>
+.card-banner {
+    position: relative;
+}
+.card-banner .card-title {
+    position: absolute;
+    bottom: 0px;
+    left: 6px;
+    color: #FFF;
+    font-size: 18pt;
+    font-weight: bold;
+    text-shadow: 2px 2px #444;
+}
+    </style>
+{% endblock %}
 
 {% block content %}
-<h4>Upcoming events</h4>
-{% include "events/event_list.html" %}
+<h3>Upcoming events</h3>
+        <div class="container">
+          <div class="row">
+{% for event in events_list %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <div class="card-banner">
+                  <img class="card-img-top" src="{% static 'img/event_placeholder.png' %}" alt="{{event.name}}">
+                  <p class="card-title">{{event.name}}</p>
+                </div>
+                <div class="card-body">
+                  <p class="card-subtitle">{{ event.team.name }}</p>
+                  <p class="card-text">{{ event.summary }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ event.start_time }}</small>
+                    <div class="btn-group">
+                        <a class="btn btn-primary" href="{{ event.get_absolute_url }}">View</a></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endfor %}
+        </div>
+    </div>
+
 {% endblock %}
 
