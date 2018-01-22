@@ -155,6 +155,15 @@ SETTINGS_EXPORT = [
     'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY',
 ]
 
+# Make django messages framework use Bootstrap's alert style classes
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
 # Keep this at the end of settings.py to allow overriding settings in local deployments
 try:
     from local_settings import *

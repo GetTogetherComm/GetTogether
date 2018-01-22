@@ -1,3 +1,6 @@
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -53,6 +56,10 @@ def create_team(request, *args, **kwargs):
 
 def edit_team(request, team_id):
     team = Team.objects.get(id=team_id)
+    if not request.user.profile.can_edit_team(team):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
+        return redirect('show-team', team_id=team.pk)
+
     if request.method == 'GET':
         form = TeamForm(instance=team)
 
@@ -98,6 +105,11 @@ def show_team(request, team_id, *args, **kwargs):
 
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
+
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
     if request.method == 'GET':
         form = TeamEventForm(instance=event)
 
@@ -124,6 +136,10 @@ def edit_event(request, event_id):
 
 def create_event(request, team_id):
     team = Team.objects.get(id=team_id)
+    if not request.user.profile.can_create_event(team):
+        messages.add_message(request, messages.WARNING, message=_('You can not create events for this team.'))
+        return redirect('show-team', team_id=team.pk)
+
     if request.method == 'GET':
         form = NewTeamEventForm()
 
