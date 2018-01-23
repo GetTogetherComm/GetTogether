@@ -25,7 +25,7 @@ def home(request, *args, **kwards):
         return render(request, 'get_together/index.html')
 
 def events_list(request, *args, **kwargs):
-    events = Event.objects.order_by('start_time').all()
+    events = Event.objects.filter(end_time__gt=datetime.datetime.now()).order_by('start_time')
     context = {
         'events_list': events,
     }

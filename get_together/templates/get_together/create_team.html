@@ -13,53 +13,29 @@
 {% block javascript %}
 <script type="text/javascript">
 $(document).ready(function(){
-    $("#country_search").keyup(function() {
-	var searchText = this.value;
-	$.getJSON("/api/countries/?q="+searchText, function(data) {
-	    var searchField = $("#country_search")[0];
-	    var q = this.url.match(/q=([^&]+)/)[1]
-	    var c = searchField.value
-	    if (c != q) return;
 
-	    var selectField = $("#country_select");
-	    selectField.empty();
-	    $.each(data, function(){
-		selectField.append('<option value="'+ this.id +'">'+ this.name + '</option>')
-	    });
-	});
-    });
-    $("#spr_search").keyup(function() {
-	var searchText = this.value;
-	var country_id = $("#country_select")[0].selectedOptions[0].value;
-	$.getJSON("/api/spr/?q="+searchText+"&country="+country_id, function(data) {
-	    var searchField = $("#spr_search")[0];
-	    var q = this.url.match(/q=([^&]+)/)[1]
-	    var c = searchField.value
-	    if (c != q) return;
-
-	    var selectField = $("#spr_select");
-	    selectField.empty();
-	    $.each(data, function(){
-		selectField.append('<option value="'+ this.id +'">'+ this.name + '</option>')
-	    });
-	});
-    });
     $("#city_search").keyup(function() {
         var searchText = this.value;
-	var spr_id = $("#spr_select")[0].selectedOptions[0].value;
-        $.getJSON("/api/cities/?q="+searchText+"&spr="+spr_id, function(data) {
-	    var searchField = $("#city_search")[0];
-	    var q = this.url.match(/q=([^&]+)/)[1]
-	    var c = searchField.value
-	    if (c != q) return;
+        $.getJSON("/api/cities/?q="+searchText, function(data) {
+            var searchField = $("#city_search")[0];
+            var m = this.url.match(/q=([^&]+)/);
+            var q = "";
+            if (m && m.length > 0) {
+                q = this.url.match(/q=([^&]+)/)[1]
+            }        var c = searchField.value
+            if (c != q) return;
 
-            var selectField = $("#city_select");
-            selectField.empty();
-            $.each(data, function(){
-                selectField.append('<option value="'+ this.id +'">'+ this.name + '</option>')
-	    });
-	});
+                var selectField = $("#city_select");
+                selectField.empty();
+                $.each(data, function(){
+                    selectField.append('<option value="'+ this.id +'">'+ this.display + '</option>')
+            });
+        });
     });
-});</script>
+
+});
+
+
+</script>
 
 {% endblock %}

@@ -160,10 +160,10 @@ class TeamForm(ModelForm):
 class NewTeamForm(ModelForm):
     class Meta:
         model = Team
-        fields = ['name', 'country', 'spr', 'city', 'web_url', 'tz']
+        fields = ['name', 'city', 'web_url', 'tz']
         widgets = {
-            'country': Lookup(source='/api/country/', label='name'),
-            'spr': Lookup(source='/api/spr/', label='name'),
+            #'country': Lookup(source='/api/country/', label='name'),
+            #'spr': Lookup(source='/api/spr/', label='name'),
             'city': Lookup(source='/api/cities/', label='name'),
         }
         raw_id_fields = ('country','spr','city')

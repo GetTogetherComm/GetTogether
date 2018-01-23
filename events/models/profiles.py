@@ -141,8 +141,26 @@ class Team(models.Model):
 
     members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
 
+    @property
+    def location_name(self):
+        if self.city:
+            return str(self.city)
+        elif self.spr:
+            return str(self.spr)
+        elif self.country:
+            return str(self.country)
+        else:
+            return ''
+
     def __str__(self):
         return u'%s' % (self.name)
+
+    def save(self, *args, **kwargs):
+        if self.city is not None:
+            self.spr = self.city.spr
+            self.country = self.spr.country
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+
 
 class Member(models.Model):
     NORMAL=0
