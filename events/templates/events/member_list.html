@@ -1,0 +1,15 @@
+
+{% if member_list %}
+    <table border="0" width="960px">
+    {% for member in member_list %}
+	<tr>
+		<td>{{ member.user }}</td>
+		<td>{{ member.joined_date }}</td>
+		<td>{% if member.role > 0 %}{{ member.role_name }}{% endif %}</td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No members yet.</p>
+{% endif %}
+

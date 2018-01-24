@@ -68,6 +68,8 @@ class Event(models.Model):
     #image
     #replies
 
+    attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
+
     def get_absolute_url(self):
         return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
 
@@ -105,7 +107,7 @@ def update_event_searchable(event):
         searchable.longitude = event.place.longitude or None
         searchable.latitude = event.place.latitude
     else:
-        searchable.location_name = ""
+        searchable.location_name = team.location_name
         searchable.longitude = None
         searchable.latitude = None
     searchable.save()
@@ -124,3 +126,26 @@ def slugify(s, ok=SLUG_OK, lower=True, spaces=False):
     if not spaces:
         new = re.sub('[-\s]+', '-', new)
     return new.lower() if lower else new
+
+class Attendee(models.Model):
+    NORMAL=0
+    CREW=1
+    HOST=2
+    ROLES = [
+        (NORMAL, _("Normal")),
+        (CREW, _("Crew")),
+        (HOST, _("Host"))
+    ]
+    NO=-1
+    MAYBE=0
+    YES=1
+    STATUSES = [
+        (NO, _("No")),
+        (MAYBE, _("Maybe")),
+        (YES, _("Yes")),
+    ]
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
+    status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, db_index=True)
+    joined_date = models.DateTimeField(default=datetime.datetime.now)

@@ -2,9 +2,9 @@ from django.contrib import admin
 
 # Register your models here.
 from .models.locale import Language, Continent, Country, SPR, City
-from .models.profiles import UserProfile, Organization, Team
+from .models.profiles import UserProfile, Organization, Team, Member
 from .models.search import Searchable
-from .models.events import Place, Event
+from .models.events import Place, Event, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -41,5 +41,7 @@ admin.site.register(Place, PlaceAdmin)
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by')
 admin.site.register(Event, EventAdmin)
+
+admin.site.register(Member)
 
 

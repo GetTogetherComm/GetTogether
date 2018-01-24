@@ -3,6 +3,10 @@
 {% block content %}
 <h2>Welcome to {{ team.name }}</h2>
 
+<h4>Members</h4>
+{% include "events/member_list.html" %}
+<br/>
+
 <h4>Upcoming Events</h4>
 {% include "events/event_list.html" %}
 {% if can_create_event %}
@@ -15,6 +19,16 @@
 {% if can_edit_team %}
 <form action="{% url 'edit-team' team.id %}" method="get">
 <button type="submit" class="btn btn-secondary">Edit Team</button>
+</form>
+{% endif %}
+
+{% if is_member %}
+<form action="{% url 'leave-team' team.id %}" method="get">
+<button type="submit" class="btn btn-danger">Leave Team</button>
+</form>
+{% else %}
+<form action="{% url 'join-team' team.id %}" method="get">
+<button type="submit" class="btn btn-success">Join Team</button>
 </form>
 {% endif %}
 {% endblock %}

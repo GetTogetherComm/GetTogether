@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Update {{team.name}}</h2>
-<form action="{% url "create-team" %}" method="post">
+<form action="{% url "edit-team" team.id %}" method="post">
 {% csrf_token %}
 {% include "events/team_form.html" %}
 	<br />

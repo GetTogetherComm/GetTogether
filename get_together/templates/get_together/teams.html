@@ -1,7 +1,14 @@
 {% extends "get_together/base.html" %}
 
 {% block content %}
-{% include "events/team_list.html" %}
+{% if my_teams %}
+<h4>My Teams</h4>
+{% include "events/team_list.html" with teams_list=my_teams %}
+<br/>
+{% endif %}
+
+<h4>All Teams</h4>
+{% include "events/team_list.html" with teams_list=all_teams%}
 
 {% if request.user.is_authenticated %}
 <br/>

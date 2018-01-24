@@ -175,3 +175,11 @@ class Member(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     role = models.SmallIntegerField(_("Member Role"), choices=ROLES, default=NORMAL, db_index=True)
     joined_date = models.DateTimeField(default=datetime.datetime.now)
+
+    @property
+    def role_name(self):
+        print("Role name: %s=%s" % (self.role, Member.ROLES[self.role]))
+        return Member.ROLES[self.role][1]
+
+    def __str__(self):
+        return '%s in %s' % (self.user, self.team)

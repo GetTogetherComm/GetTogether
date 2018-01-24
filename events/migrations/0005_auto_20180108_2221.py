@@ -4,6 +4,13 @@ import datetime
 from django.db import migrations, models
 import django.db.models.deletion
 
+ADMIN=2
+
+def make_owner_admin(apps, schema_editor):
+    Team = apps.get_model('events', 'Team')
+    Member = apps.get_model('events', 'Member')
+    for team in Team.objects.all():
+        Member.objects.get_or_create(team=team, user=team.owner_profile, role=ADMIN, joined_date=team.created_date or datetime.datetime.now())
 
 class Migration(migrations.Migration):
 
@@ -27,4 +34,5 @@ class Migration(migrations.Migration):
             name='members',
             field=models.ManyToManyField(blank=True, related_name='memberships', through='events.Member', to='events.UserProfile'),
         ),
+        migrations.RunPython(make_owner_admin),
     ]
