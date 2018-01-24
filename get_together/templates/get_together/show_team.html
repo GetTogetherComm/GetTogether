@@ -9,6 +9,8 @@
 
 <h4>Upcoming Events</h4>
 {% include "events/event_list.html" %}
+<br/>
+
 {% if can_create_event %}
 <br />
 <form action="{% url 'create-event' team.id %}" method="get">

@@ -147,5 +147,17 @@ class Attendee(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
-    status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, db_index=True)
+    status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, default=YES, db_index=True)
     joined_date = models.DateTimeField(default=datetime.datetime.now)
+
+    @property
+    def role_name(self):
+        return Attendee.ROLES[self.role][1]
+
+    @property
+    def status_name(self):
+        return Attendee.STATUSES[self.status+1][1]
+
+    def __str__(self):
+        return "%s at %s" % (self.user, self.event)
+    

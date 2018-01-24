@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from events.models.profiles import Team, UserProfile, Member
 from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm, NewPlaceForm
 
-from events.models.events import Event, Place
+from events.models.events import Event, Place, Attendee
 
 import datetime
 import simplejson
@@ -97,7 +97,7 @@ def teams_list(request, *args, **kwargs):
 
 def show_team(request, team_id, *args, **kwargs):
     team = Team.objects.get(id=team_id)
-    team_events = Event.objects.filter(team=team)
+    team_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
     context = {
         'team': team,
         'events_list': team_events,
@@ -202,6 +202,8 @@ def show_event(request, event_id, event_slug):
     context = {
         'team': event.team,
         'event': event,
+        'is_attending': request.user.profile in event.attendees.all(),
+        'attendee_list': Attendee.objects.filter(event=event),
         'can_edit_event': request.user.profile.can_edit_event(event),
     }
     return render(request, 'get_together/show_event.html', context)

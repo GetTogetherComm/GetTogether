@@ -5,7 +5,17 @@
 
 <h4>Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></h4>
 {% include "events/event_details.html" %}
+<br/>
 
+<h4>Attendees ({{attendee_list.count}})</h4>
+{% include "events/attendee_list.html" with attendee_list=attendee_list %}
+<br/>
+
+{% if not is_attending %}
+<form action="{% url 'attend-event' event.id %}" method="get">
+<button type="submit" class="btn btn-success">Attend</button>
+</form>
+{% endif %}
 {% if can_edit_event %}
 <form action="{% url 'edit-event' event.id %}" method="get">
 <button type="submit" class="btn btn-secondary">Edit Event</button>

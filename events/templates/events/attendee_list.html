@@ -1,0 +1,15 @@
+
+{% if attendee_list %}
+    <table border="0" width="310px">
+    {% for attendee in attendee_list %}
+	<tr>
+		<td>{{ attendee.user }}</td>
+		<td>{{ attendee.status_name }}</td>
+		<td>{% if attendee.role > 0 %}{{ attendee.role_name }}{% endif %}</td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No attendees yet.</p>
+{% endif %}
+

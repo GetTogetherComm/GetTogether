@@ -43,5 +43,6 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 admin.site.register(Member)
+admin.site.register(Attendee)
 
 

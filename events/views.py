@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 
 from .models.search import Searchable, SearchableSerializer
-from .models.events import Event, Place, PlaceSerializer
+from .models.events import Event, Place, PlaceSerializer, Attendee
 from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
 from .models.profiles import Team, UserProfile, Member
 
@@ -97,4 +97,16 @@ def leave_team(request, team_id):
     Member.objects.filter(team=team, user=request.user.profile).delete()
     messages.add_message(request, messages.SUCCESS, message=_('You are no longer on this team.'))
     return redirect('show-team', team_id=team_id)
+
+def attend_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.user.is_anonymous:
+        messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
+        return redirect(event.get_absolute_url())
+    if request.user.profile in event.attendees.all():
+        messages.add_message(request, messages.INFO, message=_('You are already attending this event.'))
+        return redirect(event.get_absolute_url())
+    new_attendee = Attendee.objects.create(event=event, user=request.user.profile, role=Attendee.NORMAL, status=Attendee.YES)
+    messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
+    return redirect(event.get_absolute_url())
 

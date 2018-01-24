@@ -4,9 +4,8 @@
     {% for event in events_list %}
 	<tr>
 		<td><a href="{% url 'show-event' event.id event.slug %}">{{ event.name }}</a></td>
-		<td><a href="{% url 'show-team' event.team.id %}">{{ event.team.name }}</a></td>
-		<td>{{ event.start_time }}</td>
 		<td>{{ event.place }}</td>
+		<td>{{ event.start_time }}</td>
 	</tr>
     {% endfor %}
     </table>
