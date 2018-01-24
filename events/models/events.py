@@ -107,7 +107,7 @@ def update_event_searchable(event):
         searchable.longitude = event.place.longitude or None
         searchable.latitude = event.place.latitude
     else:
-        searchable.location_name = team.location_name
+        searchable.location_name = event.team.location_name
         searchable.longitude = None
         searchable.latitude = None
     searchable.save()
