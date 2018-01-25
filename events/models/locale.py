@@ -91,6 +91,8 @@ class City(models.Model):
     name = models.CharField(_("Name"), max_length=100)
     spr = models.ForeignKey(SPR, on_delete=models.CASCADE)
     tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
+    longitude = models.FloatField(help_text=_('Longitude in Degrees East'), null=True, blank=True)
+    latitude = models.FloatField(help_text=_('Latitude in Degrees North'), null=True, blank=True)
 
     def __str__(self):
         return u'%s, %s, %s' % (self.name, self.spr.name, self.spr.country.name)

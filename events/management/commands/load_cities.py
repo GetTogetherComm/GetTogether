@@ -47,7 +47,7 @@ class Command(BaseCommand):
                         country = COUNTRY_CACHE.get(city[COUNTRY_CODE])
                         spr = SPR_CACHE.get("%s.%s"%(city[COUNTRY_CODE], city[ADMIN1]))
                         if country is not None and spr is not None:
-                            City.objects.get_or_create(name=city[NAME], spr=spr, tz=city[TIMEZONE])
+                            City.objects.update_or_create(name=city[NAME], spr=spr, defaults={'tz':city[TIMEZONE], 'longitude':city[LONGITUDE], 'latitude':city[LATITUDE]})
                 else:
                     print("Short line (%s): %s" % (len(city), city_line))
             cities_file.close()

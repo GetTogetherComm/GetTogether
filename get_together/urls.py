@@ -25,7 +25,8 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('admin/', admin.site.urls),
-    path('searchables/', event_views.searchable_list),
+
+    path('searchables/', event_views.searchable_list, name='searchables'),
     path('api/places/', event_views.places_list),
     path('api/countries/', event_views.country_list),
     path('api/spr/', event_views.spr_list),

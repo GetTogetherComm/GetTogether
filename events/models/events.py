@@ -87,12 +87,13 @@ class Event(models.Model):
 def update_event_searchable(event):
     site = Site.objects.get(id=1)
     event_url = "https://%s%s" % (site.domain, event.get_absolute_url())
+    origin_url = "https://%s%s" % (site.domain, reverse('searchables'))
     try:
         searchable = Searchable.objects.get(event_url=event_url)
     except:
         searchable = Searchable(event_url)
-        searchable.origin_node = "https://127.0.0.1:8000"
-        searchable.federation_node = "https://127.0.0.1:8000"
+        searchable.origin_node = origin_url
+        searchable.federation_node = origin_url
         searchable.federation_time = datetime.datetime.now()
 
     searchable.event_title = event.name
@@ -105,11 +106,14 @@ def update_event_searchable(event):
         searchable.location_name = str(event.place.city)
         searchable.venue_name = event.place.name
         searchable.longitude = event.place.longitude or None
-        searchable.latitude = event.place.latitude
+        searchable.latitude = event.place.latitude or None
     else:
         searchable.location_name = event.team.location_name
-        searchable.longitude = None
-        searchable.latitude = None
+
+    if event.team.city is not None and (searchable.longitude is None or searchable.latitude is None):
+        searchable.longitude = event.team.city.longitude
+        searchable.latitude = event.team.city.latitude
+
     searchable.save()
 
 def slugify(s, ok=SLUG_OK, lower=True, spaces=False):
