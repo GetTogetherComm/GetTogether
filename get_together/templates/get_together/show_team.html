@@ -1,37 +1,58 @@
 {% extends "get_together/base.html" %}
+{% load markup %}
 
 {% block content %}
-<h2>Welcome to {{ team.name }}</h2>
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-md">
+            <h2>Welcome to {{ team.name }}
+                {% if can_edit_team %}
+                <a href="{% url 'edit-team' team.id %}" class="btn btn-secondary btn-sm">Edit Team</a>
+                {% endif %}
+                {% if is_member %}
+                {% if not team.owner_profile == request.user.profile %}<a href="{% url 'leave-team' team.id %}" class="btn btn-danger btn-sm">Leave Team</a>{% endif %}
+                {% else %}
+                <a href="{% url 'join-team' team.id %}" class="btn btn-success btn-sm">Join Team</a>
+                {% endif %}
+            </h2><hr/>
 
-<h4>Members</h4>
-{% include "events/member_list.html" %}
-<br/>
+            {% if team.description %}<p>{{ team.description|markdown }}</p><hr/>{% endif %}
 
-<h4>Upcoming Events</h4>
-{% include "events/event_list.html" %}
-<br/>
+            <h4>Upcoming Events</h4>
+            <div class="container">
+                {% for event in events_list %}
+                <div class="row">
+                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.start_time }}</div>
+                </div>
+                {% endfor %}
+                {% if can_create_event %}
+                <div class="row">
+                    <div class="col">
+                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-primary">Plan a Get Together</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <br/>
+        </div>
 
-{% if can_create_event %}
-<br />
-<form action="{% url 'create-event' team.id %}" method="get">
-<button type="submit" class="btn btn-primary">Plan a Get Together</button>
-</form>
-{% endif %}
-
-{% if can_edit_team %}
-<form action="{% url 'edit-team' team.id %}" method="get">
-<button type="submit" class="btn btn-secondary">Edit Team</button>
-</form>
-{% endif %}
-
-{% if is_member %}
-<form action="{% url 'leave-team' team.id %}" method="get">
-<button type="submit" class="btn btn-danger">Leave Team</button>
-</form>
-{% else %}
-<form action="{% url 'join-team' team.id %}" method="get">
-<button type="submit" class="btn btn-success">Join Team</button>
-</form>
-{% endif %}
+        <div class="col-3-sm">
+            <div class="container">
+            <h4>Members</h4><hr/>
+                {% for member in member_list %}
+                <div class="row">
+                    <div class="col"><p>
+                        {{member.user}}
+                        {% if member.role > 0 %}<small class="text-muted">{{ member.role_name }}</small>{% endif %}
+                         </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 

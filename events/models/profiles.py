@@ -26,7 +26,7 @@ class UserProfile(models.Model):
     def __str__(self):
         try:
             if self.realname:
-                return "%s (%s)" % (self.user.username, self.realname)
+                return self.realname
             return "%s" % self.user.username
         except:
             return "Unknown Profile"
@@ -121,6 +121,8 @@ class Team(models.Model):
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
 
+    description = models.TextField(help_text=_('Team Description'), blank=True, null=True)
+
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.CASCADE)
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE)
@@ -178,7 +180,6 @@ class Member(models.Model):
 
     @property
     def role_name(self):
-        print("Role name: %s=%s" % (self.role, Member.ROLES[self.role]))
         return Member.ROLES[self.role][1]
 
     def __str__(self):

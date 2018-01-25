@@ -1,9 +1,12 @@
 certifi==2017.11.5
 chardet==3.0.4
 defusedxml==0.5.0
+dj-database-url==0.4.2
 Django==2.0
+django-settings-export==1.2.1
 djangorestframework==3.7.7
 idna==2.6
+Markdown==2.6.11
 oauthlib==2.0.6
 PyJWT==1.5.3
 python3-openid==3.1.0
@@ -15,5 +18,3 @@ six==1.11.0
 social-auth-app-django==2.1.0
 social-auth-core==1.6.0
 urllib3==1.22
-dj-database-url==0.4.2
-django-settings-export==1.2.1

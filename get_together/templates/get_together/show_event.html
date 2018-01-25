@@ -1,25 +1,54 @@
 {% extends "get_together/base.html" %}
+{% load markup %}
 
 {% block content %}
-<h2>About {{ event.name }}</h2>
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-md">
+            <h2>{{ event.name }}
+                {% if can_edit_event %}
+                <a href="{% url 'edit-event' event.id %}" class="btn btn-secondary btn-sm">Edit Event</a>
+                {% endif %}
+                {% if not is_attending %}
+                <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm">Attend</a>
+                {% endif %}
+            </h2><p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p><hr/>
 
-<h4>Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></h4>
-{% include "events/event_details.html" %}
-<br/>
+            <p>{{ event.summary|markdown }}</p>
 
-<h4>Attendees ({{attendee_list.count}})</h4>
-{% include "events/attendee_list.html" with attendee_list=attendee_list %}
-<br/>
+            <table class="table">
+            <tr>
+	            <td><b>Time:</b></td><td>{{ event.start_time }} - {{ event.end_time }}</td>
+            </tr><tr>
+	            <td><b>Place:</b></td><td>{% if event.place %}{{ event.place }}{% else %}No place selected yet.{% endif %}</td>
+            </tr><tr>
+            {% if event.web_url %}
+            </tr><tr>
+	            <td><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
+            {% endif %}
+            </tr>
+            </table>
+            <br/>
+        </div>
 
-{% if not is_attending %}
-<form action="{% url 'attend-event' event.id %}" method="get">
-<button type="submit" class="btn btn-success">Attend</button>
-</form>
-{% endif %}
-{% if can_edit_event %}
-<form action="{% url 'edit-event' event.id %}" method="get">
-<button type="submit" class="btn btn-secondary">Edit Event</button>
-</form>
-{% endif %}
+        <div class="col-3-sm">
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>Attendees ({{attendee_list.count}})</h4><hr/></div>
+                </div>
+                {% for attendee in attendee_list %}
+                <div class="row">
+                    <div class="col"><p>
+                        {{ attendee.user }}
+                        {% if attendee.role > 0 %}<small class="text-muted">{{ attendee.role_name }}</small>{% endif %}
+                         </p>
+                    </div>
+                    <div class="col-1">{{ attendee.status_name }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 

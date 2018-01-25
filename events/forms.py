@@ -149,7 +149,7 @@ class DateTimeWidget(SplitDateTimeWidget):
 class TeamForm(ModelForm):
     class Meta:
         model = Team
-        fields = ['name', 'country', 'spr', 'city', 'web_url', 'tz']
+        fields = ['name', 'description', 'country', 'spr', 'city', 'web_url', 'tz']
         widgets = {
             'country': Lookup(source='/api/country/', label='name'),
             'spr': Lookup(source='/api/spr/', label='name'),
@@ -160,13 +160,13 @@ class TeamForm(ModelForm):
 class NewTeamForm(ModelForm):
     class Meta:
         model = Team
-        fields = ['name', 'city', 'web_url', 'tz']
+        fields = ['name', 'description', 'city', 'web_url', 'tz']
         widgets = {
             #'country': Lookup(source='/api/country/', label='name'),
             #'spr': Lookup(source='/api/spr/', label='name'),
             'city': Lookup(source='/api/cities/', label='name'),
         }
-        raw_id_fields = ('country','spr','city')
+        raw_id_fields = ('city')
 
 class TeamEventForm(ModelForm):
     class Meta:
