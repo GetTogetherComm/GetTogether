@@ -35,7 +35,7 @@ def events_list(request, *args, **kwargs):
     context = {
         'events_list': events,
     }
-    return render(request, 'get_together/events.html', context)
+    return render(request, 'get_together/events/list_events.html', context)
 
 def create_team(request, *args, **kwargs):
     if request.method == 'GET':
@@ -44,7 +44,7 @@ def create_team(request, *args, **kwargs):
         context = {
             'team_form': form,
         }
-        return render(request, 'get_together/create_team.html', context)
+        return render(request, 'get_together/teams/create_team.html', context)
     elif request.method == 'POST':
         form = NewTeamForm(request.POST)
         if form.is_valid:
@@ -57,7 +57,7 @@ def create_team(request, *args, **kwargs):
             context = {
                 'team_form': form,
             }
-            return render(request, 'get_together/create_team.html', context)
+            return render(request, 'get_together/teams/create_team.html', context)
     else:
      return redirect('home')
 
@@ -74,7 +74,7 @@ def edit_team(request, team_id):
             'team': team,
             'team_form': form,
         }
-        return render(request, 'get_together/edit_team.html', context)
+        return render(request, 'get_together/teams/edit_team.html', context)
     elif request.method == 'POST':
         form = TeamForm(request.POST, instance=team)
         if form.is_valid:
@@ -87,7 +87,7 @@ def edit_team(request, team_id):
                 'team': team,
                 'team_form': form,
             }
-            return render(request, 'get_together/edit_team.html', context)
+            return render(request, 'get_together/teams/edit_team.html', context)
     else:
      return redirect('home')
 
@@ -98,7 +98,7 @@ def teams_list(request, *args, **kwargs):
     }
     if request.user.is_authenticated:
         context['my_teams'] = request.user.profile.memberships.all()
-    return render(request, 'get_together/teams.html', context)
+    return render(request, 'get_together/teams/list_teams.html', context)
 
 
 def show_team(request, team_id, *args, **kwargs):
@@ -112,7 +112,7 @@ def show_team(request, team_id, *args, **kwargs):
         'can_create_event': request.user.profile.can_create_event(team),
         'can_edit_team': request.user.profile.can_edit_team(team),
     }
-    return render(request, 'get_together/show_team.html', context)
+    return render(request, 'get_together/teams/show_team.html', context)
 
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
@@ -129,7 +129,7 @@ def edit_event(request, event_id):
             'event': event,
             'event_form': form,
         }
-        return render(request, 'get_together/edit_event.html', context)
+        return render(request, 'get_together/events/edit_event.html', context)
     elif request.method == 'POST':
         form = TeamEventForm(request.POST,instance=event)
         if form.is_valid:
@@ -141,7 +141,7 @@ def edit_event(request, event_id):
                 'event': event,
                 'event_form': form,
             }
-            return render(request, 'get_together/edit_event.html', context)
+            return render(request, 'get_together/events/edit_event.html', context)
     else:
      return redirect('home')
 
@@ -158,7 +158,7 @@ def create_event(request, team_id):
             'team': team,
             'event_form': form,
         }
-        return render(request, 'get_together/create_event.html', context)
+        return render(request, 'get_together/events/create_event.html', context)
     elif request.method == 'POST':
         form = NewTeamEventForm(request.POST)
         if form.is_valid:
@@ -171,7 +171,7 @@ def create_event(request, team_id):
                 'team': team,
                 'event_form': form,
             }
-            return render(request, 'get_together/create_event.html', context)
+            return render(request, 'get_together/events/create_event.html', context)
     else:
      return redirect('home')
 
@@ -180,7 +180,7 @@ def places_list(request, *args, **kwargs):
     context = {
         'places_list': places,
     }
-    return render(request, 'get_together/places.html', context)
+    return render(request, 'get_together/places/list_places.html', context)
 
 def create_place(request):
     if request.method == 'GET':
@@ -189,7 +189,7 @@ def create_place(request):
         context = {
             'place_form': form,
         }
-        return render(request, 'get_together/create_place.html', context)
+        return render(request, 'get_together/places/create_place.html', context)
     elif request.method == 'POST':
         form = NewPlaceForm(request.POST)
         if form.is_valid:
@@ -199,7 +199,7 @@ def create_place(request):
             context = {
                 'place_form': form,
             }
-            return render(request, 'get_together/create_place.html', context)
+            return render(request, 'get_together/places/create_place.html', context)
     else:
      return redirect('home')
 
@@ -212,4 +212,4 @@ def show_event(request, event_id, event_slug):
         'attendee_list': Attendee.objects.filter(event=event),
         'can_edit_event': request.user.profile.can_edit_event(event),
     }
-    return render(request, 'get_together/show_event.html', context)
+    return render(request, 'get_together/events/show_event.html', context)
