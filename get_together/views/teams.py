@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, UserProfile, Member
-from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm, NewPlaceForm
+from events.forms import TeamForm, NewTeamForm, DeleteTeamForm
 
 from events.models.events import Event, Place, Attendee
 
@@ -89,4 +89,33 @@ def edit_team(request, team_id):
             return render(request, 'get_together/teams/edit_team.html', context)
     else:
      return redirect('home')
+
+def delete_team(request, team_id):
+    team = Team.objects.get(id=team_id)
+    if not request.user.profile.can_edit_team(team):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
+        return redirect('show-team', team_id)
+
+    if request.method == 'GET':
+        form = DeleteTeamForm()
+
+        context = {
+            'team': team,
+            'delete_form': form,
+        }
+        return render(request, 'get_together/teams/delete_team.html', context)
+    elif request.method == 'POST':
+        form = DeleteTeamForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            team.delete()
+            return redirect('teams')
+        else:
+            context = {
+                'team': team,
+                'delete_form': form,
+            }
+            return render(request, 'get_together/teams/delete_team.html', context)
+    else:
+     return redirect('home')
+
 

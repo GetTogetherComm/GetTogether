@@ -1,0 +1,15 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Confirm deletion</h2>
+Are you sure you want to delete <strong>{{event.name}}</strong>?
+<form action="{% url "delete-event" event.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{{ delete_form }}
+	<br />
+<button type="submit" class="btn btn-danger">Delete Event</button>
+</div>
+</form>
+{% endblock %}
+

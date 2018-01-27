@@ -1,5 +1,5 @@
 from django.utils.safestring import mark_safe
-from django.forms import ModelForm, Field, SplitDateTimeWidget, DateInput, MultiWidget, Select
+from django import forms
 from django.forms.widgets import TextInput, Media
 from django.utils.translation import ugettext_lazy as _
 
@@ -52,7 +52,7 @@ class Lookup(TextInput):
         else:
             return mark_safe('<option value="">--------</option>')
 
-class DateWidget(DateInput):
+class DateWidget(forms.DateInput):
     """A more-friendly date widget with a p% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %op-up calendar.
     """
     template_name = 'forms/widgets/date.html'
@@ -68,7 +68,7 @@ class DateWidget(DateInput):
         super(DateWidget, self).__init__(attrs=attrs)
 
 
-class TimeWidget(MultiWidget):
+class TimeWidget(forms.MultiWidget):
     """A more-friendly time widget.
     """
     def __init__(self, attrs=None):
@@ -81,9 +81,9 @@ class TimeWidget(MultiWidget):
             attrs['class'] = 'time'
 
         widgets = (
-            Select(attrs=attrs, choices=[(i + 1, "%02d" % (i + 1)) for i in range(0, 12)]),
-            Select(attrs=attrs, choices=[(i, "%02d" % i) for i in range(00, 60, 15)]),
-            Select(attrs=attrs, choices=[('AM', _('AM')), ('PM', _('PM'))])
+            forms.Select(attrs=attrs, choices=[(i + 1, "%02d" % (i + 1)) for i in range(0, 12)]),
+            forms.Select(attrs=attrs, choices=[(i, "%02d" % i) for i in range(00, 60, 15)]),
+            forms.Select(attrs=attrs, choices=[('AM', _('AM')), ('PM', _('PM'))])
         )
 
         super(TimeWidget, self).__init__(widgets, attrs)
@@ -120,7 +120,7 @@ class TimeWidget(MultiWidget):
             rendered_widgets[0], rendered_widgets[1], rendered_widgets[2]
         )
 
-class DateTimeWidget(SplitDateTimeWidget):
+class DateTimeWidget(forms.SplitDateTimeWidget):
     """
     A more-friendly date/time widget.
     """
@@ -146,7 +146,7 @@ class DateTimeWidget(SplitDateTimeWidget):
         values = super(DateTimeWidget, self).value_from_datadict(data, files, name)
         return ' '.join(values)
 
-class TeamForm(ModelForm):
+class TeamForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ['name', 'description', 'country', 'spr', 'city', 'web_url', 'tz']
@@ -157,7 +157,7 @@ class TeamForm(ModelForm):
         }
         raw_id_fields = ('country','spr','city')
 
-class NewTeamForm(ModelForm):
+class NewTeamForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ['name', 'description', 'city', 'web_url', 'tz']
@@ -168,7 +168,10 @@ class NewTeamForm(ModelForm):
         }
         raw_id_fields = ('city')
 
-class TeamEventForm(ModelForm):
+class DeleteTeamForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete team", required=True)
+
+class TeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['name', 'start_time', 'end_time', 'summary', 'place', 'web_url', 'announce_url', 'tags']
@@ -178,7 +181,7 @@ class TeamEventForm(ModelForm):
             'end_time': DateTimeWidget
         }
 
-class NewTeamEventForm(ModelForm):
+class NewTeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['name', 'start_time', 'end_time', 'summary', 'place']
@@ -188,7 +191,10 @@ class NewTeamEventForm(ModelForm):
             'end_time': DateTimeWidget
         }
 
-class NewPlaceForm(ModelForm):
+class DeleteEventForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete event", required=True)
+
+class NewPlaceForm(forms.ModelForm):
     class Meta:
         model = Place
         fields = ['name', 'address', 'city', 'longitude', 'latitude', 'place_url', 'tz']

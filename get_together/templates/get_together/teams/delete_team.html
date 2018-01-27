@@ -1,0 +1,20 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Confirm deletion</h2>
+Are you sure you want to delete <strong>{{team.name}}</strong>?
+{% if team.event_set.count > 0 %}
+    <div class="alerts">
+        <div class="alert alert-danger">This team has {{ team.event_set.count }} events!</div>
+    </div>
+{% endif %}
+<form action="{% url "delete-team" team.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{{ delete_form }}
+	<br />
+<button type="submit" class="btn btn-danger">Delete Team</button>
+</div>
+</form>
+{% endblock %}
+
