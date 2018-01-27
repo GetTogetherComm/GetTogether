@@ -10,7 +10,7 @@ class Searchable(models.Model):
     event_title = models.CharField(max_length=256, null=False, blank=False)
     location_name = models.CharField(max_length=256, null=False, blank=False)
     group_name = models.CharField(max_length=256, null=False, blank=False)
-    venue_name = models.CharField(max_length=256, null=False, blank=False)
+    venue_name = models.CharField(max_length=256, null=False, blank=True)
     longitude = models.DecimalField(max_digits=12, decimal_places=8, null=True, blank=True)
     latitude = models.DecimalField(max_digits=12, decimal_places=8, null=True, blank=True)
     start_time = models.DateTimeField()
