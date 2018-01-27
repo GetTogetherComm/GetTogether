@@ -100,6 +100,11 @@ def _getUserProfile(self):
 
     if created:
         profile.tz = get_user_timezone(self.username)
+        if self.first_name:
+            if self.last_name:
+                profile.realname = '%s %s' % (self.first_name, self.last_name)
+            else:
+                profile.realname = self.first_name
         profile.save()
 
     return profile

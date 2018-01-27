@@ -22,7 +22,9 @@ class CityAdmin(admin.ModelAdmin):
     search_fields = ('name', 'spr__name')
 admin.site.register(City, CityAdmin)
 
-admin.site.register(UserProfile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'realname', 'avatar', 'web_url')
+admin.site.register(UserProfile, ProfileAdmin)
 
 class OrgAdmin(admin.ModelAdmin):
     list_display = ('name', 'site')
