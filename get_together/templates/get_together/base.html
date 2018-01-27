@@ -49,20 +49,28 @@ form {
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'events' %}">Events <span class="sr-only">(current)</span></a>
+          <li class="nav-item{% if request.resolver_match.url_name == "events" %} active{% endif %}">
+            <a class="nav-link" href="{% url 'events' %}">Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'teams' %}">Teams</a>
+          <li class="nav-item{% if request.resolver_match.url_name == "teams" %} active{% endif %}">
+            <a class="nav-link" href="{% url 'teams' %}">Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'places' %}">Places</a>
+          <li class="nav-item{% if request.resolver_match.url_name == "places" %} active{% endif %}">
+            <a class="nav-link" href="{% url 'places' %}">Places{% if request.resolver_match.url_name == "places" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
 
         </ul>
         <ul class="navbar-nav">
             {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link">Welcome {{ request.user.username }}</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarUserMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Welcome {{ request.user.username }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
+                  <a class="dropdown-item disabled" href="#">Profile</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </li>
             {% else %}
             <li class="nav-item"><a class="nav-link" href="/">Signup or Login</a></li>
             {% endif %}

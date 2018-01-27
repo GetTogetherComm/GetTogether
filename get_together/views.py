@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
+from django.contrib.auth import logout as logout_user
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -13,6 +14,11 @@ import datetime
 import simplejson
 
 # Create your views here.
+
+def logout(request):
+    if request.user.is_authenticated:
+        logout_user(request)
+    return redirect('home')
 
 def home(request, *args, **kwards):
     if request.user.is_authenticated:
