@@ -14,4 +14,31 @@ import datetime
 import simplejson
 
 # Create your views here.
+def places_list(request, *args, **kwargs):
+    places = Place.objects.all()
+    context = {
+        'places_list': places,
+    }
+    return render(request, 'get_together/places/list_places.html', context)
+
+def create_place(request):
+    if request.method == 'GET':
+        form = NewPlaceForm()
+
+        context = {
+            'place_form': form,
+        }
+        return render(request, 'get_together/places/create_place.html', context)
+    elif request.method == 'POST':
+        form = NewPlaceForm(request.POST)
+        if form.is_valid():
+            new_place = form.save()
+            return redirect('places')
+        else:
+            context = {
+                'place_form': form,
+            }
+            return render(request, 'get_together/places/create_place.html', context)
+    else:
+     return redirect('home')
 

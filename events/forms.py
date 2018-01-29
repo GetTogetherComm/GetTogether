@@ -203,4 +203,7 @@ class NewPlaceForm(forms.ModelForm):
         widgets = {
             'city': Lookup(source='/api/cities/', label='name'),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 

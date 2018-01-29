@@ -16,6 +16,7 @@ $(document).ready(function(){
 
     $("#city_search").keyup(function() {
         var searchText = this.value;
+        if (searchText.length < 3) return;
         $.getJSON("/api/cities/?q="+searchText, function(data) {
             var searchField = $("#city_search")[0];
             var m = this.url.match(/q=([^&]+)/);
@@ -25,10 +26,13 @@ $(document).ready(function(){
             }        var c = searchField.value
             if (c != q) return;
 
-                var selectField = $("#city_select");
-                selectField.empty();
-                $.each(data, function(){
-                    selectField.append('<option value="'+ this.id +'">'+ this.display + '</option>')
+            var selectField = $("#city_select");
+            selectField.empty();
+            var selected = " selected"
+            selectField.append('<option value="">--------</option>')
+            $.each(data, function(){
+                selectField.append('<option value="'+ this.id +'"'+ selected +'>'+ this.display + '</option>');
+                selected="";
             });
         });
     });

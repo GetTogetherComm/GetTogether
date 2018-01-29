@@ -41,9 +41,9 @@ def places_list(request, *args, **kwargs):
 def country_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        countries = Country.objects.filter(name__icontains=match)
+        countries = Country.objects.filter(name__icontains=match)[:20]
     else:
-        countries = Country.objects.all()
+        countries = Country.objects.all()[:20]
     serializer = CountrySerializer(countries, many=True)
     return Response(serializer.data)
 
@@ -51,9 +51,9 @@ def country_list(request, *args, **kwargs):
 def spr_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        sprs = SPR.objects.filter(name__icontains=match)
+        sprs = SPR.objects.filter(name__icontains=match)[:20]
     else:
-        sprs = SPR.objects.all()
+        sprs = SPR.objects.all()[:20]
     if "country" in request.GET and request.GET.get("country") is not "":
         sprs = sprs.filter(country=request.GET.get("country"))
 
@@ -64,9 +64,9 @@ def spr_list(request, *args, **kwargs):
 def city_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        cities = City.objects.filter(name__icontains=match)
+        cities = City.objects.filter(name__icontains=match)[:20]
     else:
-        cities = City.objects.all()
+        cities = City.objects.all()[:20]
 
     if "spr" in request.GET and request.GET.get("spr") is not "":
         cities = cities.filter(spr=request.GET.get("spr"))
