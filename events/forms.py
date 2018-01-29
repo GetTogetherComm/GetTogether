@@ -149,24 +149,26 @@ class DateTimeWidget(forms.SplitDateTimeWidget):
 class TeamForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ['name', 'description', 'country', 'spr', 'city', 'web_url', 'tz']
+        fields = ['name', 'description', 'city', 'web_url', 'tz']
         widgets = {
-            'country': Lookup(source='/api/country/', label='name'),
-            'spr': Lookup(source='/api/spr/', label='name'),
             'city': Lookup(source='/api/cities/', label='name'),
         }
-        raw_id_fields = ('country','spr','city')
+        raw_id_fields = ('city')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class NewTeamForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ['name', 'description', 'city', 'web_url', 'tz']
         widgets = {
-            #'country': Lookup(source='/api/country/', label='name'),
-            #'spr': Lookup(source='/api/spr/', label='name'),
             'city': Lookup(source='/api/cities/', label='name'),
         }
         raw_id_fields = ('city')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class DeleteTeamForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete team", required=True)

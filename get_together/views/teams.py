@@ -46,7 +46,7 @@ def create_team(request, *args, **kwargs):
         return render(request, 'get_together/teams/create_team.html', context)
     elif request.method == 'POST':
         form = NewTeamForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             new_team = form.save()
             new_team.owner_profile = request.user.profile
             new_team.save()
@@ -76,7 +76,7 @@ def edit_team(request, team_id):
         return render(request, 'get_together/teams/edit_team.html', context)
     elif request.method == 'POST':
         form = TeamForm(request.POST, instance=team)
-        if form.is_valid:
+        if form.is_valid():
             new_team = form.save()
             new_team.owner_profile = request.user.profile
             new_team.save()
