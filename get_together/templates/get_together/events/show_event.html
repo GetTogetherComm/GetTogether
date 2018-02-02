@@ -37,13 +37,14 @@
                     <div class="col"><h4>Attendees ({{attendee_list.count}})</h4><hr/></div>
                 </div>
                 {% for attendee in attendee_list %}
-                <div class="row">
-                    <div class="col"><p>
-                        {{ attendee.user }}
+                <div class="row mb-3">
+                    <div class="col media">
+                      <img class="mr-1" src="{{attendee.user.avatar}}" width="32px" height="32px">
+                      <div class="media-body">
+                        <h5 class="mt-2 mb-0">{{attendee.user}}  <span class="badge badge-success align-top">{{ attendee.status_name }}</span></h5>
                         {% if attendee.role > 0 %}<small class="text-muted">{{ attendee.role_name }}</small>{% endif %}
-                         </p>
+                      </div>
                     </div>
-                    <div class="col-1">{{ attendee.status_name }}</div>
                 </div>
                 {% endfor %}
             </div>

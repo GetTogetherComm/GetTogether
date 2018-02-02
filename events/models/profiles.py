@@ -7,6 +7,7 @@ from .locale import *
 
 import pytz
 import datetime
+import hashlib
 
 class UserProfile(models.Model):
     " Store profile information about a user "
@@ -105,6 +106,12 @@ def _getUserProfile(self):
                 profile.realname = '%s %s' % (self.first_name, self.last_name)
             else:
                 profile.realname = self.first_name
+
+        if self.email:
+            h = hashlib.md5()
+            h.update(bytearray(profile.user.email, 'utf8'))
+            profile.avatar = 'http://www.gravatar.com/avatar/%s.jpg?d=mm' % h.hexdigest()
+
         profile.save()
 
     return profile

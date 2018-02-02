@@ -42,11 +42,13 @@
             <div class="container">
             <h4>Members</h4><hr/>
                 {% for member in member_list %}
-                <div class="row">
-                    <div class="col"><p>
-                        {{member.user}}
+                <div class="row mb-3">
+                    <div class="col media">
+                      <img class="mr-1" src="{{member.user.avatar}}" width="32px" height="32px">
+                      <div class="media-body">
+                        <h5 class="mt-0 mb-0">{{member.user}}</h5>
                         {% if member.role > 0 %}<small class="text-muted">{{ member.role_name }}</small>{% endif %}
-                         </p>
+                      </div>
                     </div>
                 </div>
                 {% endfor %}
