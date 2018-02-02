@@ -1,5 +1,9 @@
 {% extends "get_together/base.html" %}
 
+{% block extra_google_analytics %}
+    gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}', {'page_path': '/team/+create-event/'});
+{% endblock %}
+
 {% block content %}
 <h2>Plan a Get Together</h2>
 <form action="{% url "create-event" team.id%}" method="post">

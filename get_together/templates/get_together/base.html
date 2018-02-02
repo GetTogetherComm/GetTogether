@@ -17,6 +17,7 @@
       gtag('js', new Date());
 
       gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}');
+      {% block extra_google_analytics %}{% endblock %}
     </script>
     {% endif %}
 
