@@ -3,7 +3,8 @@ from django import forms
 from django.forms.widgets import TextInput, Media
 from django.utils.translation import ugettext_lazy as _
 
-from .models.profiles import Team
+from django.contrib.auth.models import User
+from .models.profiles import Team, UserProfile
 from .models.events import Event, Place
 
 from datetime import time
@@ -207,3 +208,13 @@ class NewPlaceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['city'].required = True
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['realname', 'avatar']
+        

@@ -33,6 +33,8 @@ urlpatterns = [
     path('api/spr/', event_views.spr_list),
     path('api/cities/', event_views.city_list),
 
+    path('profile/+edit', views.edit_profile, name='edit-profile'),
+
     path('events/', views.events_list, name='events'),
     path('+create-team/', views.create_team, name='create-team'),
     path('teams/', views.teams_list, name='teams'),

@@ -1,0 +1,13 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Profile: {{request.user}}</h2>
+<form action="{% url "edit-profile" %}" method="post">
+{% csrf_token %}
+{% include "events/profile_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+{% endblock %}
+

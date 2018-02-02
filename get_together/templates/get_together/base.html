@@ -68,7 +68,7 @@ form {
                   Welcome {{ request.user.username }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
-                  <a class="dropdown-item disabled" href="#">Profile</a>
+                  <a class="dropdown-item" href="{% url 'edit-profile' %}">Profile</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                 </div>
             </li>

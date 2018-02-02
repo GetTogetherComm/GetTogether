@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     realname = models.CharField(_("Real Name"), max_length=150, blank=True)
     tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this User.'))
-    avatar = models.URLField(verbose_name=_("Photo"), max_length=150, blank=True, null=True)
+    avatar = models.URLField(verbose_name=_("Photo Image"), max_length=150, blank=True, null=True)
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter Name'), max_length=32, blank=True, null=True)
