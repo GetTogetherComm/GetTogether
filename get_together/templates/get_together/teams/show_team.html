@@ -1,6 +1,20 @@
 {% extends "get_together/base.html" %}
 {% load markup %}
 
+{% block styles %}
+    <style>
+.gt-profile {
+    position: relative;
+}
+.gt-profile .gt-profile-badges {
+    position: absolute;
+    top: 16px;
+    left: 6px;
+
+}
+    </style>
+{% endblock %}
+
 {% block content %}
 <div class="fluid-container">
     <div class="row">
@@ -43,8 +57,9 @@
             <h4>Members</h4><hr/>
                 {% for member in member_list %}
                 <div class="row mb-3">
-                    <div class="col media">
-                      <img class="mr-1" src="{{member.user.avatar}}" width="32px" height="32px">
+                    <div class="col media gt-profile">
+                      <img class="mr-1 gt-profile-avatar" src="{{member.user.avatar}}" width="32px" height="32px">
+                      <span class="gt-profile-badges">{% for badge in member.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
                       <div class="media-body">
                         <h6 class="mt-0 mb-0">{{member.user}}</h6>
                         {% if member.role > 0 %}<small class="text-muted">{{ member.role_name }}</small>{% endif %}

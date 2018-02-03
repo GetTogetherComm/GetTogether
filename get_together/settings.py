@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'get_together',
     'events',
+    'accounts',
 ]
 
 LOGIN_URL = 'login'
