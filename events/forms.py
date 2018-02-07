@@ -187,9 +187,8 @@ class TeamEventForm(forms.ModelForm):
 class NewTeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'summary', 'place']
+        fields = ['name', 'start_time', 'end_time', 'summary']
         widgets = {
-            'place': Lookup(source='/api/places/', label='name'),
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }

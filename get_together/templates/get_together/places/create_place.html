@@ -1,38 +1,223 @@
 {% extends "get_together/base.html" %}
 
 {% block content %}
-<h2>Choose your meeting place</h2>
-<form action="{% url "create-place" %}" method="post">
-{% csrf_token %}
-<div class="form-group">
-{% include "events/place_form.html" %}
-	<br />
-<button type="submit" class="btn btn-primary">Save your Place</button>
+<div class="container">
+    <div class="row">
+        <div class="col-md col-10">
+
+            <h2>Choose your meeting place</h2>
+            <form action="{% url "add-place" event.id %}" method="post">
+            {% csrf_token %}
+            {% include "events/place_form.html" %}
+	            <div class="fluid-layout" id="place-map"></div>
+            <br />
+            <button type="submit" class="btn btn-primary">Announce your Get Together!</button>
+            </form>
+            <a class="btn btn-secondary" href="{{ event.get_absolute_url }}">Add a Place later</a>
+        </div>
+        <div id="map" class="col-5"></div>
+    </div>
 </div>
-</form>
 {% endblock %}
 
 {% block javascript %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{settings.GOOGLE_MAPS_API_KEY}}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-    $("#city_search").keyup(function() {
-	    var searchText = this.value;
-        if (searchText.length < 3) return;
-	    $.getJSON("/api/cities/?q="+searchText, function(data) {
-	        var searchField = $("#city_search")[0];
-	        var q = this.url.match(/q=([^&]+)/)[1]
-	        var c = searchField.value
-	        if (c != q) return;
+/*
+ * jQuery Google Map Plugin 0.2.3
+ * https://wiki.ubuntu.com/ubuntu-django-foundations/map
+ * Requires jQuery 1.4.2
+ *
+ * Copyright 2011, Ronnie van den Crommenacker
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
 
-	        var selectField = $("#city_select");
-	        selectField.empty();
+(function ($) {
+    $.fn.extend({
+        selectLocation: function (options) {
+            var defaults = {
+                html_lng: null,
+                html_lat: null,
+                html_tz: null,
+                html_country: null,
+                html_continent: null,
+                marker_icon: null,
+                markers: [],
+                html_addr: null,
+                mapOptions: {
+                    zoom: 4,
+                    center: {lat: 51.8211, lng: 5.591},
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControl: false
+                }
+            };
+            options = $.extend(defaults, options);
+
+            function showPositionHTML(location) {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': location}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#id_address').val(results[0].formatted_address);
+                            var name, city, spr, country = "";
+                            $.each(results[0].address_components, function(){
+                                if(this.types[0]=="country") {
+                                    country = this.long_name
+                                } else if(this.types[0]=="administrative_area_level_1"){
+                                    spr = this.long_name
+                                } else if(this.types[0]=="locality"){
+                                    city = this.long_name
+                                } else if(this.types[0]=="premise"){
+                                    name = this.long_name
+                                }
+                            });
+                            if (name != "") {
+                                $("#id_name").val(name);
+                            }
+                            $.getJSON("/api/find_city/?country="+country+"&spr="+spr+"&city="+city,
+                                function(json) {
+                                    if (json.id) {
+                                        var selectField = $("#city_select");
+                                        selectField.empty();
+                                        selectField.append('<option value="'+ json.id +'" selected>'+ json.display + '</option>');
+
+                                        $("#id_tz").val(json.tz)
+                                    }
+                                }
+                            );
+                        }
+                    }
+                });
+
+                if (options.html_lng && options.html_lat) {
+                    if (location.lat() && location.lng()) {
+                        options.html_lat.val(location.lat());
+                        options.html_lng.val(location.lng());
+                        if (options.html_tz && options.html_country && options.html_continent) {
+                            $.getJSON("http://ws.geonames.org/timezoneJSON?lat=" + location.lat() + "&lng=" + location.lng(),
+                                function(json) {
+                                    $(options.html_tz).filter(function() {
+                                        return $(this).text() == json.timezoneId;
+                                    }).prop('selected', true);
+
+                                    $(options.html_country).filter(function() {
+                                        return $(this).text() == json.countryName;
+                                    }).prop('selected', true);
+
+                                    $.getJSON("http://ws.geonames.org/countryInfoJSON?country=" + json.countryCode,
+                                        function(json) {
+                                            if (typeof json.geonames[0].continentName !== "undefined") {
+                                                $(options.html_continent).filter(function() {
+                                                    return $(this).text() == json.geonames[0].continentName;
+                                                }).prop('selected', true);
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    }
+                }
+
+
+            }
+
+            function setMarker(map, location) {
+                var marker = null;
+
+                if (options.markers.length) {
+                    marker = options.markers[0];
+                    marker.setPosition(location);
+                    marker.setAnimation(google.maps.Animation.DROP);
+                } else {
+                    marker = new google.maps.Marker({
+                        map: map,
+                        position: location,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP
+                    });
+                    if (options.marker_icon) {
+                        marker.icon = options.marker_icon;
+                    }
+                    options.markers.push(marker);
+                    google.maps.event.addListener(options.markers[0], 'mouseup', function () {
+                        showPositionHTML(marker.getPosition());
+                    });
+                }
+
+                map.setCenter(location);
+                showPositionHTML(marker.getPosition());
+            }
+
+            return $(this).each(function (i, html_element) {
+                var map = new google.maps.Map($(html_element)[0], options.mapOptions),
+                    geoCoder = new google.maps.Geocoder(),
+                    location = null;
+
+                if (options.html_addr) {
+                    options.html_addr.change(function () {
+                        var address = [];
+                        options.html_addr.each(function (i, item) {
+                            address.push(item.value);
+                        });
+
+                        geoCoder.geocode({address: address.join(' ')}, function (results, status) {
+                            if (status === google.maps.GeocoderStatus.OK) {
+                                setMarker(map, results[0].geometry.location);
+                            }
+                        });
+                    });
+                }
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                    var pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+                    map.setCenter(pos);
+                    map.setZoom(12);
+                  }, function() {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                  });
+                }
+                google.maps.event.addListener(map, 'click', function (event) {
+                    setMarker(map, event.latLng);
+                });
+
+                if (options.html_lat.val() && options.html_lng.val()) {
+                    location = new google.maps.LatLng(options.html_lat.val(), options.html_lng.val());
+                    setMarker(map, location);
+                }
+            });
+
+        }
+    });
+}(jQuery));
+$("#map").selectLocation({
+    html_lat: $("#id_latitude"),
+    html_lng: $("#id_longitude")
+});
+
+$(document).ready(function(){
+$("#city_search").keyup(function() {
+       var searchText = this.value;
+    if (searchText.length < 3) return;
+       $.getJSON("/api/cities/?q="+searchText, function(data) {
+           var searchField = $("#city_search")[0];
+           var q = this.url.match(/q=([^&]+)/)[1]
+           var c = searchField.value
+           if (c != q) return;
+
+           var selectField = $("#city_select");
+           selectField.empty();
             var selected = " selected"
             selectField.append('<option value="">--------</option>')
             $.each(data, function(){
                 selectField.append('<option value="'+ this.id +'"'+ selected +'>'+ this.display + '</option>');
                 selected="";
             });
-	    });
+         });
     });
 });
 </script>

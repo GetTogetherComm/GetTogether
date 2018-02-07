@@ -74,6 +74,22 @@ def city_list(request, *args, **kwargs):
     serializer = CitySerializer(cities, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def find_city(request):
+    cities = City.objects.all()
+    if "city" in request.GET:
+        cities = cities.filter(name=request.GET.get("city"))
+    if "spr" in request.GET:
+        cities = cities.filter(spr__name=request.GET.get("spr"))
+    if "country" in request.GET:
+        cities = cities.filter(spr__country__name=request.GET.get("country"))
+    try:
+        city = cities[0]
+        serializer = CitySerializer(city)
+        return Response(serializer.data)
+    except:
+        return Response({})
+
 def join_team(request, team_id):
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_('You must be logged in to join a team.'))

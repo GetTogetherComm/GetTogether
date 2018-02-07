@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/countries/', event_views.country_list),
     path('api/spr/', event_views.spr_list),
     path('api/cities/', event_views.city_list),
+    path('api/find_city/', event_views.find_city),
 
     path('profile/+edit', views.edit_profile, name='edit-profile'),
 
@@ -48,9 +49,11 @@ urlpatterns = [
     path('events/<int:event_id>/+edit/', views.edit_event, name='edit-event'),
     path('events/<int:event_id>/+attend/', event_views.attend_event, name='attend-event'),
     path('events/<int:event_id>/+delete/', views.delete_event, name='delete-event'),
+    path('events/<int:event_id>/+add_place/', views.add_place_to_event, name='add-place'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
     path('places/', views.places_list, name='places'),
+    path('places/<int:place_id>/', views.show_place, name='show-place'),
     path('+create-place/', views.create_place, name='create-place'),
 
     path('oauth/', include('social_django.urls', namespace='social')),

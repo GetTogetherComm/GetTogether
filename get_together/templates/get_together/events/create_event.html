@@ -11,7 +11,7 @@
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Announce your Get Together</button>
+<button type="submit" class="btn btn-primary">Next: Find a Place &gt;</button>
 </div>
 </form>
 {% endblock %}
@@ -19,22 +19,6 @@
 {% block javascript %}
 <script type="text/javascript">
 $(document).ready(function(){
-    $("#place_search").keyup(function() {
-	var searchText = this.value;
-	$.getJSON("/api/places/?q="+searchText, function(data) {
-	    var searchField = $("#place_search")[0];
-	    var q = this.url.match(/q=([^&]+)/)[1]
-	    var c = searchField.value
-	    if (c != q) return;
-
-		    var selectField = $("#place_select");
-	    selectField.empty();
-	    $.each(data, function(){
-		selectField.append('<option value="'+ this.id +'">'+ this.name+' '+this.city + '</option>')
-	    });
-	});
-    });
-
 
     $.datepicker.setDefaults({
         showOn: 'focus',

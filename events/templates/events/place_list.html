@@ -3,7 +3,7 @@
     <table border="0" width="960px">
     {% for place in places_list %}
 	<tr>
-		<td width="20%">{{ place.name }}</td>
+		<td width="20%"><a href="{% url 'show-place' place.id %}">{{ place.name }}</a></td>
 		<td width="40%">{{ place.address|default:'' }}</td>
 		<td width="40%">{{ place.city|default:'' }}</td>
 	</tr>

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm
+from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm
 
 from events.models.events import Event, Place, Attendee
 
@@ -52,13 +52,43 @@ def create_event(request, team_id):
             form.instance.team = team
             form.instance.created_by = request.user.profile
             new_event = form.save()
-            return redirect(new_event.get_absolute_url())
+            return redirect('add-place', new_event.id)
         else:
             context = {
                 'team': team,
                 'event_form': form,
             }
             return render(request, 'get_together/events/create_event.html', context)
+    else:
+     return redirect('home')
+
+def add_place_to_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'GET':
+        form = NewPlaceForm()
+
+        context = {
+            'event': event,
+            'place_form': form,
+        }
+        return render(request, 'get_together/places/create_place.html', context)
+    elif request.method == 'POST':
+        form = NewPlaceForm(request.POST)
+        if form.is_valid:
+            new_place = form.save()
+            event.place = new_place
+            event.save()
+            return redirect(event.get_absolute_url())
+        else:
+            context = {
+                'event': event,
+                'place_form': form,
+            }
+            return render(request, 'get_together/places/create_place.html', context)
     else:
      return redirect('home')
 

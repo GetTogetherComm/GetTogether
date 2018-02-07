@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, UserProfile, Member
-from events.forms import TeamForm, NewTeamForm, TeamEventForm, NewTeamEventForm, NewPlaceForm
+from events.forms import NewPlaceForm
 
 from events.models.events import Event, Place, Attendee
 
@@ -20,6 +20,15 @@ def places_list(request, *args, **kwargs):
         'places_list': places,
     }
     return render(request, 'get_together/places/list_places.html', context)
+
+def show_place(request, place_id):
+    place = Place.objects.get(id=place_id)
+    context = {
+        'place': place,
+        'event_list': Event.objects.filter(place=place).order_by('-start_time'),
+    }
+    return render(request, 'get_together/places/show_place.html', context)
+
 
 def create_place(request):
     if request.method == 'GET':
