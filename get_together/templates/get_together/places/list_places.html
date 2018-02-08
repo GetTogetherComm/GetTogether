@@ -3,11 +3,5 @@
 {% block content %}
 {% include "events/place_list.html" %}
 
-{% if request.user.is_authenticated %}
-<br/>
-<form action="{% url 'create-place' %}" method="get">
-	<button type="submit" class="btn btn-primary">Add your Place</button>
-</form>
-{% endif %}
 {% endblock %}
 
