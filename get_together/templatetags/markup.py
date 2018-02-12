@@ -43,3 +43,8 @@ def markdown(value, arg=''):
     """
     return mark_safe(md.markdown(value))
 
+@register.filter
+@stringfilter
+def jsencode(value, arg=''):
+    value = value.replace("\n", "\\n").replace('"', '\"').replace("'", "\'")
+    return mark_safe(value)
