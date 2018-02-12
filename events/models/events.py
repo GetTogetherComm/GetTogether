@@ -73,6 +73,10 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
 
+    def get_full_url(self):
+        site = Site.objects.get(id=1)
+        return "https://%s%s" % (site.domain, self.get_absolute_url())
+
     @property
     def slug(self):
         return slugify(self.name)

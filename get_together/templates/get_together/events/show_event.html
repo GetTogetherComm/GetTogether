@@ -1,5 +1,15 @@
 {% extends "get_together/base.html" %}
-{% load markup %}
+{% load markup static %}
+
+{% block add_to_totle %} | {{event.name}}{% endblock %}
+
+{% block meta %}
+  <meta property="og:url"           content="{{event.get_full_url}}" />
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="{{event.name}}" />
+  <meta property="og:description"   content="{{event.summary}}" />
+  <meta property="og:image"         content="https://gettogether.community{% static 'img/team_placeholder.png' %}" />
+{% endblock %}
 
 {% block styles %}
     <style>
@@ -25,6 +35,9 @@
                 {% endif %}
                 {% if not is_attending %}
                 <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm">Attend</a>
+                {% endif %}
+                {% if can_edit_event %}
+                <a href="{% url 'share-event' event.id %}" class="btn btn-primary btn-sm">Share</a>
                 {% endif %}
             </h2><p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p><hr/>
 

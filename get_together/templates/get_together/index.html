@@ -10,8 +10,10 @@
 <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
 -->
 {% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Google</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Faceboook</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a></span>{% endif %}
 {% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">GitHub</a></span>{% endif %}
-{% if settings.DEBUG %}<span><a class="btn btn-primary" href="{% url 'admin:login' %}">Local</a></span>{% endif %}
+{% if settings.DEBUG %}<span><a class="btn btn-secondary" href="{% url 'admin:login' %}">Local</a></span>{% endif %}
 <br>
 </center>
 {% endblock %}

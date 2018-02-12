@@ -82,7 +82,7 @@ def add_place_to_event(request, event_id):
             new_place = form.save()
             event.place = new_place
             event.save()
-            return redirect(event.get_absolute_url())
+            return redirect('share-event', event.id)
         else:
             context = {
                 'event': event,
@@ -91,6 +91,13 @@ def add_place_to_event(request, event_id):
             return render(request, 'get_together/places/create_place.html', context)
     else:
      return redirect('home')
+
+def share_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    context = {
+        'event': event,
+    }
+    return render(request, 'get_together/events/share_event.html', context)
 
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)

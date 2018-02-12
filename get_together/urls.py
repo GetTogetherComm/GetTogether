@@ -50,6 +50,7 @@ urlpatterns = [
     path('events/<int:event_id>/+attend/', event_views.attend_event, name='attend-event'),
     path('events/<int:event_id>/+delete/', views.delete_event, name='delete-event'),
     path('events/<int:event_id>/+add_place/', views.add_place_to_event, name='add-place'),
+    path('events/<int:event_id>/+share/', views.share_event, name='share-event'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
     path('places/', views.places_list, name='places'),

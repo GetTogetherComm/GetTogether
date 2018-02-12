@@ -6,7 +6,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Get Together</title>
+    <title>{% block title %}Get Together{% block add_to_title %}{% endblock %}{% endblock %}</title>
+
+    {% block meta %}{% endblock %}
 
     {% if settings.GOOGLE_ANALYTICS_ID %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
