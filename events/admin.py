@@ -32,6 +32,11 @@ admin.site.register(Organization, OrgAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')
+    list_display = ('__str__', 'member_count', 'owner_profile', 'created_date')
+    ordering = ('-created_date',)
+    def member_count(self, team):
+        return team.members.all().count()
+    member_count.short_description = 'Members'
 admin.site.register(Team, TeamAdmin)
 
 admin.site.register(Searchable)
@@ -42,6 +47,11 @@ admin.site.register(Place, PlaceAdmin)
 
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by')
+    list_display = ('__str__', 'attendee_count', 'created_by', 'created_time')
+    ordering = ('-created_time',)
+    def attendee_count(self, event):
+        return event.attendees.all().count()
+    attendee_count.short_description = 'Attendees'
 admin.site.register(Event, EventAdmin)
 
 admin.site.register(Member)
