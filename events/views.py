@@ -71,7 +71,7 @@ def city_list(request, *args, **kwargs):
     if "spr" in request.GET and request.GET.get("spr") is not "":
         cities = cities.filter(spr=request.GET.get("spr"))
 
-    serializer = CitySerializer(cities[:20], many=True)
+    serializer = CitySerializer(cities[:50], many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

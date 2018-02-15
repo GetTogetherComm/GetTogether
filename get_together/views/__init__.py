@@ -51,12 +51,12 @@ def home(request, *args, **kwards):
             client_ip = get_client_ip(request)
             if client_ip == '127.0.0.1' or client_ip == 'localhost':
                 if settings.DEBUG:
-                    client_ip = '189.122.101.2' # Try Google's server
+                    client_ip = '8.8.8.8' # Try Google's server
                 else:
                     raise Exception("Client is localhost")
 
             g = geocoder.ip(client_ip)
-            if g.latlng[0] is not None and g.latlng[1] is not None:
+            if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
                 ll = g.latlng
                 context['geoip_lookup'] = True
         except Exception as err:

@@ -26,7 +26,7 @@
         <div class="container">
         <div class="row navbar-dark bg-dark mb-3">
             <div class="col-12 navbar-text">
-                <form target="{% url 'home' %} method="GET">{{search_form}} <input type="submit" value="Search" class="btn btn-primary btn-sm"></form>
+                <form action="{% url 'home' %}" method="GET">{{search_form}} <input type="submit" value="Search" class="btn btn-primary btn-sm"></form>
             </div>
         </div>
 {% if geoip_lookup or city_search %}
