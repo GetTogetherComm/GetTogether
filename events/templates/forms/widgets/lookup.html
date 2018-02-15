@@ -1,5 +1,5 @@
-<select autocomplete="false" id="{{ widget.name }}_select" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %} style="width: 300px">
+<input autocomplete="false" id="{{ widget.name }}_search" name="{{ widget.name }}_search" style="width: 100px"/>
+<select autocomplete="false" id="{{ widget.name }}_select" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %} style="width: 200px">
 	{{ widget.value }}
 </select>
-<input autocomplete="false" id="{{ widget.name }}_search" name="{{ widget.name }}_search" />
 

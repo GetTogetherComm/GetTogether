@@ -18,7 +18,7 @@ $(document).ready(function(){
 	var searchText = this.value;
 	$.getJSON("/api/places/?q="+searchText, function(data, status) {
 	    var searchField = $("#place_search")[0];
-	    var q = this.url.match(/q=([^&]+)/)[1]
+	    var q = this.url.match(/q=([^&]*)/)[1]
 	    var c = searchField.value
 	    if (c != q) return;
 

@@ -39,7 +39,11 @@ class TeamAdmin(admin.ModelAdmin):
     member_count.short_description = 'Members'
 admin.site.register(Team, TeamAdmin)
 
-admin.site.register(Searchable)
+class SearchableAdmin(admin.ModelAdmin):
+    list_display = ('event_url', 'start_time', 'federation_node', 'federation_time')
+    list_filter = ('federation_node',)
+    ordering = ('-start_time',)
+admin.site.register(Searchable, SearchableAdmin)
 
 class PlaceAdmin(admin.ModelAdmin):
     raw_id_fields = ('city',)

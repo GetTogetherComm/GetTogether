@@ -43,10 +43,3 @@ class SearchableSerializer(serializers.ModelSerializer):
             'origin_node'
         )
 
-    def save(self, federation_node):
-        self.federation_node = federation_node
-        super().save()
-
-    def update(self, instance, validated_data):
-        validated_data['federation_node'] = self.federation_node
-        return super().update(instance, validated_data)

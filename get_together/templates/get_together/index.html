@@ -1,20 +1,137 @@
 {% extends "get_together/base.html" %}
+{% load static %}
 
-{% block content %}
-<center>
-<h2>Welcome to Get Together!</h2>
-
-<h4>Login</h4>
-<!--
-<a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/><br/>
-<a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
--->
-{% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Google</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Faceboook</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'github' %}">GitHub</a></span>{% endif %}
-{% if settings.DEBUG %}<span><a class="btn btn-secondary" href="{% url 'admin:login' %}">Local</a></span>{% endif %}
-<br>
-</center>
+{% block styles %}
+    <link href="https://getbootstrap.com/docs/4.0/examples/album/album.css" rel="stylesheet"/>
+    <style>
+.card-banner {
+    position: relative;
+}
+.card-banner .card-title {
+    position: absolute;
+    bottom: 0px;
+    left: 6px;
+    color: #FFF;
+    font-size: 18pt;
+    font-weight: bold;
+    text-shadow: 2px 2px #444;
+}
+.card-link {
+    color: #000 !important;
+}
+    </style>
 {% endblock %}
 
+{% block content %}
+        <div class="container">
+        <div class="row navbar-dark bg-dark mb-3">
+            <div class="col-12 navbar-text">
+                <form target="{% url 'home' %} method="GET">{{search_form}} <input type="submit" value="Search" class="btn btn-primary btn-sm"></form>
+            </div>
+        </div>
+{% if geoip_lookup or city_search %}
+        <div class="row">
+            <div class="col-12">
+            {% if city %}Searching within {{distance}} km of {{ city }}<br/>{% endif %}
+            <h3>Nearby Events</h3>
+            {% if near_events.count > 0 %}
+            <div class="container">
+                <div class="row">
+            {% for event in near_events %}
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <div class="card-banner">
+                          <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{event.event_title}}">
+                          <p class="card-title">{{event.group_name}}</p>
+                        </div>
+                        <div class="card-body">
+                          <p class="card-text"><strong><a class="card-link" href="{{event.event_url}}">{{event.event_title}}</a></strong></p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ event.start_time }}<br/>{{event.location_name}}</small>
+                            <div class="btn-group">
+                                <a class="btn btn-primary" href="{{event.event_url}}">View</a></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <div class="alert alert-info">There are no events near you.</div>
+            {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+            <h3>Nearby Teams</h3>
+            {% if near_teams.count > 0 %}
+            <div class="container">
+                <div class="row">
+            {% for team in near_teams %}
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <div class="card-banner">
+                          <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
+                          <p class="card-title">{{team.name}}</p>
+                        </div>
+                        <div class="card-body">
+                          <p class="card-text"><strong><a class="card-link" href="{% url 'show-team' team.id %}">{{team.city}}</a></strong></p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ team.members.count }} members</small>
+                            <div class="btn-group">
+                                <a class="btn btn-primary" href="{% url 'show-team' team.id %}">View</a></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <div class="alert alert-info">There are no teams near you.</div>
+                <a class="btn btn-success" href="{% url 'create-team' %}">Create one now</a>
+            {% endif %}
+            </div>
+        </div>
+{% else %}
+    </div>
+    <div class="alert alert-warning">We were unable to determine your location. Use the search field above to enter your city.</div>
+{% endif %}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#city_search").keyup(function() {
+        var searchText = this.value;
+        if (searchText.length < 3) return;
+        $.getJSON("/api/cities/?q="+searchText, function(data) {
+            var searchField = $("#city_search")[0];
+            var m = this.url.match(/q=([^&]+)/);
+            var q = "";
+            if (m && m.length > 0) {
+                q = this.url.match(/q=([^&]+)/)[1]
+            }        var c = searchField.value
+            if (c != q) return;
+
+            var selectField = $("#city_select");
+            selectField.empty();
+            var selected = " selected"
+            selectField.append('<option value="">--------</option>')
+            $.each(data, function(){
+                selectField.append('<option value="'+ this.id +'"'+ selected +'>'+ this.display + '</option>');
+                selected="";
+            });
+        });
+    });
+
+});
+
+
+</script>
+
+{% endblock %}

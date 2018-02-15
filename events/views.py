@@ -64,14 +64,14 @@ def spr_list(request, *args, **kwargs):
 def city_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        cities = City.objects.filter(name__icontains=match)[:20]
+        cities = City.objects.filter(name__icontains=match)
     else:
-        cities = City.objects.all()[:20]
+        cities = City.objects.all()
 
     if "spr" in request.GET and request.GET.get("spr") is not "":
         cities = cities.filter(spr=request.GET.get("spr"))
 
-    serializer = CitySerializer(cities, many=True)
+    serializer = CitySerializer(cities[:20], many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

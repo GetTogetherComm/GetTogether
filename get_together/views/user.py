@@ -16,6 +16,17 @@ import simplejson
 from .teams import *
 from .events import *
 
+def logout(request):
+    if request.user.is_authenticated:
+        logout_user(request)
+    return redirect('home')
+
+def login(request):
+    if request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, message=_('You are already logged in.'))
+        return redirect('home')
+    return render(request, 'get_together/users/login.html')
+
 def edit_profile(request):
     if not request.user.is_authenticated:
         messages.add_message(request, messages.WARNING, message=_('You must be logged in to edit your profile.'))

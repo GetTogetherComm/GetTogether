@@ -217,3 +217,10 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['realname', 'avatar']
         
+class SearchForm(forms.Form):
+    city = forms.IntegerField(required=False, widget=Lookup(source='/api/cities/', label='name'))
+    distance = forms.IntegerField(label=_("Distance(km)"), required=True)
+    class Meta:
+        widgets ={
+            'city': Lookup(source='/api/cities/', label='name'),
+        }

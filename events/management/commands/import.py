@@ -3,6 +3,7 @@ from events.models.search import Searchable, SearchableSerializer
 from rest_framework.parsers import JSONParser
 
 import urllib
+import datetime
 
 class Command(BaseCommand):
     help = 'Imports searchable data from another node'
@@ -14,10 +15,10 @@ class Command(BaseCommand):
         if 'url' in options:
             resp = urllib.request.urlopen(options['url'])
             json_data = JSONParser().parse(resp)
-            serializer = SearchableSerializer(data=json_data, many=True)
-            if serializer.is_valid():
-                serializer.save(federation_node=options['url'])
-            else:
-                print("Serialized data not valid: %s" % serializer.errors)
+            for record in json_data:
+                record['federation_node'] = options['url']
+                record['federation_time'] = datetime.datetime.now()
+                Searchable.objects.update_or_create(defaults=record, event_url=record['event_url'])
+
         else:
             print("No URL in options!")
