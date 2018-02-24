@@ -1,0 +1,32 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+
+{% if user %}
+
+<h2>Profile: {{user.user}}</h2>
+
+Realname: {{user.realname}} <br>
+
+{% if user.weburl %}
+Homepage: {{user.weburl}} <br>
+{% endif %}
+
+{% if teams %}
+    <h3>Teams</h3>
+    <ul>
+    {% for t in teams %}
+		<li>
+			<a href="{% url 'show-team' t.id %}" title="Team page for {{t.team.name}}">{{t.team.name}}</a>
+		</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% else %}
+
+<h2>User not found.</h2>
+
+{% endif %}
+
+{% endblock %}

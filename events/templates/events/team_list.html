@@ -7,7 +7,7 @@
 		<td>{{ team.country.name|default:'' }}</td>
 		<td>{{ team.spr.name|default:'' }}</td>
 		<td>{{ team.city.name|default:'' }}</td>
-		<td>{{ team.owner_profile }}</td>
+		<td><a href="{% url 'show-profile' team.owner_profile.id %}" title="{{team.owner_profile}}'s profile">{{ team.owner_profile }}</a></td>
 		<td>{{ team.created_time }}</td>
 	</tr>
     {% endfor %}

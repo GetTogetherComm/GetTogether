@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/find_city/', event_views.find_city),
 
     path('profile/+edit', views.edit_profile, name='edit-profile'),
+    path('profile/<int:user_id>/', views.show_profile, name='show-profile'),
 
     path('events/', views.events_list, name='events'),
     path('+create-team/', views.create_team, name='create-team'),
