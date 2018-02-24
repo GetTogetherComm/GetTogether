@@ -81,6 +81,7 @@
                                         var selectField = $("#city_select");
                                         selectField.empty();
                                         selectField.append('<option value="'+ json.id +'" selected>'+ json.display + '</option>');
+                                        selectField.lookup("refresh");
 
                                         $("#id_tz").val(json.tz)
                                     }
