@@ -1,45 +1,37 @@
 {% extends "get_together/base.html" %}
+{% load static %}
 
 {% block content %}
 <h2>Get Together with friends</h2>
-<form action="{% url "create-team" %}" method="post">
+<form action="{% url "create-team" %}" method="post" class="form">
 {% csrf_token %}
 {% include "events/team_form.html" %}
+
 	<br />
 <button type="submit" class="btn btn-primary">Gather your Team</button>
 </form>
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
 
-    $("#city_search").keyup(function() {
-        var searchText = this.value;
-        if (searchText.length < 3) return;
-        $.getJSON("/api/cities/?q="+searchText, function(data) {
-            var searchField = $("#city_search")[0];
-            var m = this.url.match(/q=([^&]+)/);
-            var q = "";
-            if (m && m.length > 0) {
-                q = this.url.match(/q=([^&]+)/)[1]
-            }        var c = searchField.value
-            if (c != q) return;
-
-            var selectField = $("#city_select");
-            selectField.empty();
-            var selected = " selected"
-            selectField.append('<option value="">--------</option>')
-            $.each(data, function(){
-                selectField.append('<option value="'+ this.id +'"'+ selected +'>'+ this.display + '</option>');
-                selected="";
+                return callback(q, data);
             });
-        });
-    });
-
+        }
+    })
+    $("#id_tz").selectmenu();
 });
-
-
 </script>
 
 {% endblock %}

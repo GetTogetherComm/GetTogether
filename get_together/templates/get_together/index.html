@@ -103,35 +103,28 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
 
+                return callback(q, data);
+            });
+        }
+    })
     $("#city_search").keyup(function() {
         var searchText = this.value;
-        if (searchText.length < 3) return;
-        $.getJSON("/api/cities/?q="+searchText, function(data) {
-            var searchField = $("#city_search")[0];
-            var m = this.url.match(/q=([^&]+)/);
-            var q = "";
-            if (m && m.length > 0) {
-                q = this.url.match(/q=([^&]+)/)[1]
-            }        var c = searchField.value
-            if (c != q) return;
-
-            var selectField = $("#city_select");
-            selectField.empty();
-            var selected = " selected"
-            selectField.append('<option value="">--------</option>')
-            $.each(data, function(){
-                selectField.append('<option value="'+ this.id +'"'+ selected +'>'+ this.display + '</option>');
-                selected="";
-            });
-        });
     });
 
 });
-
-
 </script>
 
 {% endblock %}
