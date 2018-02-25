@@ -198,3 +198,13 @@ class Member(models.Model):
 
     def __str__(self):
         return '%s in %s' % (self.user, self.team)
+
+class Category(models.Model):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+    img = models.URLField(blank=False, null=False)
+
+class Topic(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=256)
+    description = models.TextField()
