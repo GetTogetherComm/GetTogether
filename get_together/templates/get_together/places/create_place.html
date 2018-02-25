@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md col-10">
+        <div class="col-md-6">
 
             <h2>Choose your meeting place</h2>
             <form action="{% url "add-place" event.id %}" method="post">
@@ -15,7 +15,7 @@
             </form>
             <a class="btn btn-secondary" href="{% url 'share-event' event.id %}">Add a Place later</a>
         </div>
-        <div id="map" class="col-5"></div>
+        <div id="map" class="col-md-6"></div>
     </div>
 </div>
 {% endblock %}

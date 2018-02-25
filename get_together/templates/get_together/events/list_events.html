@@ -2,24 +2,8 @@
 {% load static %}
 
 {% block styles %}
-    <link href="https://getbootstrap.com/docs/4.0/examples/album/album.css" rel="stylesheet"/>
-    <style>
-.card-banner {
-    position: relative;
-}
-.card-banner .card-title {
-    position: absolute;
-    bottom: 0px;
-    left: 6px;
-    color: #FFF;
-    font-size: 18pt;
-    font-weight: bold;
-    text-shadow: 2px 2px #444;
-}
-.card-link {
-    color: #000 !important;
-}
-    </style>
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
 {% endblock %}
 
 {% block content %}

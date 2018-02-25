@@ -28,7 +28,7 @@
 {% block content %}
 <div class="fluid-container">
     <div class="row">
-        <div class="col-md">
+        <div class="col-md-9">
             <h2>{{ event.name }}
                 {% if can_edit_event %}
                 <a href="{% url 'edit-event' event.id %}" class="btn btn-secondary btn-sm">Edit Event</a>
@@ -64,7 +64,7 @@
             <br/>
         </div>
 
-        <div class="col-3-sm">
+        <div class="col-md-3">
             <div class="container">
                 <div class="row">
                     <div class="col"><h4>Attendees ({{attendee_list.count}})</h4><hr/></div>
