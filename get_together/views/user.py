@@ -38,7 +38,7 @@ def show_profile(request, user_id):
     except ObjectDoesNotExist:
         return render(request, template, {'user': None}, status=404)
 
-    teams = Member.objects.filter(user_id=user_id)
+    teams = user.memberships.all()
 
     context = {
             'user': user,

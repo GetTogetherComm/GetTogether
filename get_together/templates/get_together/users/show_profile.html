@@ -17,7 +17,7 @@ Homepage: {{user.weburl}} <br>
     <ul>
     {% for t in teams %}
 		<li>
-			<a href="{% url 'show-team' t.id %}" title="Team page for {{t.team.name}}">{{t.team.name}}</a>
+			<a href="{% url 'show-team' t.id %}" title="Team page for {{t.name}}">{{t.name}}</a>
 		</li>
     {% endfor %}
     </ul>
