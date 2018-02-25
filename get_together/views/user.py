@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 from events.models.profiles import Team, UserProfile, Member
 from events.forms import UserForm, UserProfileForm
@@ -26,6 +27,26 @@ def login(request):
         messages.add_message(request, messages.INFO, message=_('You are already logged in.'))
         return redirect('home')
     return render(request, 'get_together/users/login.html')
+
+
+def show_profile(request, user_id):
+
+    template = 'get_together/users/show_profile.html'
+
+    try:
+        user = UserProfile.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        return render(request, template, {'user': None}, status=404)
+
+    teams = user.memberships.all()
+
+    context = {
+            'user': user,
+            'teams': teams,
+    }
+
+    return render(request, template, context)
+
 
 def edit_profile(request):
     if not request.user.is_authenticated:
