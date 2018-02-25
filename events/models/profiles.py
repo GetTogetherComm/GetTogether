@@ -157,6 +157,9 @@ class Team(models.Model):
 
     members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
 
+    categories = models.ManyToManyField('Category', blank=True)
+    topics = models.ManyToManyField('Topic', blank=True)
+
     @property
     def location_name(self):
         if self.city:

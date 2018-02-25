@@ -64,11 +64,13 @@ class Event(models.Model):
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=datetime.datetime.now, db_index=True)
 
-    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
+    tags = models.CharField(verbose_name=_("Keyword Tags"), help_text=_('Comma-separates list of tags'), blank=True, null=True, max_length=128)
     #image
     #replies
 
     attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
+
+    topics = models.ManyToManyField('Topic', blank=True)
 
     def get_absolute_url(self):
         return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
