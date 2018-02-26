@@ -23,6 +23,7 @@ from .teams import *
 from .events import *
 from .places import *
 from .user import *
+from .new_user import *
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator

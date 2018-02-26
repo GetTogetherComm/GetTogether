@@ -1,13 +1,30 @@
 {% extends "get_together/base.html" %}
 
 {% block content %}
-<h2>Profile: {{request.user}}</h2>
-<form action="{% url "edit-profile" %}" method="post">
-{% csrf_token %}
-{% include "events/profile_form.html" %}
-	<br />
-<button type="submit" class="btn btn-primary">Save</button>
-</form>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Profile: {{request.user}}</h2>
+            <form action="{% url "edit-profile" %}" method="post">
+            {% csrf_token %}
+            {% include "events/profile_form.html" %}
+	            <br />
+            <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+
+{% if request.user.email and not request.user.account.is_email_confirmed %}
+    <div class="row">
+        <div class="col">
+            <hr/>
+            <div class="alerts"><div class="alert alert-danger">Your email address has not been confirmed.</div></div>
+            <p>You will not be able to receive email notifications from GetTogether until you confirm that this address belongs to you.</p>
+            <p><a href="{% url 'send-confirm-email' %}" class="btn btn-success">Confirm your email</a></p>
+        </div>
+    </div>
+{% endif %}
+</div>
 
 {% endblock %}
 

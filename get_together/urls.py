@@ -36,6 +36,9 @@ urlpatterns = [
     path('api/find_city/', event_views.find_city),
 
     path('profile/+edit', views.edit_profile, name='edit-profile'),
+    path('profile/+send_confirmation_email', views.user_send_confirmation_email, name='send-confirm-email'),
+    path('profile/+confirm_email/<str:confirmation_key>', views.user_confirm_email, name='confirm-email'),
+    path('profile/+confirm_notifications', views.user_confirm_notifications, name='confirm-notifications'),
     path('profile/<int:user_id>/', views.show_profile, name='show-profile'),
 
     path('events/', views.events_list, name='events'),

@@ -1,0 +1,13 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Request Email Confirmation </h3>
+
+<p>Please confirm this email address with GetTogether.Community by clicking on the link below:</p>
+
+<p><a href="{{confirmation_url}}" class="btn btn-success">Confirm email</a></p>
+
+<hr/>
+<p>This is an automated email sent by <a href="https://gettogether.community">https://gettogether.community</a></p>
+<p>Learn more at <a href="https://github.com/GetTogetherComm/GetTogether/">https://github.com/GetTogetherComm/GetTogether/</a></p>
+{% endblock %}

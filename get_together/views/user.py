@@ -55,6 +55,7 @@ def edit_profile(request):
 
     user = request.user
     profile = request.user.profile
+    account = request.user.account
 
     if request.method == 'GET':
         user_form = UserForm(instance=user)
@@ -66,11 +67,20 @@ def edit_profile(request):
         }
         return render(request, 'get_together/users/edit_profile.html', context)
     elif request.method == 'POST':
+        old_email = request.user.email
         user_form = UserForm(request.POST, instance=user)
         profile_form = UserProfileForm(request.POST, instance=profile)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             profile = profile_form.save()
+            if user.email != old_email:
+                if user.email is None or user.email == "":
+                    messages.add_message(request, messages.ERROR, message=_('Your email address has been removed.'))
+                    account.is_email_confirmed = False
+                    account.save()
+                else:
+                    messages.add_message(request, messages.WARNING, message=_('Your email address has changed, please confirm your new address.'))
+                    return redirect('send-confirm-email')
             return redirect('home')
         else:
             context = {

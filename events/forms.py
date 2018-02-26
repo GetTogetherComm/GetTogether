@@ -215,7 +215,18 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['realname', 'avatar']
+        fields = ['realname', 'avatar', 'send_notifications']
+        labels = {
+            'send_notifications': _('Send me notification emails'),
+        }
+
+class SendNotificationsForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['send_notifications']
+        labels = {
+            'send_notifications': _('Send me notification emails'),
+        }
         
 class SearchForm(forms.Form):
     city = forms.IntegerField(required=False, widget=Lookup(source='/api/cities/', label='name'))

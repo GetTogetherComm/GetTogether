@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Email from GetTogether.Community</title>
+
+    {% block meta %}{% endblock %}
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://gettogether.community{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+    {%block styles %}{% endblock %}
+
+  </head>
+  <body>
+
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+      <a class="navbar-brand" href="/">GetTogether</a>
+    </nav>
+
+    <main role="main" class="container">
+
+{% block content %}{% endblock %}
+    </main>
+
+
+</html>

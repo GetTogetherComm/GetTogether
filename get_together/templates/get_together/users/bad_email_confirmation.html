@@ -1,0 +1,16 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 align-left">
+            <h2>Unable to confirm email</h2>
+
+            <p>The confirmation link is invalid. Either it does not below to {{request.user.email}} or the confirmation key has expired.</p>
+
+            <p><a href={% url 'send-confirm-email' %}" class="btn btn-primary">Resend confirmation email</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

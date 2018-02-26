@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
+from django.utils.crypto import get_random_string
+from django.conf import settings
 
 import pytz
 import datetime
@@ -12,11 +14,34 @@ class Account(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     acctname = models.CharField(_("Account Name"), max_length=150, blank=True)
+    is_email_confirmed = models.BooleanField(default=False)
 
     badges = models.ManyToManyField('Badge', through='BadgeGrant')
 
     class Meta:
         ordering = ('user__username',)
+
+    def new_confirmation_request(self):
+        valid_for = getattr(settings, 'EMAIL_CONFIRMAION_EXPIRATION_DAYS', 5)
+        confirmation_key=get_random_string(length=32)
+        return EmailConfirmation.objects.create(
+            user=self.user,
+            email=self.user.email,
+            key=confirmation_key,
+            expires=datetime.datetime.now()+datetime.timedelta(days=valid_for)
+        )
+
+    def confirm_email(self, confirmation_key):
+        try:
+            confirmation_request = EmailConfirmation.objects.get(user=self.user, email=self.user.email, key=confirmation_key, expires__gt=datetime.datetime.now())
+            if confirmation_request is not None:
+                self.is_email_confirmed = True
+                self.save()
+                confirmation_request.delete()
+                return True
+        except Exception as e:
+            print(e)
+            return False
 
     def __str__(self):
         try:
@@ -49,6 +74,12 @@ def _getAnonAccount(self):
 
 User.account = property(_getUserAccount)
 AnonymousUser.account = property(_getAnonAccount)
+
+class EmailConfirmation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.CharField(max_length=256)
+    key = models.CharField(max_length=256)
+    expires = models.DateTimeField()
 
 class Badge(models.Model):
     name = models.CharField(_('Badge Name'), max_length=64, blank=False, null=False)

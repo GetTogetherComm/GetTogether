@@ -1,0 +1,9 @@
+== Request Email Confirmation ==
+
+Please confirm this email address with GetTogether.Community by clicking on the link below:
+
+Confirm email: {{confirmation_url}}
+
+--
+This is an automated email sent by https://gettogether.community
+Learn more at https://github.com/GetTogetherComm/GetTogether/
