@@ -8,6 +8,7 @@ import datetime
 class Searchable(models.Model):
     event_url = models.URLField(primary_key=True, null=False, blank=False)
     event_title = models.CharField(max_length=256, null=False, blank=False)
+    img_url = models.URLField(null=False, blank=False)
     location_name = models.CharField(max_length=256, null=False, blank=False)
     group_name = models.CharField(max_length=256, null=False, blank=False)
     venue_name = models.CharField(max_length=256, null=False, blank=True)

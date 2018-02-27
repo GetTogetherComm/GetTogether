@@ -157,7 +157,7 @@ class Team(models.Model):
 
     members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
 
-    categories = models.ManyToManyField('Category', blank=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
     @property
@@ -205,9 +205,17 @@ class Member(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
-    img = models.URLField(blank=False, null=False)
+    img_url = models.URLField(blank=False, null=False)
+
+    def __str__(self):
+        return self.name
 
 class Topic(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=256)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+

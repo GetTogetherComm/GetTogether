@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 # Register your models here.
 from .models.locale import Language, Continent, Country, SPR, City
-from .models.profiles import UserProfile, Organization, Team, Member
+from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
 from .models.events import Place, Event, Attendee
 
@@ -61,4 +62,13 @@ admin.site.register(Event, EventAdmin)
 admin.site.register(Member)
 admin.site.register(Attendee)
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image')
+    def image(self, obj):
+        return (mark_safe('<img src="%s" title="%s" height="64px" />' % (obj.img_url, obj.name)))
+    image.short_description = 'Image'
+admin.site.register(Category, CategoryAdmin)
 
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category')
+    list_filter = ('category',)
