@@ -1,11 +1,14 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Account, Badge, BadgeGrant
+from .models import Account, Badge, BadgeGrant, EmailConfirmation
 
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('user', 'acctname')
+    list_display = ('user', 'acctname', 'email', 'is_email_confirmed')
+    def email(self, obj):
+        return obj.user.email
+    email.short_description = 'Email'
 admin.site.register(Account, AccountAdmin)
 
 class BadgeAdmin(admin.ModelAdmin):
@@ -19,4 +22,7 @@ class GrantAdmin(admin.ModelAdmin):
     list_display = ('badge', 'account', 'expires', 'granted_by')
 admin.site.register(BadgeGrant, GrantAdmin)
 
+class ConfirmationAdmin(admin.ModelAdmin):
+    list_display = ('email', 'user', 'key', 'expires')
+admin.site.register(EmailConfirmation, ConfirmationAdmin)
 

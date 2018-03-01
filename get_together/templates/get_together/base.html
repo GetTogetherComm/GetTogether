@@ -69,7 +69,7 @@ form {
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarUserMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Welcome {{ request.user.username }}
+                  <img class="rounded-circle mr-1" src="{{request.user.profile.avatar}}" height="24px"/>{% if request.user.profile.realname %}{{ request.user.profile.realname }}{% else %}{{ request.user.username }}{% endif %}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
                   <a class="dropdown-item" href="{% url 'edit-profile' %}">Profile</a>
