@@ -3,25 +3,32 @@
 {% block content %}
 
 {% if user %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+            <div class="h2"><img class="align-bottom" border="1" src="{{request.user.profile.avatar}}" height="64px"/> {{user.user}}</div>
 
-<h2>Profile: {{user.user}}</h2>
+            <p>Full name: <strong>{{user.realname}}</strong></p>
 
-Realname: {{user.realname}} <br>
-
-{% if user.weburl %}
-Homepage: {{user.weburl}} <br>
-{% endif %}
-
-{% if teams %}
-    <h3>Teams</h3>
-    <ul>
-    {% for t in teams %}
-		<li>
-			<a href="{% url 'show-team' t.id %}" title="Team page for {{t.name}}">{{t.name}}</a>
-		</li>
-    {% endfor %}
-    </ul>
-{% endif %}
+            {% if user.weburl %}
+            <p>Homepage: {{user.weburl}}</p>
+            {% endif %}
+        </div>
+        <div class="col-md-3">
+            {% if teams %}
+                <h3>Teams</h3>
+                <ul>
+                {% for t in teams %}
+		            <li>
+			            <a href="{% url 'show-team' t.id %}" title="Team page for {{t.name}}">{{t.name}}</a>
+		            </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 {% else %}
 
