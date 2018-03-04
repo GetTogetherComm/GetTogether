@@ -62,6 +62,8 @@ def edit_profile(request):
         profile_form = UserProfileForm(instance=profile)
 
         context = {
+            'user': user,
+            'profile': profile,
             'user_form': user_form,
             'profile_form': profile_form,
         }
@@ -81,7 +83,7 @@ def edit_profile(request):
                 else:
                     messages.add_message(request, messages.WARNING, message=_('Your email address has changed, please confirm your new address.'))
                     return redirect('send-confirm-email')
-            return redirect('home')
+            return redirect('show-profile', profile.id)
         else:
             context = {
             'user_form': user_form,

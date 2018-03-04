@@ -15,7 +15,7 @@ import simplejson
 
 # Create your views here.
 def events_list(request, *args, **kwargs):
-    events = Event.objects.filter(end_time__gt=datetime.datetime.now()).order_by('start_time')
+    events = Event.objects.filter(attendees=request.user.profile, end_time__gt=datetime.datetime.now()).order_by('start_time')
     context = {
         'events_list': events,
     }

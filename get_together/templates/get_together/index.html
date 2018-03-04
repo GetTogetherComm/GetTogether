@@ -25,11 +25,13 @@
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">
                         <div class="card-banner">
-                          {% if event.team.category %}
-                          <img class="card-img-top" src="{{event.team.category.img_url}}" alt="{{event.event_title}}">
+                          <a href="{{event.event_url}}">
+                          {% if event.img_url %}
+                          <img class="card-img-top" src="{{event.img_url}}" alt="{{event.event_title}}">
                           {% else %}
                           <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{event.event_title}}">
                           {% endif %}
+                          </a>
                           <p class="card-title">{{event.group_name}}</p>
                         </div>
                         <div class="card-body">
@@ -61,11 +63,13 @@
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">
                         <div class="card-banner">
+                          <a href="{% url 'show-team' team.id %}">
                           {% if team.category %}
                           <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
                           {% else %}
                           <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
                           {% endif %}
+                          </a>
                           <p class="card-title">{{team.name}}</p>
                         </div>
                         <div class="card-body">

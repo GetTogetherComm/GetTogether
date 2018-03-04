@@ -6,23 +6,10 @@
 {% endblock %}
 
 {% block content %}
-{% if my_teams %}
-<h4>My Teams</h4>
-{% include "events/team_list.html" with teams_list=my_teams %}
-<br/>
-{% endif %}
-
-{% if request.user.is_authenticated %}
-<br/>
-<form action="{% url 'create-team' %}" method="get">
-	<button type="submit" class="btn btn-primary">Start a Team</button>
-</form>
-{% endif %}
-
-<h4>All Teams</h4>
+<h3>Your Teams</h3>
 <div class="fluid-container">
         <div class="row">
-        {% for team in all_teams %}
+        {% for team in teams %}
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
                 <div class="card-banner">

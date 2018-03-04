@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -14,13 +15,12 @@ import datetime
 import simplejson
 
 # Create your views here.
+@login_required
 def teams_list(request, *args, **kwargs):
-    teams = Team.objects.all()
+    teams = request.user.profile.memberships.all()
     context = {
-        'all_teams': teams,
+        'teams': teams,
     }
-    if request.user.is_authenticated:
-        context['my_teams'] = request.user.profile.memberships.all()
     return render(request, 'get_together/teams/list_teams.html', context)
 
 def show_team(request, team_id, *args, **kwargs):

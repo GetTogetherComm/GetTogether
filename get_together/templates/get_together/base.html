@@ -54,16 +54,19 @@ form {
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
+          {% if request.user.is_authenticated %}
           <li class="nav-item{% if request.resolver_match.url_name == "events" %} active{% endif %}">
             <a class="nav-link" href="{% url 'events' %}">Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if request.resolver_match.url_name == "teams" %} active{% endif %}">
             <a class="nav-link" href="{% url 'teams' %}">Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
+          {% comment %}
           <li class="nav-item{% if request.resolver_match.url_name == "places" %} active{% endif %}">
             <a class="nav-link" href="{% url 'places' %}">Places{% if request.resolver_match.url_name == "places" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-
+          {% endcomment %}
+          {% endif %}
         </ul>
         <ul class="navbar-nav">
             {% if request.user.is_authenticated %}
@@ -72,7 +75,7 @@ form {
                   <img class="rounded-circle mr-1" src="{{request.user.profile.avatar}}" height="24px"/>{% if request.user.profile.realname %}{{ request.user.profile.realname }}{% else %}{{ request.user.username }}{% endif %}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
-                  <a class="dropdown-item" href="{% url 'edit-profile' %}">Profile</a>
+                  <a class="dropdown-item" href="{% url 'show-profile' request.user.profile.id %}">Profile</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                 </div>
             </li>
