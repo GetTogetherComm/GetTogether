@@ -11,6 +11,7 @@ from events.models.profiles import Team, UserProfile, Member
 from events.models.search import Searchable
 from events.forms import SearchForm
 
+from accounts.decorators import setup_wanted
 from django.conf import settings
 
 import datetime
@@ -24,12 +25,14 @@ from .events import *
 from .places import *
 from .user import *
 from .new_user import *
+from .utils import *
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator
 DEFAULT_NEAR_DISTANCE = 100 # kilometeres
 # Create your views here.
 
+@setup_wanted
 def home(request, *args, **kwards):
     context = {}
     if request.user.is_authenticated:
@@ -49,14 +52,7 @@ def home(request, *args, **kwards):
     else :
         context['city_search'] = False
         try:
-            client_ip = get_client_ip(request)
-            if client_ip == '127.0.0.1' or client_ip == 'localhost':
-                if settings.DEBUG:
-                    client_ip = '8.8.8.8' # Try Google's server
-                else:
-                    raise Exception("Client is localhost")
-
-            g = geocoder.ip(client_ip)
+            g = get_geoip(request)
             if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
                 ll = g.latlng
                 context['geoip_lookup'] = True
@@ -92,11 +88,3 @@ def home(request, *args, **kwards):
     context['search_form'] = search_form
     return render(request, 'get_together/index.html', context)
 
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip

@@ -9,21 +9,126 @@ from django.core.mail import send_mail
 from django.template.loader import get_template, render_to_string
 from django.conf import settings
 
-from events.models.profiles import Team, UserProfile, Member
+from events.models.profiles import Team, UserProfile, Member, Category
 from events.models.events import Event, Place, Attendee
-from events.forms import SendNotificationsForm
+from events.forms import SendNotificationsForm, UserForm, ConfirmProfileForm
+
+from .utils import get_nearby_teams
 
 import datetime
 import simplejson
 
-def new_user_confirm_profile(request):
-    pass
+@login_required
+def setup_1_confirm_profile(request):
+    user = request.user
+    profile = request.user.profile
 
-def new_user_find_teams(request):
-    pass
+    if request.method == 'GET':
+        user_form = UserForm(instance=user)
+        profile_form = ConfirmProfileForm(instance=profile)
+        context = {
+            'user': user,
+            'profile': profile,
+            'user_form': user_form,
+            'profile_form': profile_form,
+        }
+        return render(request, 'get_together/new_user/setup_1_confirm_profile.html', context)
+    elif request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ConfirmProfileForm(request.POST, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            saved_user = user_form.save()
+            profile_form.save()
+            if saved_user.email is not None and saved_user.email != '' and not saved_user.account.is_email_confirmed:
+                # Call the view to trigger sending a confirmation email, but ignore it's response
+                user_send_confirmation_email(request)
+            return redirect('setup-2-pick-categories')
+    else:
+        return redirect('home')
 
-def new_user_find_events(request):
-    pass
+
+@login_required
+def setup_2_pick_categories(request):
+    user = request.user
+    profile = request.user.profile
+
+    if request.method == 'GET':
+        categories = Category.objects.all()
+        context = {
+            'user': user,
+            'profile': profile,
+            'categories': categories,
+        }
+        return render(request, 'get_together/new_user/setup_2_pick_categories.html', context)
+    elif request.method == 'POST':
+        for entry in request.POST:
+            if entry.startswith('category_'):
+                category_id = entry.split('_')[1]
+                try:
+                    profile.categories.add(category_id)
+                except:
+                    pass
+        return redirect('setup-3-find-teams')
+    else:
+        return redirect('home')
+
+@login_required
+def setup_3_find_teams(request):
+    user = request.user
+    profile = request.user.profile
+    if request.method == 'GET':
+        teams = get_nearby_teams(request)
+        if (teams.count() < 1):
+            return redirect('setup-complete')
+        context = {
+            'user': user,
+            'profile': profile,
+            'teams': teams,
+        }
+        return render(request, 'get_together/new_user/setup_3_find_teams.html', context)
+    elif request.method == 'POST':
+        for entry in request.POST:
+            if entry.startswith('team_'):
+                team_id = entry.split('_')[1]
+                try:
+                    Member.objects.get_or_create(team_id=team_id, user=profile, defaults={'role': Member.NORMAL})
+                except Member.MultipleObjectsReturned:
+                    pass
+        return redirect('setup-4-attend-events')
+    else:
+        return redirect('home')
+
+@login_required
+def setup_4_attend_events(request):
+    user = request.user
+    profile = request.user.profile
+    if request.method == 'GET':
+        events = Event.objects.filter(team__in=profile.memberships.all(), end_time__gte=datetime.datetime.now())
+        if (events.count() < 1):
+            return redirect('setup-complete')
+        context = {
+            'user': user,
+            'profile': profile,
+            'events': events,
+        }
+        return render(request, 'get_together/new_user/setup_4_attend_events.html', context)
+    elif request.method == 'POST':
+        for entry in request.POST:
+            if entry.startswith('event_'):
+                event_id = entry.split('_')[1]
+                try:
+                    Attendee.objects.get_or_create(event_id=event_id, user=profile, defaults={'role': Attendee.NORMAL, 'status': Attendee.YES})
+                except Attendee.MultipleObjectsReturned:
+                    pass
+        return redirect('setup-complete')
+    else:
+        return redirect('home')
+
+@login_required
+def setup_complete(request):
+    messages.add_message(request, messages.SUCCESS, message=_('Your setup is complete, welcome to GetTogether!'))
+    request.user.account.setup_complete()
+    return redirect('home')
 
 # These views are for confirming a user's email address before sending them mail
 @login_required
@@ -48,7 +153,7 @@ def user_send_confirmation_email(request):
         recipient_list=email_recipients,
         html_message=email_body_html
     )
-    return render(request, 'get_together/users/sent_email_confirmation.html', context)
+    return render(request, 'get_together/new_user/sent_email_confirmation.html', context)
 
 @login_required
 def user_confirm_email(request, confirmation_key):
@@ -56,7 +161,7 @@ def user_confirm_email(request, confirmation_key):
         messages.add_message(request, messages.SUCCESS, message=_('Your email address has been confirmed.'))
         return redirect('confirm-notifications')
     else:
-        return render(request, 'get_together/users/bad_email_confirmation.html')
+        return render(request, 'get_together/new_user/bad_email_confirmation.html')
 
 @login_required
 def user_confirm_notifications(request):
@@ -65,7 +170,7 @@ def user_confirm_notifications(request):
         context = {
             'notifications_form': form
         }
-        return render(request, 'get_together/users/confirm_notifications.html', context)
+        return render(request, 'get_together/new_user/confirm_notifications.html', context)
     elif request.method == 'POST':
         form = SendNotificationsForm(request.POST, instance=request.user.profile)
         if form.is_valid():

@@ -220,6 +220,11 @@ class UserProfileForm(forms.ModelForm):
             'send_notifications': _('Send me notification emails'),
         }
 
+class ConfirmProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['realname', 'tz']
+
 class SendNotificationsForm(forms.ModelForm):
     class Meta:
         model = UserProfile

@@ -35,6 +35,12 @@ urlpatterns = [
     path('api/cities/', event_views.city_list),
     path('api/find_city/', event_views.find_city),
 
+    path('profile/+confirm_profile', views.setup_1_confirm_profile, name='setup-1-confirm-profile'),
+    path('profile/+pick_categories', views.setup_2_pick_categories, name='setup-2-pick-categories'),
+    path('profile/+find_teams',      views.setup_3_find_teams,      name='setup-3-find-teams'),
+    path('profile/+attend_events',   views.setup_4_attend_events,   name='setup-4-attend-events'),
+    path('profile/+setup_complete',  views.setup_complete,          name='setup-complete'),
+
     path('profile/+edit', views.edit_profile, name='edit-profile'),
     path('profile/+send_confirmation_email', views.user_send_confirmation_email, name='send-confirm-email'),
     path('profile/+confirm_email/<str:confirmation_key>', views.user_confirm_email, name='confirm-email'),

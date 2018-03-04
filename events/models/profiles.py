@@ -14,7 +14,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     realname = models.CharField(verbose_name=_("Real Name"), max_length=150, blank=True)
-    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this User.'))
+    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False)
     avatar = models.URLField(verbose_name=_("Photo Image"), max_length=150, blank=True, null=True)
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
@@ -22,6 +22,9 @@ class UserProfile(models.Model):
     facebook = models.URLField(verbose_name=_('Facebook URL'), max_length=32, blank=True, null=True)
 
     send_notifications = models.BooleanField(verbose_name=_('Send notification emails'), default=True)
+
+    categories = models.ManyToManyField('Category', blank=True)
+    topics = models.ManyToManyField('Topic', blank=True)
 
     class Meta:
         ordering = ('user__username',)

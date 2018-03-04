@@ -16,10 +16,18 @@ class Account(models.Model):
     acctname = models.CharField(_("Account Name"), max_length=150, blank=True)
     is_email_confirmed = models.BooleanField(default=False)
 
+    has_completed_setup = models.BooleanField(default=False)
+    setup_completed_date = models.DateTimeField(blank=True, null=True)
+
     badges = models.ManyToManyField('Badge', through='BadgeGrant')
 
     class Meta:
         ordering = ('user__username',)
+
+    def setup_complete(self):
+        self.has_completed_setup = True
+        self.setup_completed_date = datetime.datetime.now()
+        self.save()
 
     def new_confirmation_request(self):
         valid_for = getattr(settings, 'EMAIL_CONFIRMAION_EXPIRATION_DAYS', 5)

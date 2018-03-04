@@ -1,0 +1,30 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <center>
+                <p><img class="align-bottom" border="1" src="{{profile.avatar}}" height="64px"/></p>
+                <h3>Please confirm your profile information</h3>
+
+                <form action="{% url 'setup-1-confirm-profile' %}" method="POST" class="form">
+                    {% csrf_token %}
+                    <p>{% include "events/profile_form.html" %}</p>
+                    <p><button type="submit" class="btn btn-success pl-5 pr-5">Continue</button></p>
+                </form>
+            </center>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#id_tz").selectmenu();
+});
+
+</script>
+
+{% endblock %}

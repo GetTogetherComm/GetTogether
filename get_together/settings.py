@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
+SETUP_URL = 'profile/+confirm_profile'
 LOGIN_REDIRECT_URL = 'home'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

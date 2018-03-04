@@ -59,8 +59,15 @@ class EventAdmin(admin.ModelAdmin):
     attendee_count.short_description = 'Attendees'
 admin.site.register(Event, EventAdmin)
 
-admin.site.register(Member)
-admin.site.register(Attendee)
+class MemberAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'role')
+    list_filter = ('role', 'team')
+admin.site.register(Member, MemberAdmin)
+
+class AttendeeAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'role', 'status')
+    list_filter = ('role', 'status')
+admin.site.register(Attendee, AttendeeAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'image')

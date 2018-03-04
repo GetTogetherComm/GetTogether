@@ -1,0 +1,55 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <center>
+                <h3>Here are some nearby teams you might want to join</h3>
+            </center>
+        </div>
+    </div>
+    <form action="{% url 'setup-3-find-teams' %}" method="POST">
+        {% csrf_token %}
+    <div class="row">
+    {% for team in teams %}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <div class="card-banner">
+              {% if team.category %}
+              <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
+              {% else %}
+              <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
+              {% endif %}
+              <p class="card-title">{{team.name}}</p>
+            </div>
+            <div class="card-body">
+              <p class="card-text"><strong>{{team.city}}</strong></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary team_toggle">
+                        <input name="team_{{team.id}}" type="checkbox" autocomplete="off"> Join
+                    </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="row pb-5">
+        <div class="col-12">
+            <center>
+                <button class="btn btn-success pl-5 pr-5" type="submit">Continue</button>
+            </center>
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
+

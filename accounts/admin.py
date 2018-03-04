@@ -5,7 +5,8 @@ from .models import Account, Badge, BadgeGrant, EmailConfirmation
 
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('user', 'acctname', 'email', 'is_email_confirmed')
+    list_display = ('user', 'acctname', 'email', 'is_email_confirmed', 'has_completed_setup')
+    list_filter = ('is_email_confirmed', 'has_completed_setup')
     def email(self, obj):
         return obj.user.email
     email.short_description = 'Email'
