@@ -21,6 +21,8 @@ class Command(BaseCommand):
         site = Site.objects.get(id=1)
         accounts = Account.objects.filter(is_email_confirmed=False)
         for account in accounts:
+            if not account.user.email:
+                break # Skip accounts without an email
             confirmation_request = EmailConfirmation.objects.filter(user=account.user)
 
             if 'days' in options and options.get('days', None):
