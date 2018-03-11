@@ -52,8 +52,8 @@ admin.site.register(Place, PlaceAdmin)
 
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by')
-    list_display = ('__str__', 'attendee_count', 'created_by', 'created_time')
-    ordering = ('-created_time',)
+    list_display = ('__str__', 'attendee_count', 'start_time', 'created_by', 'created_time')
+    ordering = ('-start_time',)
     def attendee_count(self, event):
         return event.attendees.all().count()
     attendee_count.short_description = 'Attendees'
