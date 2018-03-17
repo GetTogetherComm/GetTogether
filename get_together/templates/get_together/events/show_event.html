@@ -86,9 +86,11 @@
                   </div>
                 {% endfor %}
                 </div>
+                {% if can_edit_event %}
                 <div class="row">
                     <div class="col"><a class="btn btn-primary" href="{% url 'add-event-photo' event.id %}">Upload</a></div>
                 </div>
+                {% endif %}
             </div>
         </div>
 
