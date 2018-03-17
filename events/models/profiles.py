@@ -45,10 +45,10 @@ class UserProfile(models.Model):
             return "Unknown Profile"
 
     def avatar_url(self):
-        if self.avatar.url.startswith('http'):
-            return self.avatar.url
+        if self.avatar.name.startswith('http'):
+            return self.avatar.name
         else:
-            return settings.MEDIA_URL + '/' + self.avatar.url
+            return self.avatar.url
 
     def get_timezone(self):
         try:

@@ -72,7 +72,7 @@
                 {% for attendee in attendee_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">
-                      <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar.url}}" width="32px" height="32px">
+                      <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar_url}}" width="32px" height="32px">
                       <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
                       <div class="media-body">
                         <h6 class="mt-2 mb-0">
