@@ -4,9 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <img class="align-bottom" border="1" src="{{profile.avatar}}" height="64px"/>
+            <img class="align-bottom" border="1" src="{{profile.avatar.url}}" height="128px"/>
             <h2>Profile: {{user}}</h2>
-            <form action="{% url "edit-profile" %}" method="post">
+            <form enctype="multipart/form-data" action="{% url "edit-profile" %}" method="post">
             {% csrf_token %}
             {% include "events/profile_form.html" %}
 	            <br />

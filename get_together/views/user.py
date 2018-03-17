@@ -71,7 +71,7 @@ def edit_profile(request):
     elif request.method == 'POST':
         old_email = request.user.email
         user_form = UserForm(request.POST, instance=user)
-        profile_form = UserProfileForm(request.POST, instance=profile)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             profile = profile_form.save()

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'social_django',
+    'imagekit',
+    'imagekit_cropper',
 
     'get_together',
     'events',
@@ -180,3 +182,5 @@ try:
 except:
     print("WARNING: You should create a local_settings.py to store local and secret data.")
 
+MEDIA_ROOT = './media/'
+MEDIA_URL = '/media/'

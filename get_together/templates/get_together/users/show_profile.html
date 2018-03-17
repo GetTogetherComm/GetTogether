@@ -8,7 +8,7 @@
         <div class="col-md-2"></div>
         <div class="col-md-6">
             <div class="h2">
-                <img class="align-bottom" border="1" src="{{user.avatar}}" height="64px"/> {{user.user}}
+                <img class="align-bottom" border="1" src="{{user.avatar.url}}" height="128px"/> {{user.user}}
                 {% if user.user.id == request.user.id %}
                 <a href="{% url 'edit-profile'  %}" class="btn btn-secondary btn-sm">Edit Profile</a>
                 {% endif %}

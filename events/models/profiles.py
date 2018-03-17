@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 from .locale import *
 
@@ -15,7 +19,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     realname = models.CharField(verbose_name=_("Real Name"), max_length=150, blank=True)
     tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False)
-    avatar = models.URLField(verbose_name=_("Photo Image"), max_length=150, blank=True, null=True)
+    avatar = ProcessedImageField(verbose_name=_("Photo Image"),
+                                           upload_to='avatars',
+                                           processors=[ResizeToFill(128, 128)],
+                                           format='PNG')
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter Name'), max_length=32, blank=True, null=True)
@@ -36,6 +43,12 @@ class UserProfile(models.Model):
             return "%s" % self.user.username
         except:
             return "Unknown Profile"
+
+    def avatar_url(self):
+        if self.avatar.url.startswith('http'):
+            return self.avatar.url
+        else:
+            return settings.MEDIA_URL + '/' + self.avatar.url
 
     def get_timezone(self):
         try:
