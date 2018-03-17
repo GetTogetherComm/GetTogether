@@ -5,7 +5,8 @@ from django.utils.safestring import mark_safe
 from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
-from .models.events import Place, Event, EventPhoto, Attendee
+from .models.events import Place, Event, EventPhoto, CommonEvent, Attendee
+from .models.events import Place, Event, CommonEvent, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -65,6 +66,15 @@ class EventPhotoAdmin(admin.ModelAdmin):
         return mark_safe('<a href="%s" target="_blank"><img src="%s" height="90px"></a>' % (photo.src.url, photo.thumbnail.url))
     view.short_description = 'Photo'
 admin.site.register(EventPhoto, EventPhotoAdmin)
+
+class CommonEventAdmin(admin.ModelAdmin):
+    raw_id_fields = ('place', 'city', 'spr', 'country')
+    list_display = ('__str__', 'participant_count', 'organization', 'start_time', 'country', 'spr', 'city')
+    ordering = ('-start_time',)
+    def participant_count(self, event):
+        return event.participating_events.all().count()
+    participant_count.short_description = 'Participants'
+admin.site.register(CommonEvent, CommonEventAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'role')

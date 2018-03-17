@@ -156,12 +156,14 @@ class Organization(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
+    owner_profile = models.ForeignKey(UserProfile, related_name='owned_orgs', blank=False, null=True, on_delete=models.SET_NULL)
+
     def __str__(self):
         return u'%s' % (self.name)
 
 class Team(models.Model):
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
 
     description = models.TextField(help_text=_('Team Description'), blank=True, null=True)
 
@@ -174,7 +176,7 @@ class Team(models.Model):
 
     created_date = models.DateField(_("Date Created"), null=True, blank=True)
 
-    owner_profile = models.ForeignKey(UserProfile, related_name='owner', null=True, on_delete=models.CASCADE)
+    owner_profile = models.ForeignKey(UserProfile, related_name='owned_teams', null=True, on_delete=models.CASCADE)
     admin_profiles = models.ManyToManyField(UserProfile, related_name='admins', blank=True)
     contact_profiles = models.ManyToManyField(UserProfile, related_name='contacts', blank=True)
 
