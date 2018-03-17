@@ -149,6 +149,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = './media/'
+MEDIA_URL = '/media/'
 
 GOOGLE_ANALYTICS_ID=None
 GOOGLE_MAPS_API_KEY=None
@@ -182,5 +184,4 @@ try:
 except:
     print("WARNING: You should create a local_settings.py to store local and secret data.")
 
-MEDIA_ROOT = './media/'
-MEDIA_URL = '/media/'
+
