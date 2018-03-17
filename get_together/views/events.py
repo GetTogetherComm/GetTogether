@@ -6,9 +6,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm
+from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm, UploadEventPhotoForm
 
-from events.models.events import Event, Place, Attendee
+from events.models.events import Event, EventPhoto, Place, Attendee
 
 import datetime
 import simplejson
@@ -59,6 +59,35 @@ def create_event(request, team_id):
                 'event_form': form,
             }
             return render(request, 'get_together/events/create_event.html', context)
+    else:
+     return redirect('home')
+
+def add_event_photo(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'GET':
+        form = UploadEventPhotoForm()
+
+        context = {
+            'event': event,
+            'photo_form': form,
+        }
+        return render(request, 'get_together/events/add_photo.html', context)
+    elif request.method == 'POST':
+        new_photo = EventPhoto(event=event)
+        form = UploadEventPhotoForm(request.POST, request.FILES, instance=new_photo)
+        if form.is_valid():
+            form.save()
+            return redirect(event.get_absolute_url())
+        else:
+            context = {
+                'event': event,
+                'photo_form': form,
+            }
+            return render(request, 'get_together/events/add_photo.html', context)
     else:
      return redirect('home')
 

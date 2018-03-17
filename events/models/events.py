@@ -6,6 +6,9 @@ from django.shortcuts import reverse
 
 from rest_framework import serializers
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+
 from .locale import *
 from .profiles import *
 from .search import *
@@ -183,4 +186,13 @@ class Attendee(models.Model):
 
     def __str__(self):
         return "%s at %s" % (self.user, self.event)
-    
+
+class EventPhoto(models.Model):
+    event = models.ForeignKey(Event, related_name='photos', on_delete=models.CASCADE)
+    title = models.CharField(max_length=256)
+    caption = models.TextField(null=True, blank=True)
+    src = models.ImageField(verbose_name=_('Photo'), upload_to='event_photos')
+    thumbnail = ImageSpecField(source='src',
+                                      processors=[ResizeToFill(250, 187)],
+                                      format='JPEG',
+                                      options={'quality': 60})

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
 from .models.profiles import Team, UserProfile
-from .models.events import Event, Place
+from .models.events import Event, Place, EventPhoto
 
 from datetime import time
 from time import strptime, strftime
@@ -195,6 +195,11 @@ class NewTeamEventForm(forms.ModelForm):
 
 class DeleteEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete event", required=True)
+
+class UploadEventPhotoForm(forms.ModelForm):
+    class Meta:
+        model = EventPhoto
+        fields = ['src', 'title', 'caption']
 
 class NewPlaceForm(forms.ModelForm):
     class Meta:

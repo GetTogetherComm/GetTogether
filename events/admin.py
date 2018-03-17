@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
-from .models.events import Place, Event, Attendee
+from .models.events import Place, Event, EventPhoto, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -58,6 +58,8 @@ class EventAdmin(admin.ModelAdmin):
         return event.attendees.all().count()
     attendee_count.short_description = 'Attendees'
 admin.site.register(Event, EventAdmin)
+
+admin.site.register(EventPhoto)
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'role')

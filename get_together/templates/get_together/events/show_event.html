@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
     <style>
 .gt-profile {
     position: relative;
@@ -20,7 +21,9 @@
     position: absolute;
     top: 16px;
     left: 6px;
-
+}
+.table td, .table th {
+    border-top: none;
 }
     </style>
 {% endblock %}
@@ -62,6 +65,31 @@
             </tr>
             </table>
             <br/>
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>Photos</h4><hr/></div>
+                </div>
+                <div class="row">
+                {% for photo in event.photos.all %}
+                  <div class="card mb-4 box-shadow mr-1" style="width: 250px">
+                    <div class="card-banner">
+                      <a href="{{photo.src.url}}" target="_blank">
+                      <img class="card-img-top" src="{{photo.thumbnail.url}}" alt="{{photo.title}}">
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text"><strong>{{photo.title}}</strong></p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{photo.caption}}</small>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col"><a class="btn btn-primary" href="{% url 'add-event-photo' event.id %}">Upload</a></div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-3">

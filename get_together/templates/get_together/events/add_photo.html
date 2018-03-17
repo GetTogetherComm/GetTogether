@@ -1,0 +1,14 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Add photo to {{event.name}}</h2>
+<form enctype="multipart/form-data" action="{% url "add-event-photo" event.id%}" method="post">
+{% csrf_token %}
+<table>
+{{ photo_form }}
+</table>
+<br />
+<button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}
+
