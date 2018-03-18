@@ -34,6 +34,7 @@ class SearchableSerializer(serializers.ModelSerializer):
             'event_uri',
             'event_url',
             'event_title',
+            'img_url',
             'location_name',
             'group_name',
             'venue_name',
