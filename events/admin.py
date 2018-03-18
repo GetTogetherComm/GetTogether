@@ -59,7 +59,12 @@ class EventAdmin(admin.ModelAdmin):
     attendee_count.short_description = 'Attendees'
 admin.site.register(Event, EventAdmin)
 
-admin.site.register(EventPhoto)
+class EventPhotoAdmin(admin.ModelAdmin):
+    list_display = ('title', 'event', 'view')
+    def view(self, photo):
+        return mark_safe('<a href="%s" target="_blank"><img src="%s" height="90px"></a>' % (photo.src.url, photo.thumbnail.url))
+    view.short_description = 'Photo'
+admin.site.register(EventPhoto, EventPhotoAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'role')
