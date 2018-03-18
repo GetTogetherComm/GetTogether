@@ -31,6 +31,7 @@ class SearchableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Searchable
         fields = (
+            'event_uri',
             'event_url',
             'event_title',
             'location_name',
