@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
@@ -48,7 +49,7 @@ class UserProfile(models.Model):
         if self.avatar.name.startswith('http'):
             return self.avatar.name
         else:
-            return self.avatar.url
+            return static('img/icons/users.svg')
 
     def get_timezone(self):
         try:
@@ -233,5 +234,3 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.name
-
-

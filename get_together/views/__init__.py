@@ -87,4 +87,3 @@ def home(request, *args, **kwards):
     search_form = SearchForm(initial={'distance': near_distance})
     context['search_form'] = search_form
     return render(request, 'get_together/index.html', context)
-
