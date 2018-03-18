@@ -1,3 +1,4 @@
 *.sqlite*
 *.pyc
 *local_settings.*
+.ropenproject
