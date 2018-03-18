@@ -18,7 +18,7 @@ class Command(BaseCommand):
             for record in json_data:
                 record['federation_node'] = options['url']
                 record['federation_time'] = datetime.datetime.now()
-                Searchable.objects.update_or_create(defaults=record, event_url=record['event_url'])
+                Searchable.objects.update_or_create(defaults=record, event_uri=record['event_uri'])
 
         else:
             print("No URL in options!")
