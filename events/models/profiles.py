@@ -22,7 +22,8 @@ class UserProfile(models.Model):
     avatar = ProcessedImageField(verbose_name=_("Photo Image"),
                                            upload_to='avatars',
                                            processors=[ResizeToFill(128, 128)],
-                                           format='PNG')
+                                           format='PNG',
+                                           blank=True)
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter Name'), max_length=32, blank=True, null=True)
@@ -45,7 +46,9 @@ class UserProfile(models.Model):
             return "Unknown Profile"
 
     def avatar_url(self):
-        if self.avatar.name.startswith('http'):
+        if self.avatar is None or self.avatar == '':
+            return settings.STATIC_URL + 'img/avatar_placeholder.png'
+        elif self.avatar.name.startswith('http'):
             return self.avatar.name
         else:
             return self.avatar.url

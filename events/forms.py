@@ -220,7 +220,7 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['realname', 'avatar', 'send_notifications']
+        fields = ['avatar', 'realname', 'tz', 'send_notifications']
         labels = {
             'send_notifications': _('Send me notification emails'),
         }
@@ -228,7 +228,7 @@ class UserProfileForm(forms.ModelForm):
 class ConfirmProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['realname', 'tz']
+        fields = ['avatar', 'realname', 'tz']
 
 class SendNotificationsForm(forms.ModelForm):
     class Meta:

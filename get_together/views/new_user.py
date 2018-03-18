@@ -35,7 +35,7 @@ def setup_1_confirm_profile(request):
         return render(request, 'get_together/new_user/setup_1_confirm_profile.html', context)
     elif request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
-        profile_form = ConfirmProfileForm(request.POST, instance=profile)
+        profile_form = ConfirmProfileForm(request.POST, request.FILES, instance=profile)
         if user_form.is_valid() and profile_form.is_valid():
             saved_user = user_form.save()
             profile_form.save()
