@@ -34,7 +34,7 @@
 
             <h4>Upcoming Events</h4>
             <div class="container">
-                {% for event in events_list %}
+                {% for event in upcoming_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
                     <div class="col">{{ event.place }}</div>
@@ -50,6 +50,20 @@
                 {% endif %}
             </div>
             <br/>
+
+            {% if recent_events %}
+            <h4>Recent Events</h4>
+            <div class="container">
+                {% for event in recent_events %}
+                <div class="row">
+                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.start_time }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <br/>
+            {% endif %}
         </div>
 
         <div class="col-sm-3">

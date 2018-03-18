@@ -25,10 +25,12 @@ def teams_list(request, *args, **kwargs):
 
 def show_team(request, team_id, *args, **kwargs):
     team = Team.objects.get(id=team_id)
-    team_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
     context = {
         'team': team,
-        'events_list': team_events,
+        'upcoming_event': upcoming_events,
+        'recent_events': recent_events,
         'is_member': request.user.profile in team.members.all(),
         'member_list': Member.objects.filter(team=team),
         'can_create_event': request.user.profile.can_create_event(team),
