@@ -47,8 +47,11 @@
                     </div>
             {% endfor %}
             {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info">There are no events near you.</div>
+                <div class="col-12 mb-3">
+                    <div class="alert alert-info">
+                        There are no events near you.
+                        <a class="btn btn-success" href="{% url 'create-event-team-select' %}">Create one now</a>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -86,8 +89,10 @@
             {% endfor %}
             {% else %}
                 <div class="col-12">
-                    <div class="alert alert-info">There are no teams near you.</div>
-                    <a class="btn btn-success" href="{% url 'create-team' %}">Create one now</a>
+                    <div class="alert alert-info">
+                        There are no teams near you.
+                        <a class="btn btn-success" href="{% url 'create-team' %}">Create one now</a>
+                    </div>
                 </div>
             {% endif %}
         </div>

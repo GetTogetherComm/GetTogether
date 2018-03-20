@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -32,6 +33,15 @@ def show_event(request, event_id, event_slug):
     }
     return render(request, 'get_together/events/show_event.html', context)
 
+@login_required
+def create_event_team_select(request):
+    teams = request.user.profile.moderating
+    if len(teams) == 1:
+        return redirect('create-event', team_id=teams[0].id)
+
+    return render(request, 'get_together/events/create_event_team_select.html', {'teams': teams})
+
+@login_required
 def create_event(request, team_id):
     team = Team.objects.get(id=team_id)
     if not request.user.profile.can_create_event(team):

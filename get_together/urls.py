@@ -56,6 +56,7 @@ urlpatterns = [
     path('team/<int:team_id>/+leave/', event_views.leave_team, name='leave-team'),
     path('team/<int:team_id>/+delete/', views.delete_team, name='delete-team'),
 
+    path('team/+create-event/', views.create_event_team_select, name='create-event-team-select'),
     path('team/<int:team_id>/+create-event/', views.create_event, name='create-event'),
     path('events/<int:event_id>/+edit/', views.edit_event, name='edit-event'),
     path('events/<int:event_id>/+attend/', event_views.attend_event, name='attend-event'),

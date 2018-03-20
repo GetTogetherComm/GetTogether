@@ -32,7 +32,7 @@ def show_team(request, team_id, *args, **kwargs):
         'upcoming_events': upcoming_events,
         'recent_events': recent_events,
         'is_member': request.user.profile in team.members.all(),
-        'member_list': Member.objects.filter(team=team),
+        'member_list': Member.objects.filter(team=team).order_by('-role', 'joined_date'),
         'can_create_event': request.user.profile.can_create_event(team),
         'can_edit_team': request.user.profile.can_edit_team(team),
     }

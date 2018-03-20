@@ -1,0 +1,41 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block content %}
+<h2>Select which team:</h2>
+<div class="container">
+  <div class="row">
+{% for team in teams %}
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-banner">
+          <a href="{% url 'show-team' team.id %}">
+          {% if team.category %}
+          <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
+          {% else %}
+          <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
+          {% endif %}
+          </a>
+          <p class="card-title">{{team.name}}</p>
+        </div>
+        <div class="card-body">
+          <p class="card-text"><strong>{{team.city}}</strong></p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">{{ team.members.count }} members</small>
+            <div class="btn-group">
+                <a class="btn btn-success" href="{% url 'create-event' team.id %}">Create Event</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+  </div>
+</div>
+{% endblock %}
+

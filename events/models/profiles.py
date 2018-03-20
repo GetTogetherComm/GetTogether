@@ -71,6 +71,14 @@ class UserProfile(models.Model):
         local = self.timezone.localize(dt)
         return local.astimezone(pytz.utc)
 
+    @property
+    def administering(self):
+        return [member.team for member in Member.objects.filter(user=self, role=Member.ADMIN)]
+
+    @property
+    def moderating(self):
+        return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR))]
+
     def can_create_event(self, team):
         try:
             if self.user.is_superuser:
@@ -81,9 +89,7 @@ class UserProfile(models.Model):
             return False
         if team.owner_profile == self:
             return True
-        if self in team.admin_profiles.all():
-            return True
-        if self in team.contact_profiles.all():
+        if self in team.moderators:
             return True
         return False
 
@@ -97,7 +103,7 @@ class UserProfile(models.Model):
             return True
         if event.team.owner_profile == self:
             return True
-        if self in event.team.admin_profiles.all():
+        if self in event.team.moderators:
             return True
         return False
 
@@ -109,7 +115,7 @@ class UserProfile(models.Model):
             return False
         if team.owner_profile == self:
             return True
-        if self in team.admin_profiles.all():
+        if self in team.moderators:
             return True
         return False
 
@@ -192,6 +198,14 @@ class Team(models.Model):
             return str(self.country)
         else:
             return ''
+
+    @property
+    def administrators(self):
+        return [member.user for member in Member.objects.filter(team=self, role=Member.ADMIN)]
+
+    @property
+    def moderators(self):
+        return [member.user for member in Member.objects.filter(team=self, role__in=(Member.ADMIN, Member.MODERATOR))]
 
     def __str__(self):
         return u'%s' % (self.name)

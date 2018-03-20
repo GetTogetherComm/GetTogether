@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Plan a Get Together</h2>
+<h2>Plan a <strong>{{team.name}}</strong> get together</h2>
 <form action="{% url "create-event" team.id%}" method="post">
 {% csrf_token %}
 <div class="form-group">
