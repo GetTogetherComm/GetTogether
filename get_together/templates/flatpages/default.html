@@ -1,0 +1,8 @@
+{% extends "get_together/base.html" %}
+{% load markup %}
+
+{% block title %}{{ flatpage.title }}{% endblock %}
+
+{% block content %}
+{{ flatpage.content|markdown }}
+{% endblock %}
