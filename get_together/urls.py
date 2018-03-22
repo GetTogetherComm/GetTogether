@@ -66,6 +66,12 @@ urlpatterns = [
     path('events/<int:event_id>/+photo/', views.add_event_photo, name='add-event-photo'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
 
+    path('org/<str:org_slug>/', views.show_org, name='show-org'),
+    path('org/<str:org_slug>/+create-event/', views.create_common_event, name='create-common-event'),
+    path('common/<int:event_id>/+share/', views.share_common_event, name='share-common-event'),
+    path('common/<int:event_id>/+create-event/', views.create_common_event_team_select, name='create-common-event-team-select'),
+    path('common/<int:event_id>/<str:event_slug>/', views.show_common_event, name='show-common-event'),
+
     path('places/', views.places_list, name='places'),
     path('places/<int:place_id>/', views.show_place, name='show-place'),
     path('+create-place/', views.create_place, name='create-place'),

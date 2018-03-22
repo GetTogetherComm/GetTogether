@@ -3,13 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, JsonResponse
 
-from events.models.profiles import Team, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm, UploadEventPhotoForm
+from events.models.profiles import Team, Organization, UserProfile, Member
+from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
 
-from events.models.events import Event, EventPhoto, Place, Attendee
+from events.models.events import Event, CommonEvent, EventPhoto, Place, Attendee
 
 import datetime
 import simplejson
@@ -48,23 +48,30 @@ def create_event(request, team_id):
         messages.add_message(request, messages.WARNING, message=_('You can not create events for this team.'))
         return redirect('show-team', team_id=team.pk)
 
+    new_event = Event(team=team, created_by=request.user.profile)
+
+
     if request.method == 'GET':
-        form = NewTeamEventForm()
+        if 'common' in request.GET and request.GET['common'] != '':
+            new_event.parent = CommonEvent.objects.get(id=request.GET['common'])
+        form = NewTeamEventForm(instance=new_event)
 
         context = {
+            'event': new_event,
             'team': team,
             'event_form': form,
         }
         return render(request, 'get_together/events/create_event.html', context)
     elif request.method == 'POST':
-        form = NewTeamEventForm(request.POST)
+        if 'common' in request.POST and request.POST['common'] != '':
+            new_event.parent = CommonEvent.objects.get(id=request.POST['common'])
+        form = NewTeamEventForm(request.POST, instance=new_event)
         if form.is_valid:
-            form.instance.team = team
-            form.instance.created_by = request.user.profile
             new_event = form.save()
             return redirect('add-place', new_event.id)
         else:
             context = {
+                'event': new_event,
                 'team': team,
                 'event_form': form,
             }
@@ -199,5 +206,62 @@ def delete_event(request, event_id):
             return render(request, 'get_together/events/delete_event.html', context)
     else:
      return redirect('home')
+
+def show_common_event(request, event_id, event_slug):
+    event = CommonEvent.objects.get(id=event_id)
+    context = {
+        'org': event.organization,
+        'common_event': event,
+        'can_edit_event': False,
+    }
+    return render(request, 'get_together/orgs/show_common_event.html', context)
+
+@login_required
+def create_common_event(request, org_slug):
+    org = Organization.objects.get(slug=org_slug)
+    if not request.user.profile.can_create_common_event(org):
+        messages.add_message(request, messages.WARNING, message=_('You can not create events for this org.'))
+        return redirect('show-org', org_id=org.pk)
+
+    new_event = CommonEvent(organization=org, created_by=request.user.profile)
+    if request.method == 'GET':
+        form = NewCommonEventForm(instance=new_event)
+
+        context = {
+            'org': org,
+            'event_form': form,
+        }
+        return render(request, 'get_together/orgs/create_common_event.html', context)
+    elif request.method == 'POST':
+        form = NewCommonEventForm(request.POST, instance=new_event)
+        if form.is_valid:
+            new_event = form.save()
+            return redirect('show-common-event', new_event.id, new_event.slug)
+        else:
+            context = {
+                'org': org,
+                'event_form': form,
+            }
+            return render(request, 'get_together/orgs/create_common_event.html', context)
+    else:
+     return redirect('home')
+
+def share_common_event(request, event_id):
+    event = CommonEvent.objects.get(id=event_id)
+    context = {
+        'event': event,
+    }
+    return render(request, 'get_together/orgs/share_common_event.html', context)
+
+@login_required
+def create_common_event_team_select(request, event_id):
+    teams = request.user.profile.moderating
+    if len(teams) == 1:
+        return redirect(reverse('create-event', kwargs={'team_id':teams[0].id}) + '?common=%s'%event_id)
+    context = {
+        'common_event_id': event_id,
+        'teams': teams
+    }
+    return render(request, 'get_together/orgs/create_common_event_team_select.html', context)
 
 

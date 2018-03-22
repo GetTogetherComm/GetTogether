@@ -1,0 +1,111 @@
+{% extends "get_together/base.html" %}
+{% load markup static %}
+
+{% block add_to_totle %} | {{common_event.name}}{% endblock %}
+
+{% block meta %}
+  <meta property="og:url"           content="{{common_event.get_full_url}}" />
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="{{common_event.name}}" />
+  <meta property="og:description"   content="{{common_event.summary}}" />
+  <meta property="og:image"         content="{{common_event.category.img_url}}" />
+{% endblock %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+    <style>
+.gt-profile {
+    position: relative;
+}
+.gt-profile .gt-profile-badges {
+    position: absolute;
+    top: 16px;
+    left: 6px;
+}
+.table td, .table th {
+    border-top: none;
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-md-9">
+            <h2>{{ common_event.name }}
+                {% if can_edit_event %}
+                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm">Edit Event</a>
+                {% endif %}
+                <a href="{% url 'share-common-event' common_event.id %}" class="btn btn-primary btn-sm">Share</a>
+            </h2><p class="text-muted">Organized by <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p><hr/>
+
+            <p>{{ common_event.summary|markdown }}</p>
+
+            <table class="table">
+            <tr>
+	            <td><b>Time:</b></td><td>{{ common_event.start_time }} - {{ common_event.end_time }}</td>
+            </tr>
+            <tr>
+	            <td><b>Category:</b></td><td>{{ common_event.category.name }}</td>
+            </tr>
+            {% if common_event.place %}
+            <tr>
+	            <td><b>Place:</b></td><td>
+                          <a class="" href="{% url 'show-place' common_event.place.id %}">{{ common_event.place.name }}</a>
+	            </td>
+            </tr>
+            {% endif %}
+            {% if common_event.web_url %}
+            <tr>
+	            <td><b>Website:</b></td><td><a href="{{ common_event.web_url }}" target="_blank">{{ common_event.web_url }}</a></td>
+            </tr>
+            {% endif %}
+            {% if common_event.announce_url %}
+            <tr>
+	            <td><b>Announcement:</b></td><td><a href="{{ common_event.announce_url }}" target="_blank">{{ common_event.announce_url }}</a></td>
+            </tr>
+            {% endif %}
+            </table>
+            <br/>
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>Participating Teams</h4><hr/></div>
+                </div>
+                <div class="row">
+                {% for event in common_event.participating_events.all %}
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <div class="card-banner">
+                          {% if event.team.category %}
+                          <img class="card-img-top" src="{{event.team.category.img_url}}" alt="{{event.name}}">
+                          {% else %}
+                          <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{event.name}}">
+                          {% endif %}
+                          <p class="card-title">{{event.team.name}}</p>
+                        </div>
+                        <div class="card-body">
+                          <p class="card-text"><strong><a class="card-link" href="{{event.get_absolute_url}}">{{event.name}}</a></strong></p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ event.start_time }}</small>
+                            <div class="btn-group">
+                                <a class="btn btn-primary" href="{{ event.get_absolute_url }}">View</a></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <br/><a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">Host an event</a>
+                    </div>
+                </div>
+                    <br />
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

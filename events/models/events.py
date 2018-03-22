@@ -222,8 +222,17 @@ class CommonEvent(models.Model):
     topics = models.ManyToManyField('Topic', blank=True)
     tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
 
+    def get_absolute_url(self):
+        return reverse('show-common-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
+
+    def get_full_url(self):
+        site = self.organization.site
+        return "https://%s%s" % (site.domain, self.get_absolute_url())
+
+    @property
+    def slug(self):
+        return slugify(self.name)
+
     def __str__(self):
         return self.name
 
-
->>>>>>> Add CommonEvent model

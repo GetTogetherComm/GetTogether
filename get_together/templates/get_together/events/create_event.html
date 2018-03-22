@@ -6,8 +6,11 @@
 
 {% block content %}
 <h2>Plan a <strong>{{team.name}}</strong> get together</h2>
+{% if event.parent %}<p class="text-muted">As part of <a href="{% url "show-common-event" event.parent.id event.parent.slug %}">{{ event.parent.name }}</a></p>{% endif %}
+
 <form action="{% url "create-event" team.id%}" method="post">
 {% csrf_token %}
+{% if event.parent %}<<input type="hidden" name="common" value="{{event.parent.id}}" />{% endif %}
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />

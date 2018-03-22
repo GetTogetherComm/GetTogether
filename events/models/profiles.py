@@ -107,6 +107,18 @@ class UserProfile(models.Model):
             return True
         return False
 
+    def can_create_common_event(self, org):
+        try:
+            if self.user.is_superuser:
+                return True
+        except:
+            return False
+        if not self.user_id:
+            return False
+        if org.owner_profile == self:
+            return True
+        return False
+
     def can_edit_team(self, team):
         try:
             if self.user.is_superuser:
@@ -154,6 +166,7 @@ AnonymousUser.profile = property(_getAnonProfile)
 
 class Organization(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
+    slug = models.CharField(max_length=256, null=False, blank=False)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
     owner_profile = models.ForeignKey(UserProfile, related_name='owned_orgs', blank=False, null=True, on_delete=models.SET_NULL)

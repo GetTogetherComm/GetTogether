@@ -6,7 +6,6 @@ from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
 from .models.events import Place, Event, EventPhoto, CommonEvent, Attendee
-from .models.events import Place, Event, CommonEvent, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)

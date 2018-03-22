@@ -1,0 +1,99 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+{% block extra_google_analytics %}
+    gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}', {'page_path': '/org/+create-event/'});
+{% endblock %}
+
+{% block content %}
+<h2>Plan a <strong>{{org.name}}</strong> event</h2>
+<form action="{% url "create-common-event" org.slug%}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{% include "events/event_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $.datepicker.setDefaults({
+        showOn: 'focus',
+        dateFormat: 'yy-mm-dd',
+    });
+
+    $("#id_start_time_0").datepicker({altField: "#id_end_time_0", altFormat: "yy-mm-dd"});
+
+    $("#id_end_time_0").datepicker();
+
+    $("#country_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/countries/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        }
+    })
+
+    $("#spr_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/spr/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        }
+    })
+
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        }
+    })
+
+    $("#place_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/places/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        }
+    })
+
+    $("#id_category").selectmenu();
+    $("#id_tz").selectmenu();
+});
+
+</script>
+{% endblock %}
