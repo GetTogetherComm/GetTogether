@@ -45,6 +45,11 @@
             <p>{{ event.summary|markdown }}</p>
 
             <table class="table">
+            {% if event.parent %}
+            <tr>
+	            <td><b>Part of:</b></td><td><a href="{{ event.parent.get_absolute_url }}" target="_blank">{{ event.parent.name }}</a></td>
+            </tr>
+            {% endif %}
             <tr>
 	            <td><b>Time:</b></td><td>{{ event.start_time }} - {{ event.end_time }}</td>
             </tr><tr>
@@ -57,12 +62,12 @@
                           No place selected yet.
                       {% endif %}
 	            </td>
-            </tr><tr>
-            {% if event.web_url %}
-            </tr><tr>
-	            <td><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
-            {% endif %}
             </tr>
+            {% if event.web_url %}
+            <tr>
+	            <td><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
+            </tr>
+            {% endif %}
             </table>
             <br/>
             <div class="container">

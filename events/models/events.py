@@ -55,6 +55,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 class Event(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    parent = models.ForeignKey('CommonEvent', related_name='participating_events', null=True, blank=True, on_delete=models.SET_NULL)
 
     start_time = models.DateTimeField(help_text=_('Local date and time that the event starts'), verbose_name=_('Local Start Time'), db_index=True)
     end_time = models.DateTimeField(help_text=_('Local date and time that the event ends'), verbose_name=_('Local End Time'), db_index=True)
@@ -196,3 +197,42 @@ class EventPhoto(models.Model):
                                       processors=[ResizeToFill(250, 187)],
                                       format='JPEG',
                                       options={'quality': 60})
+
+class CommonEvent(models.Model):
+    name = models.CharField(max_length=150, verbose_name=_('Event Name'))
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('CommonEvent', related_name='sub_events', null=True, blank=True, on_delete=models.SET_NULL)
+
+    start_time = models.DateTimeField(help_text=_('Local date and time that the event starts'), verbose_name=_('Local Start Time'), db_index=True)
+    end_time = models.DateTimeField(help_text=_('Local date and time that the event ends'), verbose_name=_('Local End Time'), db_index=True)
+    summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
+
+    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
+    spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.SET_NULL)
+    city = models.ForeignKey(City, null=True, blank=True, on_delete=models.SET_NULL)
+    place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.SET_NULL)
+
+    web_url = models.URLField(verbose_name=_('Website'), help_text=_('URL for the event'), max_length=200, blank=True, null=True)
+    announce_url = models.URLField(verbose_name=_('Announcement'), help_text=_('URL for the announcement'), max_length=200, blank=True, null=True)
+
+    created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=datetime.datetime.now, db_index=True)
+
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
+    topics = models.ManyToManyField('Topic', blank=True)
+    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
+
+    def get_absolute_url(self):
+        return reverse('show-common-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
+
+    def get_full_url(self):
+        site = self.organization.site
+        return "https://%s%s" % (site.domain, self.get_absolute_url())
+
+    @property
+    def slug(self):
+        return slugify(self.name)
+
+    def __str__(self):
+        return self.name
+

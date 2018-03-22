@@ -1,0 +1,76 @@
+{% extends "get_together/base.html" %}
+{% load markup %}
+
+{% block styles %}
+    <style>
+.gt-profile {
+    position: relative;
+}
+.gt-profile .gt-profile-badges {
+    position: absolute;
+    top: 16px;
+    left: 6px;
+
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2>Welcome to {{ org.name }}
+            </h2><hr/>
+
+            <h4>Upcoming Events</h4>
+            <div class="container">
+                {% for event in upcoming_events %}
+                <div class="row">
+                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.start_time }}</div>
+                </div>
+                {% endfor %}
+                {% if can_create_event %}
+                <div class="row">
+                    <div class="col">
+                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary">Plan a Get Together</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <br/>
+
+            {% if recent_events %}
+            <h4>Recent Events</h4>
+            <div class="container">
+                {% for event in recent_events %}
+                <div class="row">
+                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.start_time }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <br/>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-3">
+            <div class="container">
+            <h4>Members</h4><hr/>
+                {% for member in member_list %}
+                <div class="row mb-3">
+                    <div class="col media gt-profile">
+                      <div class="media-body">
+                          <h6 class="mt-0 mb-0"><a href="{% url 'show-team' member.id %}" title="{{member.name}}">{{member.name}}</a></h6>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

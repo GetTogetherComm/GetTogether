@@ -6,10 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
-from events.models.profiles import Team, UserProfile, Member
+from events.models.profiles import Organization, Team, UserProfile, Member
 from events.forms import TeamForm, NewTeamForm, DeleteTeamForm
 
-from events.models.events import Event, Place, Attendee
+from events.models.events import Event, CommonEvent, Place, Attendee
 
 import datetime
 import simplejson
@@ -119,5 +119,18 @@ def delete_team(request, team_id):
             return render(request, 'get_together/teams/delete_team.html', context)
     else:
      return redirect('home')
+
+def show_org(request, org_slug):
+    org = Organization.objects.get(slug=org_slug)
+    upcoming_events = CommonEvent.objects.filter(organization=org, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    recent_events = CommonEvent.objects.filter(organization=org, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
+    context = {
+        'org': org,
+        'upcoming_events': upcoming_events,
+        'recent_events': recent_events,
+        'member_list': Team.objects.filter(organization=org).order_by('name'),
+        'can_create_event': request.user.profile.can_create_common_event(org),
+    }
+    return render(request, 'get_together/orgs/show_org.html', context)
 
 

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
 from .models.profiles import Team, UserProfile
-from .models.events import Event, Place, EventPhoto
+from .models.events import Event, CommonEvent, Place, EventPhoto
 
 from datetime import time
 from time import strptime, strftime
@@ -245,3 +245,33 @@ class SearchForm(forms.Form):
         widgets ={
             'city': Lookup(source='/api/cities/', label='name'),
         }
+
+class NewCommonEventForm(forms.ModelForm):
+    class Meta:
+        model = CommonEvent
+        fields = [
+            'name',
+            'start_time',
+            'end_time',
+            'summary',
+
+            'country',
+            'spr',
+            'city',
+            'place',
+
+            'web_url',
+            'announce_url',
+
+            'category',
+            'tags',
+        ]
+        widgets ={
+            'country': Lookup(source='/api/countries/', label='name'),
+            'spr': Lookup(source='/api/spr/', label='name'),
+            'city': Lookup(source='/api/cities/', label='name'),
+            'place': Lookup(source='/api/places/', label='name'),
+            'start_time': DateTimeWidget,
+            'end_time': DateTimeWidget
+        }
+
