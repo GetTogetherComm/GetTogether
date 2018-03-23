@@ -77,7 +77,6 @@ form {
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          {% if request.user.is_authenticated %}
           <li class="nav-item{% if request.resolver_match.url_name == "events" %} active{% endif %}">
             <a class="nav-link" href="{% url 'events' %}">Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
@@ -89,7 +88,6 @@ form {
             <a class="nav-link" href="{% url 'places' %}">Places{% if request.resolver_match.url_name == "places" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% endcomment %}
-          {% endif %}
         </ul>
         <ul class="navbar-nav">
             {% if request.user.is_authenticated %}

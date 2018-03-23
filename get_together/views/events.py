@@ -16,8 +16,19 @@ import simplejson
 
 # Create your views here.
 def events_list(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return redirect('all-events')
     events = Event.objects.filter(attendees=request.user.profile, end_time__gt=datetime.datetime.now()).order_by('start_time')
     context = {
+        'active': 'my',
+        'events_list': events,
+    }
+    return render(request, 'get_together/events/list_events.html', context)
+
+def events_list_all(request, *args, **kwargs):
+    events = Event.objects.filter(end_time__gt=datetime.datetime.now()).order_by('start_time')
+    context = {
+        'active': 'all',
         'events_list': events,
     }
     return render(request, 'get_together/events/list_events.html', context)

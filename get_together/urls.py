@@ -48,14 +48,16 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.show_profile, name='show-profile'),
 
     path('events/', views.events_list, name='events'),
-    path('+create-team/', views.create_team, name='create-team'),
+    path('events/all/', views.events_list_all, name='all-events'),
     path('teams/', views.teams_list, name='teams'),
+    path('teams/all/', views.teams_list_all, name='all-teams'),
     path('team/<int:team_id>/', views.show_team, name='show-team'),
     path('team/<int:team_id>/+edit/', views.edit_team, name='edit-team'),
     path('team/<int:team_id>/+join/', event_views.join_team, name='join-team'),
     path('team/<int:team_id>/+leave/', event_views.leave_team, name='leave-team'),
     path('team/<int:team_id>/+delete/', views.delete_team, name='delete-team'),
 
+    path('+create-team/', views.create_team, name='create-team'),
     path('team/+create-event/', views.create_event_team_select, name='create-event-team-select'),
     path('team/<int:team_id>/+create-event/', views.create_event, name='create-event'),
     path('events/<int:event_id>/+edit/', views.edit_event, name='edit-event'),

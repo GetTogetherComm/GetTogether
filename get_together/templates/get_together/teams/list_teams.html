@@ -6,8 +6,15 @@
 {% endblock %}
 
 {% block content %}
-<h3>Your Teams</h3>
 <div class="fluid-container">
+        <div clas="row">
+            <div class="col-12 text-center mb-2">
+                <div class="btn-group" role="group">
+                  <a class="btn {% if not request.user.is_authenticated %}disabled {% endif %}{% if active == 'my'  %}btn-primary{% else %}btn-secondary{% endif %}" href="{% url 'teams' %}">My Teams</a>
+                  <a class="btn {% if active == 'all' %}btn-primary{% else %}btn-secondary{% endif %}" href="{% url 'all-teams' %}">All Teams</a>
+                </div>
+            </div>
+        </div>
         <div class="row">
         {% for team in teams %}
             <div class="col-md-4">
