@@ -104,7 +104,7 @@
                                 {% endif %}
                             </div>
                         {% endrecursetree %}
-                        {% if can_edit_event %}
+                        {% if request.user.is_authenticated %}
                         <div class="list-group-item pl-5">
                         <form action="{% url 'comment-event' event.id %}" method="POST">
                             {% csrf_token %}
