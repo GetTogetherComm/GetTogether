@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
 from .models.profiles import Team, UserProfile
-from .models.events import Event, CommonEvent, Place, EventPhoto
+from .models.events import Event, EventComment ,CommonEvent, Place, EventPhoto
 
 from datetime import time
 from time import strptime, strftime
@@ -200,6 +200,11 @@ class UploadEventPhotoForm(forms.ModelForm):
     class Meta:
         model = EventPhoto
         fields = ['src', 'title', 'caption']
+
+class EventCommentForm(forms.ModelForm):
+    class Meta:
+        model = EventComment
+        fields = ['body']
 
 class NewPlaceForm(forms.ModelForm):
     class Meta:

@@ -7,9 +7,10 @@ from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 
 from .models.search import Searchable, SearchableSerializer
-from .models.events import Event, Place, PlaceSerializer, Attendee
+from .models.events import Event, EventComment, Place, PlaceSerializer, Attendee
 from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
 from .models.profiles import Team, UserProfile, Member
+from .forms import EventCommentForm
 
 import simplejson
 
@@ -124,5 +125,20 @@ def attend_event(request, event_id):
         return redirect(event.get_absolute_url())
     new_attendee = Attendee.objects.create(event=event, user=request.user.profile, role=Attendee.NORMAL, status=Attendee.YES)
     messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
+    return redirect(event.get_absolute_url())
+
+def comment_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.user.is_anonymous:
+        messages.add_message(request, messages.WARNING, message=_("You must be logged in to comment."))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'POST':
+        new_comment = EventComment(author=request.user.profile, event=event)
+        comment_form = EventCommentForm(request.POST, instance=new_comment)
+        if comment_form.is_valid():
+            new_comment = comment_form.save()
+            return redirect(event.get_absolute_url()+'#comment-%s'%new_comment.id)
+
     return redirect(event.get_absolute_url())
 

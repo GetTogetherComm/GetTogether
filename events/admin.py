@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
-from .models.events import Place, Event, EventPhoto, CommonEvent, Attendee
+from .models.events import Place, Event, EventComment, EventPhoto, CommonEvent, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -60,11 +60,17 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 class EventPhotoAdmin(admin.ModelAdmin):
+    raw_id_fields = ('event',)
     list_display = ('title', 'event', 'view')
     def view(self, photo):
         return mark_safe('<a href="%s" target="_blank"><img src="%s" height="90px"></a>' % (photo.src.url, photo.thumbnail.url))
     view.short_description = 'Photo'
 admin.site.register(EventPhoto, EventPhotoAdmin)
+
+class EventCommentAdmin(admin.ModelAdmin):
+    raw_id_fields = ('event', 'author')
+    list_display = ('event', 'author', 'status', 'created_time')
+admin.site.register(EventComment, EventCommentAdmin)
 
 class CommonEventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'city', 'spr', 'country')

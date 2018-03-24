@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import reverse
 
 from rest_framework import serializers
+from mptt.models import MPTTModel, TreeForeignKey
 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
@@ -197,6 +198,26 @@ class EventPhoto(models.Model):
                                       processors=[ResizeToFill(250, 187)],
                                       format='JPEG',
                                       options={'quality': 60})
+
+class EventComment(MPTTModel):
+    REMOVED=-1
+    PENDING=0
+    APPROVED=1
+
+    STATUSES = [
+        (REMOVED, _("Removed")),
+        (PENDING, _("Pending")),
+        (APPROVED, _("Approved")),
+    ]
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name='comments', on_delete=models.CASCADE)
+    body = models.TextField()
+    created_time = models.DateTimeField(default=datetime.datetime.now, db_index=True)
+    status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return '%s at %s' % (self.author, self.created_time)
 
 class CommonEvent(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))

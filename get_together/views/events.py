@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, Organization, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
+from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, EventCommentForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
 
 from events.models.events import Event, CommonEvent, EventPhoto, Place, Attendee
 
@@ -35,9 +35,11 @@ def events_list_all(request, *args, **kwargs):
 
 def show_event(request, event_id, event_slug):
     event = Event.objects.get(id=event_id)
+    comment_form = EventCommentForm()
     context = {
         'team': event.team,
         'event': event,
+        'comment_form': comment_form,
         'is_attending': request.user.profile in event.attendees.all(),
         'attendee_list': Attendee.objects.filter(event=event),
         'can_edit_event': request.user.profile.can_edit_event(event),

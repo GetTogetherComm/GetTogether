@@ -18,9 +18,9 @@
     position: relative;
 }
 .gt-profile .gt-profile-badges {
-    position: absolute;
+    position: relative;
     top: 16px;
-    left: 6px;
+    left: -42px;
 }
 .table td, .table th {
     border-top: none;
@@ -69,10 +69,76 @@
             </tr>
             {% endif %}
             </table>
-            <br/>
+
+            <div class="container mt-3">
+            </div>
+
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col"><hr/><h4>Comments</h4></div>
+                </div>
+                <div class="row">
+                    {% load mptt_tags %}
+                    <ul class="col list-group">
+                        {% recursetree event.comments.all %}
+                            <div class="list-group-item flex-container">
+                              <div class="row w-100 ml-0">
+                                  <div class="w-100 d-flex justify-content-between">
+                                      <div class="media gt-profile">
+                                          <img class="mr-1 gt-profile-avatar" src="{{node.author.avatar_url}}" width="32px" height="32px">
+                                          <span class="gt-profile-badges">{% for badge in node.author.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
+                                          <a href="{% url 'show-profile' node.author.id %}" title="{{node.author}}'s profile">{{node.author}}</a>
+                                      </div>
+                                      <span>{{ node.created_time }}</span>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col ml-5">
+                                      <p style="white-space: pre-wrap;">{{ node.body }}</p>
+                                  </div>
+                              </div>
+                                {% if not node.is_leaf_node %}
+                                    <ul class="list-group children w-100 mt-1">
+                                        {{ children }}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        {% endrecursetree %}
+                        {% if can_edit_event %}
+                        <div class="list-group-item pl-5">
+                        <form action="{% url 'comment-event' event.id %}" method="POST">
+                            {% csrf_token %}
+                            {{ comment_form.body }}
+                            <br/><button type="submit" class="btn btn-primary">Comment</button>
+                        </form>
+                        </div>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
             <div class="container">
                 <div class="row">
-                    <div class="col"><h4>Photos</h4><hr/></div>
+                    <div class="col"><h4>Attendees ({{attendee_list.count}})</h4><hr/></div>
+                </div>
+                {% for attendee in attendee_list %}
+                <div class="row mb-3">
+                    <div class="col media gt-profile">
+                      <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar_url}}" width="32px" height="32px">
+                      <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
+                      <div class="media-body">
+                        <h6 class="mt-2 mb-0">
+                          <a href="{% url 'show-profile' attendee.user.id %}" title="{{attendee.user}}'s profile">{{attendee.user}}</a>
+                          <span class="badge badge-success align-top">{{ attendee.status_name }}</span></h6>
+                        {% if attendee.role > 0 %}<small class="text-muted">{{ attendee.role_name }}</small>{% endif %}
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col"><hr/><h4>Photos</h4></div>
                 </div>
                 <div class="row">
                 {% for photo in event.photos.all %}
@@ -96,28 +162,6 @@
                     <div class="col"><a class="btn btn-primary" href="{% url 'add-event-photo' event.id %}">Upload</a></div>
                 </div>
                 {% endif %}
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col"><h4>Attendees ({{attendee_list.count}})</h4><hr/></div>
-                </div>
-                {% for attendee in attendee_list %}
-                <div class="row mb-3">
-                    <div class="col media gt-profile">
-                      <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar_url}}" width="32px" height="32px">
-                      <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
-                      <div class="media-body">
-                        <h6 class="mt-2 mb-0">
-                          <a href="{% url 'show-profile' attendee.user.id %}" title="{{attendee.user}}'s profile">{{attendee.user}}</a>
-                          <span class="badge badge-success align-top">{{ attendee.status_name }}</span></h6>
-                        {% if attendee.role > 0 %}<small class="text-muted">{{ attendee.role_name }}</small>{% endif %}
-                      </div>
-                    </div>
-                </div>
-                {% endfor %}
             </div>
         </div>
     </div>

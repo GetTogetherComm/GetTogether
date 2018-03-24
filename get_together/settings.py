@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'social_django',
     'imagekit',
     'imagekit_cropper',
+    'mptt',
 
     'get_together',
     'events',
