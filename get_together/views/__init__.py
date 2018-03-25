@@ -43,6 +43,7 @@ def home(request, *args, **kwards):
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
 
+    city=None
     ll = None
     if "city" in request.GET and request.GET.get("city"):
         context['city_search'] = True
@@ -56,6 +57,22 @@ def home(request, *args, **kwards):
             if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
                 ll = g.latlng
                 context['geoip_lookup'] = True
+
+                try:
+                    city_distance = 1 #km
+                    while city is None and city_distance < 100:
+                        minlat = ll[0]-(city_distance/KM_PER_DEGREE_LAT)
+                        maxlat = ll[0]+(city_distance/KM_PER_DEGREE_LAT)
+                        minlng = ll[1]-(city_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(ll[0]))))
+                        maxlng = ll[1]+(city_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(ll[0]))))
+                        nearby_cities = City.objects.filter(latitude__gte=minlat, latitude__lte=maxlat, longitude__gte=minlng, longitude__lte=maxlng)
+                        if len(nearby_cities) == 0:
+                            city_distance += 1
+                        else:
+                            city = nearby_cities[0]
+                except:
+                    pass # City lookup failed
+
         except Exception as err:
             context['geoip_lookup'] = False
             print("Geocoder lookup failed for %s" % client_ip, err)
@@ -84,7 +101,7 @@ def home(request, *args, **kwards):
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()
 
-    search_form = SearchForm(initial={'distance': near_distance})
+    search_form = SearchForm(initial={'city': city.id, 'distance': near_distance})
     context['search_form'] = search_form
     return render(request, 'get_together/index.html', context)
 

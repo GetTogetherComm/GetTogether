@@ -1,0 +1,40 @@
+body {
+  padding-top: 5rem;
+}
+.footer {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-top: #cfcfcf 1px solid;
+  background-color: #f5f5f5;
+  color: #aaaaaa;
+}
+.footer ul {
+    display: inline;
+    list-style-type: none;
+    margin-left: 0.5em;
+}
+.footer ul li {
+    display: inline;
+    margin-left: 0.5em;
+}
+.footer a {
+  text-decoration: none;
+  color: inherit;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+form {
+  display: inline;
+}
+.ui-selectmenu-menu .ui-menu {
+    height: 200px;
+}
+.gt_lookup .ui-selectmenu-icon.ui-icon {
+    background-position: 0px 0px;
+    background-image: url(/static/img/search_icon.png);
+    width: 16px;
+    height: 16px;
+}
+

@@ -22,7 +22,7 @@
         _drawSearch: function() {
             var self = this;
             var selectField = this.element[0];
-            this.searchField = $('<input type="text" placeholder="Search" style="width: 100%;">');
+            this.searchField = $('<input type="text" class="ui-lookup-search border border-primary" placeholder="Search" style="width: 100%;">');
             //this._addClass( this.searchField, "ui-selectmenu-menu", "ui-front" );
             this.searchField.keyup(function() {
                 self.options.search(this.value, function(searchText, results){
@@ -39,8 +39,11 @@
                 });
             });
             this.menuWrap.prepend(this.searchField);
+        },
+        open: function(event) {
+            this._super()
+            this.searchField.focus()
         }
-
     });
 
 }(jQuery));

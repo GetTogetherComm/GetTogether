@@ -4,28 +4,12 @@ from django.forms.widgets import TextInput, Media
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
+from .models.locale import Country, SPR, City
 from .models.profiles import Team, UserProfile
 from .models.events import Event, EventComment ,CommonEvent, Place, EventPhoto
 
 from datetime import time
 from time import strptime, strftime
-
-class LookupMedia(Media):
-    def render(self):
-        return mark_safe('''<script type="text/javascript"><script>
-$(document).ready(function(){
-    $("#{{ widget.name }}_search").keyup(function() {
-	var searchText = this.value;
-	$.getJSON("{{ widget.source }}?q="+searchText, function(data) {
-	    var selectField = $("#{{ widget.name }}_select");
-	    selectField.empty();
-	    $.each(data, function(){
-		selectField.append('<option value="'+ this.{{ widget.key }} +'">'+ this.{{ widget.label }} + '</option>')
-	    });
-	});
-    });
-});
-</script>''')
 
 class Lookup(TextInput):
     input_type = 'text'
@@ -34,7 +18,7 @@ class Lookup(TextInput):
     checked_attribute = {'selected': True}
     option_inherits_attrs = False
 
-    def __init__(self, source='#', key="id", label="name", attrs=None):
+    def __init__(self, source, key="id", label='__str__', attrs=None):
         super().__init__(attrs)
         self.source = source
         self.key = key
@@ -42,14 +26,18 @@ class Lookup(TextInput):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context['widget']['source'] = self.source
-        context['widget']['key'] = self.key
-        context['widget']['label'] = self.label
         return context
 
     def format_value(self, value):
         if value is not None:
-            return mark_safe('<option value="%s">%s</option>' % (value, _('No change')))
+            lookup_query = {self.key: value}
+            lookup_object = self.source.objects.get(**lookup_query)
+            lookup_field = getattr(lookup_object, self.label)
+            if callable(lookup_field):
+                lookup_value = lookup_field()
+            else:
+                lookup_value = lookup_field
+            return mark_safe('<option value="%s">%s</option>' % (value, lookup_value))
         else:
             return mark_safe('<option value="">--------</option>')
 
@@ -152,7 +140,7 @@ class TeamForm(forms.ModelForm):
         model = Team
         fields = ['name', 'description', 'category', 'city', 'web_url', 'tz']
         widgets = {
-            'city': Lookup(source='/api/cities/', label='name'),
+            'city': Lookup(source=City),
         }
         raw_id_fields = ('city')
     def __init__(self, *args, **kwargs):
@@ -164,7 +152,7 @@ class NewTeamForm(forms.ModelForm):
         model = Team
         fields = ['name', 'description', 'category', 'city', 'web_url', 'tz']
         widgets = {
-            'city': Lookup(source='/api/cities/', label='name'),
+            'city': Lookup(source=City),
         }
         raw_id_fields = ('city')
     def __init__(self, *args, **kwargs):
@@ -179,7 +167,7 @@ class TeamEventForm(forms.ModelForm):
         model = Event
         fields = ['name', 'start_time', 'end_time', 'summary', 'place', 'web_url', 'announce_url', 'tags']
         widgets = {
-            'place': Lookup(source='/api/places/', label='name'),
+            'place': Lookup(source=Place),
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }
@@ -211,7 +199,7 @@ class NewPlaceForm(forms.ModelForm):
         model = Place
         fields = ['name', 'address', 'city', 'longitude', 'latitude', 'place_url', 'tz']
         widgets = {
-            'city': Lookup(source='/api/cities/', label='name'),
+            'city': Lookup(source=City),
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -244,11 +232,11 @@ class SendNotificationsForm(forms.ModelForm):
         }
         
 class SearchForm(forms.Form):
-    city = forms.IntegerField(required=False, widget=Lookup(source='/api/cities/', label='name'))
+    city = forms.IntegerField(required=False, widget=Lookup(source=City, label='name'))
     distance = forms.IntegerField(label=_("Distance(km)"), required=True)
     class Meta:
         widgets ={
-            'city': Lookup(source='/api/cities/', label='name'),
+            'city': Lookup(source=City, label='name'),
         }
 
 class NewCommonEventForm(forms.ModelForm):
@@ -272,10 +260,10 @@ class NewCommonEventForm(forms.ModelForm):
             'tags',
         ]
         widgets ={
-            'country': Lookup(source='/api/countries/', label='name'),
-            'spr': Lookup(source='/api/spr/', label='name'),
-            'city': Lookup(source='/api/cities/', label='name'),
-            'place': Lookup(source='/api/places/', label='name'),
+            'country': Lookup(source=Country, label='name'),
+            'spr': Lookup(source=SPR, label='name'),
+            'city': Lookup(source=City, label='name'),
+            'place': Lookup(source=Place, label='name'),
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }

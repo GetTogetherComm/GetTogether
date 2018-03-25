@@ -44,12 +44,14 @@ class Country(models.Model):
             return 'no_country'
 
 class CountrySerializer(serializers.ModelSerializer):
+    display = serializers.CharField(source='__str__', read_only=True)
     class Meta:
         model = Country
         fields = (
             'id',
             'name',
-            'code'
+            'code',
+            'display',
         )
 
 class SPR(models.Model):
@@ -94,6 +96,13 @@ class City(models.Model):
     longitude = models.FloatField(help_text=_('Longitude in Degrees East'), null=True, blank=True)
     latitude = models.FloatField(help_text=_('Latitude in Degrees North'), null=True, blank=True)
 
+    @property
+    def short_name(self):
+        if self.spr.country.name == 'United States':
+            return u'%s, %s' % (self.name, self.spr.name)
+        else:
+            return u'%s, %s' % (self.name, self.spr.country.name)
+
     def __str__(self):
         return u'%s, %s, %s' % (self.name, self.spr.name, self.spr.country.name)
 
@@ -112,6 +121,7 @@ class CitySerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'short_name',
             'spr',
             'tz',
             'slug',
