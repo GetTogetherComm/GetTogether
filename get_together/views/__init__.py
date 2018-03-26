@@ -101,7 +101,10 @@ def home(request, *args, **kwards):
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()
 
-    search_form = SearchForm(initial={'city': city.id, 'distance': near_distance})
+    initial_search = {'distance': near_distance}
+    if city is not None and city.id > 0:
+        initial_search['city'] = city.id
+    search_form = SearchForm(initial=initial_search)
     context['search_form'] = search_form
     return render(request, 'get_together/index.html', context)
 
