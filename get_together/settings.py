@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'imagekit',
     'imagekit_cropper',
     'mptt',
+    'recurrence',
 
     'get_together',
     'events',

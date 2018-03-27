@@ -1,7 +1,13 @@
 {% extends "get_together/base.html" %}
+{% load static %}
 
 {% block extra_google_analytics %}
     gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}', {'page_path': '/team/+create-event/'});
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'recurrence/css/recurrence.css' %}">
+    <script src="{% static 'recurrence/js/recurrence.js' %}"></script>
 {% endblock %}
 
 {% block content %}

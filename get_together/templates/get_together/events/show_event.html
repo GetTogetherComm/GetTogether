@@ -42,7 +42,9 @@
                 <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm">Attend</a>
                 {% endif %}
                 <a href="{% url 'share-event' event.id %}" class="btn btn-primary btn-sm">Share</a>
-            </h2><p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p><hr/>
+            </h2>
+            <p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p>
+            <hr/>
 
             <p>{{ event.summary|markdown }}</p>
 

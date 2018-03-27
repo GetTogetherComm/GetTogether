@@ -191,7 +191,7 @@ class TeamEventForm(forms.ModelForm):
 class NewTeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'summary']
+        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary']
         widgets = {
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
