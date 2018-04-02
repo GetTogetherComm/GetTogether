@@ -5,11 +5,12 @@ from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, JsonResponse
-
-from events.models.profiles import Team, Organization, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, EventCommentForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
+from django.utils import timezone
 
 from events.models.events import Event, CommonEvent, EventPhoto, Place, Attendee
+from events.models.profiles import Team, Organization, UserProfile, Member
+from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, EventCommentForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
+from events import location
 
 import datetime
 import simplejson
@@ -18,18 +19,20 @@ import simplejson
 def events_list(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect('all-events')
-    events = Event.objects.filter(attendees=request.user.profile, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    events = Event.objects.filter(attendees=request.user.profile, end_time__gt=timezone.now()).order_by('start_time')
+    geo_ip = location.get_geoip(request)
     context = {
         'active': 'my',
-        'events_list': events,
+        'events_list': sorted(events, key=lambda event: location.event_distance_from(geo_ip.latlng, event)),
     }
     return render(request, 'get_together/events/list_events.html', context)
 
 def events_list_all(request, *args, **kwargs):
-    events = Event.objects.filter(end_time__gt=datetime.datetime.now()).order_by('start_time')
+    events = Event.objects.filter(end_time__gt=timezone.now()).order_by('start_time')
+    geo_ip = location.get_geoip(request)
     context = {
         'active': 'all',
-        'events_list': events,
+        'events_list': sorted(events, key=lambda event: location.event_distance_from(geo_ip.latlng, event)),
     }
     return render(request, 'get_together/events/list_events.html', context)
 
@@ -81,6 +84,7 @@ def create_event(request, team_id):
         form = NewTeamEventForm(request.POST, instance=new_event)
         if form.is_valid:
             new_event = form.save()
+            Attendee.objects.create(event=new_event, user=request.user.profile, role=Attendee.HOST, status=Attendee.YES)
             return redirect('add-place', new_event.id)
         else:
             context = {

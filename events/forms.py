@@ -2,12 +2,14 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.forms.widgets import TextInput, Media
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
 from .models.profiles import Team, UserProfile
 from .models.events import Event, EventComment ,CommonEvent, Place, EventPhoto
 
+import pytz
 from datetime import time
 from time import strptime, strftime
 
@@ -171,6 +173,20 @@ class TeamEventForm(forms.ModelForm):
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }
+    def __init__(self, *args, **kargs):
+        super().__init__(*args, **kargs)
+        event_tz = pytz.timezone(self.instance.tz)
+        if self.instance.local_start_time: self.initial['start_time'] = self.instance.local_start_time
+        if self.instance.local_end_time: self.initial['end_time'] = self.instance.local_end_time
+        print("Initial: %s" % self.initial)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        event_tz = pytz.timezone(self.instance.tz)
+        print("Clean: %s" % cleaned_data)
+        cleaned_data['start_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['start_time']))))
+        cleaned_data['end_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['end_time']))))
+        return cleaned_data
 
 class NewTeamEventForm(forms.ModelForm):
     class Meta:
@@ -180,6 +196,20 @@ class NewTeamEventForm(forms.ModelForm):
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }
+    def __init__(self, *args, **kargs):
+        super().__init__(*args, **kargs)
+        event_tz = pytz.timezone(self.instance.tz)
+        if self.instance.local_start_time: self.initial['start_time'] = self.instance.local_start_time
+        if self.instance.local_end_time: self.initial['end_time'] = self.instance.local_end_time
+        print("Initial: %s" % self.initial)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        event_tz = pytz.timezone(self.instance.tz)
+        print("Clean: %s" % cleaned_data)
+        cleaned_data['start_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['start_time']))))
+        cleaned_data['end_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['end_time']))))
+        return cleaned_data
 
 class DeleteEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete event", required=True)

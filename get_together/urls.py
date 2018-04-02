@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from events import views as event_views
+from events import feeds
 from . import views
 
 urlpatterns = [
@@ -46,6 +47,7 @@ urlpatterns = [
     path('profile/+confirm_email/<str:confirmation_key>', views.user_confirm_email, name='confirm-email'),
     path('profile/+confirm_notifications', views.user_confirm_notifications, name='confirm-notifications'),
     path('profile/<int:user_id>/', views.show_profile, name='show-profile'),
+    path('profile/<str:account_secret>.ics', feeds.UserEventsCalendar(), name='user-event-ical'),
 
     path('events/', views.events_list, name='events'),
     path('events/all/', views.events_list_all, name='all-events'),
@@ -56,6 +58,7 @@ urlpatterns = [
     path('team/<int:team_id>/+join/', event_views.join_team, name='join-team'),
     path('team/<int:team_id>/+leave/', event_views.leave_team, name='leave-team'),
     path('team/<int:team_id>/+delete/', views.delete_team, name='delete-team'),
+    path('team/<int:team_id>/events.ics', feeds.TeamEventsCalendar(), name='team-event-ical'),
 
     path('+create-team/', views.create_team, name='create-team'),
     path('team/+create-event/', views.create_event_team_select, name='create-event-team-select'),

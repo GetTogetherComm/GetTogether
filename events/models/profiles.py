@@ -8,7 +8,9 @@ from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from .locale import *
+from .. import location
 
+import uuid
 import pytz
 import datetime
 import hashlib
@@ -18,7 +20,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     realname = models.CharField(verbose_name=_("Real Name"), max_length=150, blank=True)
-    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False)
+    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=location.TimezoneChoices(), blank=False, null=False)
     avatar = ProcessedImageField(verbose_name=_("Photo Image"),
                                            upload_to='avatars',
                                            processors=[ResizeToFill(128, 128)],
@@ -30,6 +32,8 @@ class UserProfile(models.Model):
     facebook = models.URLField(verbose_name=_('Facebook URL'), max_length=32, blank=True, null=True)
 
     send_notifications = models.BooleanField(verbose_name=_('Send notification emails'), default=True)
+
+    secret_key = models.UUIDField(default=uuid.uuid4, editable=True)
 
     categories = models.ManyToManyField('Category', blank=True)
     topics = models.ManyToManyField('Topic', blank=True)
@@ -196,7 +200,7 @@ class Team(models.Model):
     cover_img = models.URLField(_("Team Photo"), null=True, blank=True)
     languages = models.ManyToManyField(Language, blank=True)
     active = models.BooleanField(_("Active Team"), default=True)
-    tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
+    tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=location.TimezoneChoices(), blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
 
     members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
 

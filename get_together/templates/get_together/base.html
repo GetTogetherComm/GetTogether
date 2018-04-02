@@ -45,10 +45,10 @@
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item{% if request.resolver_match.url_name == "events" %} active{% endif %}">
+          <li class="nav-item{% if request.resolver_match.url_name == "events" or request.resolver_match.url_name == "all-events" %} active{% endif %}">
             <a class="nav-link" href="{% url 'events' %}">Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-          <li class="nav-item{% if request.resolver_match.url_name == "teams" %} active{% endif %}">
+          <li class="nav-item{% if request.resolver_match.url_name == "teams" or request.resolver_match.url_name == "all-teams" %} active{% endif %}">
             <a class="nav-link" href="{% url 'teams' %}">Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% comment %}

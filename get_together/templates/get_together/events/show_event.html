@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup static %}
+{% load markup static tz %}
 
 {% block add_to_totle %} | {{event.name}}{% endblock %}
 
@@ -51,7 +51,7 @@
             </tr>
             {% endif %}
             <tr>
-	            <td><b>Time:</b></td><td>{{ event.start_time }} - {{ event.end_time }}</td>
+	            <td><b>Time:</b></td><td>{{ event.local_start_time }} - {{ event.local_end_time }}</td>
             </tr><tr>
 	            <td><b>Place:</b></td><td>
                       {% if event.place %}

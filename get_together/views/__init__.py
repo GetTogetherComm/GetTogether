@@ -10,6 +10,7 @@ from events.models.events import Event, Place, Attendee
 from events.models.profiles import Team, UserProfile, Member
 from events.models.search import Searchable
 from events.forms import SearchForm
+from events import location
 
 from accounts.decorators import setup_wanted
 from django.conf import settings
@@ -69,7 +70,7 @@ def home(request, *args, **kwards):
                         if len(nearby_cities) == 0:
                             city_distance += 1
                         else:
-                            city = nearby_cities[0]
+                            city = sorted(nearby_cities, key=lambda city: location.city_distance_from(ll, city))[0]
                 except:
                     pass # City lookup failed
 
@@ -93,10 +94,10 @@ def home(request, *args, **kwards):
             context['maxlng'] = maxlng
 
             near_events = Searchable.objects.filter(latitude__gte=minlat, latitude__lte=maxlat, longitude__gte=minlng, longitude__lte=maxlng, end_time__gte=datetime.datetime.now())
-            context['near_events'] = near_events
+            context['near_events'] = sorted(near_events, key=lambda searchable: location.searchable_distance_from(ll, searchable))
 
             near_teams = Team.objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
-            context['near_teams'] = near_teams
+            context['near_teams'] = sorted(near_teams, key=lambda team: location.team_distance_from(ll, team))
         except Exception as err:
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()

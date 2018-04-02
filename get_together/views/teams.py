@@ -7,9 +7,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Organization, Team, UserProfile, Member
-from events.forms import TeamForm, NewTeamForm, DeleteTeamForm
-
 from events.models.events import Event, CommonEvent, Place, Attendee
+from events.forms import TeamForm, NewTeamForm, DeleteTeamForm
+from events import location
 
 import datetime
 import simplejson
@@ -19,18 +19,20 @@ def teams_list(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect('all-teams')
 
-    teams = request.user.profile.memberships.all()
+    teams = request.user.profile.memberships.all().distinct()
+    geo_ip = location.get_geoip(request)
     context = {
         'active': 'my',
-        'teams': teams,
+        'teams': sorted(teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)),
     }
     return render(request, 'get_together/teams/list_teams.html', context)
 
 def teams_list_all(request, *args, **kwargs):
     teams = Team.objects.all()
+    geo_ip = location.get_geoip(request)
     context = {
         'active': 'all',
-        'teams': teams,
+        'teams': sorted(teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)),
     }
     return render(request, 'get_together/teams/list_teams.html', context)
 

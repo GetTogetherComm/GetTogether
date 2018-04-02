@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import reverse
+from django.utils import timezone
 
 from rest_framework import serializers
 from mptt.models import MPTTModel, TreeForeignKey
@@ -13,6 +14,7 @@ from imagekit.processors import ResizeToFill
 from .locale import *
 from .profiles import *
 from .search import *
+from .. import location
 
 import re
 import pytz
@@ -22,14 +24,13 @@ import hashlib
 
 SLUG_OK = '-_~'
 
-
 class Place(models.Model):
     name = models.CharField(help_text=_('Name of the Place'), max_length=150)
     city = models.ForeignKey(City, verbose_name=_('City'), on_delete=models.CASCADE)
     address = models.CharField(help_text=_('Address with Street and Number'), max_length=150, null=True, blank=True)
     longitude = models.FloatField(help_text=_('Longitude in Degrees East'), null=True, blank=True)
     latitude = models.FloatField(help_text=_('Latitude in Degrees North'), null=True, blank=True)
-    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False)
+    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=location.TimezoneChoices(), blank=False, null=False)
     place_url = models.URLField(help_text=_('URL for the Place Homepage'), verbose_name=_('URL of the Place'), max_length=200, blank=True, null=True)
     cover_img = models.URLField(_("Place photo"), null=True, blank=True)
 
@@ -58,8 +59,8 @@ class Event(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='participating_events', null=True, blank=True, on_delete=models.SET_NULL)
 
-    start_time = models.DateTimeField(help_text=_('Local date and time that the event starts'), verbose_name=_('Local Start Time'), db_index=True)
-    end_time = models.DateTimeField(help_text=_('Local date and time that the event ends'), verbose_name=_('Local End Time'), db_index=True)
+    start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
+    end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
     summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
 
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.CASCADE)
@@ -68,13 +69,42 @@ class Event(models.Model):
     announce_url = models.URLField(verbose_name=_('Announcement'), help_text=_('URL for the announcement'), max_length=200, blank=True, null=True)
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=datetime.datetime.now, db_index=True)
+    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
 
     tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
     #image
     #replies
 
     attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
+
+    @property
+    def tz(self):
+        if self.place is not None:
+            return self.place.tz
+        elif self.team is not None:
+            return self.team.tz
+        else:
+            return settings.TIME_ZONE
+
+    @property
+    def local_start_time(self, val=None):
+        if val is not None:
+            self.start_time = val.astimezone(python.utc)
+        else:
+            if self.start_time is None:
+                return None
+            event_tz = pytz.timezone(self.tz)
+            return timezone.make_naive(self.start_time.astimezone(event_tz), event_tz)
+
+    @property
+    def local_end_time(self, val=None):
+        if val is not None:
+            self.end_time = val.astimezone(python.utc)
+        else:
+            if self.end_time is None:
+                return None
+            event_tz = pytz.timezone(self.tz)
+            return timezone.make_naive(self.end_time.astimezone(event_tz), event_tz)
 
     def get_absolute_url(self):
         return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
@@ -112,7 +142,7 @@ def update_event_searchable(event):
         searchable = Searchable(event_uri)
         searchable.origin_node = origin_url
         searchable.federation_node = origin_url
-        searchable.federation_time = datetime.datetime.now()
+        searchable.federation_time = timezone.now()
 
     searchable.event_url = event_url
 
@@ -124,6 +154,7 @@ def update_event_searchable(event):
     searchable.group_name = event.team.name
     searchable.start_time = event.start_time
     searchable.end_time = event.end_time
+    searchable.tz = event.tz
     searchable.cost = 0
     searchable.tags = event.tags
     if (event.place is not None):
@@ -176,7 +207,7 @@ class Attendee(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
     status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, default=YES, db_index=True)
-    joined_date = models.DateTimeField(default=datetime.datetime.now)
+    joined_date = models.DateTimeField(default=timezone.now)
 
     @property
     def role_name(self):
@@ -212,7 +243,7 @@ class EventComment(MPTTModel):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, related_name='comments', on_delete=models.CASCADE)
     body = models.TextField()
-    created_time = models.DateTimeField(default=datetime.datetime.now, db_index=True)
+    created_time = models.DateTimeField(default=timezone.now, db_index=True)
     status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
 
@@ -224,8 +255,8 @@ class CommonEvent(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='sub_events', null=True, blank=True, on_delete=models.SET_NULL)
 
-    start_time = models.DateTimeField(help_text=_('Local date and time that the event starts'), verbose_name=_('Local Start Time'), db_index=True)
-    end_time = models.DateTimeField(help_text=_('Local date and time that the event ends'), verbose_name=_('Local End Time'), db_index=True)
+    start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
+    end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
     summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
 
     country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
@@ -237,7 +268,7 @@ class CommonEvent(models.Model):
     announce_url = models.URLField(verbose_name=_('Announcement'), help_text=_('URL for the announcement'), max_length=200, blank=True, null=True)
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=datetime.datetime.now, db_index=True)
+    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
 
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)

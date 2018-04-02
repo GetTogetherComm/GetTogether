@@ -83,7 +83,8 @@
                                         selectField.append('<option value="'+ json.id +'" selected>'+ json.display + '</option>');
                                         selectField.lookup("refresh");
 
-                                        $("#id_tz").val(json.tz)
+                                        $("#id_tz").val(json.tz);
+                                        $("#id_tz").selectmenu("refresh");
                                     }
                                 }
                             );
@@ -216,6 +217,10 @@ $(document).ready(function(){
 
                 return callback(q, data);
             });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
         }
     })
     $("#id_tz").selectmenu();

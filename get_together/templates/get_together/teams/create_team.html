@@ -28,6 +28,10 @@ $(document).ready(function(){
 
                 return callback(q, data);
             });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
         }
     })
     $("#id_category").selectmenu();

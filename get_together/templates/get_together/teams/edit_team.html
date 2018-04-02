@@ -17,7 +17,7 @@
 $(document).ready(function(){
     $("#city_select").lookup({
         search: function(searchText, callback) {
-        if (searchText.length < 3) return callback(searchText, []);
+            if (searchText.length < 3) return callback(searchText, []);
             $.getJSON("/api/cities/?q="+searchText, function(data) {
                 var m = this.url.match(/q=([^&]+)/);
                 var q = "";
@@ -27,8 +27,12 @@ $(document).ready(function(){
 
                 return callback(q, data);
             });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
         }
-    })
+    });
     $("#id_category").selectmenu();
     $("#id_tz").selectmenu();
 });

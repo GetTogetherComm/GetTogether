@@ -28,6 +28,7 @@
                 self.options.search(this.value, function(searchText, results){
                     if (searchText != self.searchField[0].value) return ;
 
+                    self.current_data = results;
                     self.element.empty();
                     var selected = " selected"
                     self.element.append('<option value="">--------</option>')
@@ -43,7 +44,33 @@
         open: function(event) {
             this._super()
             this.searchField.focus()
-        }
+        },
+        _select: function( item, event ) {
+            var oldIndex = this.element[ 0 ].selectedIndex;
+
+            // Change native select element
+            this.element[ 0 ].selectedIndex = item.index;
+            this.buttonItem.replaceWith( this.buttonItem = this._renderButtonItem( item ) );
+            this._setAria( item );
+
+            // Get lookup data for this item
+            var data = this.current_data[item.index-1]
+
+            this._trigger( "select", event, { item: item, data: data } );
+
+            if ( item.index !== oldIndex ) {
+                this._trigger( "change", event, { item: item } );
+            }
+
+            this.close( event );
+        },
+        get_data_for: function(index) {
+            if (this.current_data != null && current_data.length > index) {
+                return this.current_data[index];
+            } else {
+                return null;
+            }
+        },
     });
 
 }(jQuery));

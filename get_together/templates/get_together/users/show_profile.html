@@ -11,6 +11,7 @@
                 <img class="align-bottom" border="1" src="{{user.avatar_url}}" height="128px"/> {{user.user}}
                 {% if user.user.id == request.user.id %}
                 <a href="{% url 'edit-profile'  %}" class="btn btn-secondary btn-sm">Edit Profile</a>
+                <a href="{% url 'user-event-ical' request.user.profile.secret_key %}" class="btn btn-success btn-sm">iCal</a>
                 {% endif %}
 
             </div>

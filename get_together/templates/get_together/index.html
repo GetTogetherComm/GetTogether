@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="row">
-            {% if near_events.count > 0 %}
+            {% if near_events %}
             {% for event in near_events %}
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">
@@ -37,7 +37,7 @@
                         <div class="card-body">
                           <p class="card-text"><strong><a class="card-link" href="{{event.event_url}}">{{event.event_title}}</a></strong></p>
                           <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">{{ event.start_time }}<br/>{{event.location_name}}</small>
+                            <small class="text-muted">{{ event.local_start_time }}<br/>{{event.location_name}}</small>
                             <div class="btn-group">
                                 <a class="btn btn-primary" href="{{event.event_url}}">View</a></span>
                             </div>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="row">
-            {% if near_teams.count > 0 %}
+            {% if near_teams %}
             {% for team in near_teams %}
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">

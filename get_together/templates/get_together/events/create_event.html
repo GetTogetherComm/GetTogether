@@ -10,7 +10,7 @@
 
 <form action="{% url "create-event" team.id%}" method="post">
 {% csrf_token %}
-{% if event.parent %}<<input type="hidden" name="common" value="{{event.parent.id}}" />{% endif %}
+{% if event.parent %}<input type="hidden" name="common" value="{{event.parent.id}}" />{% endif %}
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
