@@ -13,4 +13,3 @@ class BaseTest(TestCase):
 
     def test_harness(self):
         return
-
