@@ -1,6 +1,9 @@
 body {
   padding-top: 5rem;
 }
+.navbar {
+    padding: 0rem 1rem !important;
+}
 .footer {
   padding-top: 1em;
   padding-bottom: 1em;

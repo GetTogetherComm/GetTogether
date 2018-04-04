@@ -1,6 +1,8 @@
 {% extends "get_together/base.html" %}
 {% load markup tz %}
 
+{% block add_to_title %} | {{team.name}}{% endblock %}
+
 {% block styles %}
     <style>
 .gt-profile {

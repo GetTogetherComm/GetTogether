@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <title>{% block title %}Get Together{% block add_to_title %}{% endblock %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/iconv1_64.png' %}">
 
     {% block meta %}{% endblock %}
 
@@ -38,7 +39,7 @@
   <body>
 
    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
-      <a class="navbar-brand" href="/">GetTogether</a>
+      <a class="navbar-brand" href="/"><img src="{% static 'img/logo_b_v1.png' %}"/></a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

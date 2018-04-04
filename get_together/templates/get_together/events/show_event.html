@@ -1,7 +1,7 @@
 {% extends "get_together/base.html" %}
 {% load markup static tz %}
 
-{% block add_to_totle %} | {{event.name}}{% endblock %}
+{% block add_to_title %} | {{event.name}}{% endblock %}
 
 {% block meta %}
   <meta property="og:url"           content="{{event.get_full_url}}" />
