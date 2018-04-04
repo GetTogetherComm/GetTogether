@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Organization, Team, UserProfile, Member
@@ -134,7 +134,7 @@ def delete_team(request, team_id):
      return redirect('home')
 
 def show_org(request, org_slug):
-    org = Organization.objects.get(slug=org_slug)
+    org = get_object_or_404(Organization, slug=org_slug)
     upcoming_events = CommonEvent.objects.filter(organization=org, end_time__gt=datetime.datetime.now()).order_by('start_time')
     recent_events = CommonEvent.objects.filter(organization=org, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
     context = {

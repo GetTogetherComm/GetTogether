@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.conf import settings
 
 from imagekit.models import ProcessedImageField
@@ -191,7 +192,7 @@ class Team(models.Model):
     web_url = models.URLField(_("Website"), null=True, blank=True)
     email = models.EmailField(_("Email Address"), null=True, blank=True)
 
-    created_date = models.DateField(_("Date Created"), null=True, blank=True)
+    created_date = models.DateField(_("Date Created"), default=timezone.now, null=True, blank=True)
 
     owner_profile = models.ForeignKey(UserProfile, related_name='owned_teams', null=True, on_delete=models.CASCADE)
     admin_profiles = models.ManyToManyField(UserProfile, related_name='admins', blank=True)

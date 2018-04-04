@@ -26,9 +26,7 @@
     top: 16px;
     left: -42px;
 }
-.table td, .table th {
-    border-top: none;
-}
+
     </style>
 {% endblock %}
 
@@ -51,13 +49,13 @@
             <table class="table">
             {% if event.parent %}
             <tr>
-	            <td><b>Part of:</b></td><td><a href="{{ event.parent.get_absolute_url }}" target="_blank">{{ event.parent.name }}</a></td>
+	            <td width="120px"><b>Part of:</b></td><td><a href="{{ event.parent.get_absolute_url }}" target="_blank">{{ event.parent.name }}</a></td>
             </tr>
             {% endif %}
             <tr>
-	            <td><b>Time:</b></td><td>{{ event.local_start_time }} - {{ event.local_end_time }}</td>
+	            <td width="120px"><b>Time:</b></td><td>{{ event.local_start_time }} - {{ event.local_end_time }}</td>
             </tr><tr>
-	            <td><b>Place:</b></td><td>
+	            <td width="120px"><b>Place:</b></td><td>
                       {% if event.place %}
                           <a class="" href="{% url 'show-place' event.place.id %}">{{ event.place.name }}</a>
                       {% elif can_edit_event %}
@@ -69,7 +67,7 @@
             </tr>
             {% if event.web_url %}
             <tr>
-	            <td><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
+	            <td width="120px"><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
             </tr>
             {% endif %}
             </table>
