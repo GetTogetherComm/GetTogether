@@ -1,0 +1,15 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Event Reminder Notification</h3>
+
+<p>You have an event coming up!</p>
+
+<p>
+<strong>Name</strong>: {{ event.name|striptags }}<br>
+<strong>Time</strong>: {{event.local_start_time}}<br>
+<strong>Location</strong>: {{ event.location|striptags }}<br>
+<br>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">Go to the event page.</a>
+</p>
+{% endblock %}

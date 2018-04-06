@@ -208,6 +208,7 @@ class Attendee(models.Model):
     role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
     status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, default=YES, db_index=True)
     joined_date = models.DateTimeField(default=timezone.now)
+    last_reminded = models.DateTimeField(null=True, blank=True)
 
     @property
     def role_name(self):
