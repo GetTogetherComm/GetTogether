@@ -10,6 +10,6 @@
 <strong>Time</strong>: {{event.local_start_time}}<br>
 <strong>Location</strong>: {{ event.location|striptags }}<br>
 <br>
-<a href="{{event.get_absolute_url}}" title="{{ event.name|striptags }} page.">Go to the event page.</a>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">Go to the event page.</a>
 </p>
 {% endblock %}

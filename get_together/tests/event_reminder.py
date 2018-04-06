@@ -52,3 +52,33 @@ class UpcommingEventReminderTest(TestCase):
         call_command('send_event_reminder')
 
         self.assertEquals(len(mail.outbox), 1)
+
+    def test_successive_reminders_after_a_day(self):
+        attendee = mommy.make(Attendee, event=self.event, user=self.userProfile, status=Attendee.YES)
+        attendee_id = attendee.id
+
+        call_command('send_event_reminder')
+        self.assertEquals(len(mail.outbox), 1)
+
+        attendee.last_reminded = timezone.now() - datetime.timedelta(days=2)
+        attendee.save()
+        # This should send another email, because the last one was more than a day ago
+        call_command('send_event_reminder')
+
+        self.assertEquals(len(mail.outbox), 2)
+
+    def test_reminders_only_for_the_upcoming_day(self):
+        attendee = mommy.make(Attendee, event=self.event, user=self.userProfile, status=Attendee.YES)
+        self.event.start_time = timezone.now() + datetime.timedelta(days=2)
+        self.event.save()
+
+        call_command('send_event_reminder')
+        self.assertEquals(len(mail.outbox), 0)
+
+        self.event.start_time = timezone.now() + datetime.timedelta(hours=23)
+        self.event.save()
+
+        call_command('send_event_reminder')
+        self.assertEquals(len(mail.outbox), 1)
+
+

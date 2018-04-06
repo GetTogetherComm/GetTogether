@@ -22,7 +22,8 @@ class Command(BaseCommand):
 
         # Events that start within a day.
         query = Q(status=Attendee.YES,
-                  event__start_time__gt=timezone.now())
+                  event__start_time__gt=timezone.now(),
+                  event__start_time__lt=timezone.now()+datetime.timedelta(days=1))
 
         attendees = Attendee.objects.filter(query)
 
@@ -33,7 +34,7 @@ class Command(BaseCommand):
                 continue
 
             # Skip people who have been reminded in the last day.
-            if attendee.last_reminded and timezone.now() > attendee.last_reminded - datetime.timedelta(days=1):
+            if attendee.last_reminded and timezone.now() - datetime.timedelta(days=1) < attendee.last_reminded:
                 continue
 
             context = {
