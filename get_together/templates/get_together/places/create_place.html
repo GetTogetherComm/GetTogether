@@ -71,9 +71,9 @@
                                     city = this.long_name
                                 }
                             });
-                            $("#id_name").val("")
-                            $("#id_name").attr("placeholder", "Searching...")
                             if (google_place_id != null) {
+                                $("#id_name").val("")
+                                $("#id_name").attr("placeholder", "Searching...")
                                 var places = new google.maps.places.PlacesService(map);
                                 places.getDetails({'placeId': google_place_id},
                                     function(result, status) {
