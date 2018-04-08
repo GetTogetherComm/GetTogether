@@ -142,6 +142,8 @@ def add_place_to_event(request, event_id):
     elif request.method == 'POST':
         form = NewPlaceForm(request.POST)
         if form.is_valid:
+            if request.POST.get('id', None):
+                form.instance.id = request.POST.get('id')
             new_place = form.save()
             event.place = new_place
             event.save()

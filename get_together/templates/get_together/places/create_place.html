@@ -8,6 +8,7 @@
             <h2>Choose your meeting place</h2>
             <form action="{% url "add-place" event.id %}" method="post">
             {% csrf_token %}
+            <input type="hidden" id="id_id" name="id" value="" />
             {% include "events/place_form.html" %}
 	            <div class="fluid-layout" id="place-map"></div>
             <br />
@@ -46,8 +47,8 @@
                 markers: [],
                 html_addr: null,
                 mapOptions: {
-                    zoom: 4,
-                    center: {lat: 51.8211, lng: 5.591},
+                    zoom: 12,
+                    center: {lat: {{event.team.city.latitude}}, lng: {{event.team.city.longitude}}},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: false
                 }
@@ -72,7 +73,7 @@
                                     name = this.long_name
                                 }
                             });
-                            if (name != "") {
+                            if (name != null && name != "") {
                                 $("#id_name").val(name);
                             }
                             $.getJSON("/api/find_city/?country="+country+"&spr="+spr+"&city="+city,
@@ -93,7 +94,7 @@
                 });
 
                 if (options.html_lng && options.html_lat) {
-                    if (location.lat() && location.lng()) {
+                    if (location.lat() != null && location.lng() != null) {
                         options.html_lat.val(location.lat());
                         options.html_lng.val(location.lng());
                         if (options.html_tz && options.html_country && options.html_continent) {
@@ -191,6 +192,23 @@
                     location = new google.maps.LatLng(options.html_lat.val(), options.html_lng.val());
                     setMarker(map, location);
                 }
+
+                $.getJSON("/api/places/", function(data) {
+                    for (let place of data) {
+                        var position = new google.maps.LatLng(place['latitude'], place['longitude'])
+                        var marker = new google.maps.Marker({
+                          position: position,
+                          label: place['name'],
+                          map: map,
+                        });
+                        google.maps.event.addListener(marker, 'click',function(event) {
+                          $("#id_id").val(place['id']);
+                          $("#id_name").val(place['name']);
+                          showPositionHTML(this.position);
+                        });
+                    }
+                    return;
+                });
             });
 
         }

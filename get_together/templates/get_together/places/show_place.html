@@ -18,7 +18,7 @@
 {% block content %}
 <div class="fluid-container">
     <div class="row">
-        <div class="col-md">
+        <div class="col-md-9">
             <h2>{{ place.name }}
                 {% if can_edit_place %}
                 <a href="{% url 'edit-place' place.id %}" class="btn btn-secondary btn-sm">Edit Place</a>
@@ -42,7 +42,7 @@
               height="400"
               frameborder="0" style="border:0"
               src="https://www.google.com/maps/embed/v1/place?key={{ settings.GOOGLE_MAPS_API_KEY }}
-                &q={{place.name}},{{place.city}}" allowfullscreen>
+               &q={{place.name}},{{place.city}}" allowfullscreen>
             </iframe>
 
         </div>

@@ -58,6 +58,7 @@
 	            <td width="120px"><b>Place:</b></td><td>
                       {% if event.place %}
                           <a class="" href="{% url 'show-place' event.place.id %}">{{ event.place.name }}</a>
+                          {% if can_edit_event %}<a href="{% url 'add-place' event.id %}" class="btn btn-secondary btn-sm">Change</a>{% endif %}
                       {% elif can_edit_event %}
                           <a class="" href="{% url 'add-place' event.id %}">No place selected yet.</a>
                       {% else %}

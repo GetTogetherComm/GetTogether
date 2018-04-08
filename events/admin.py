@@ -87,7 +87,7 @@ class MemberAdmin(admin.ModelAdmin):
 admin.site.register(Member, MemberAdmin)
 
 class AttendeeAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'role', 'status')
+    list_display = ('__str__', 'role', 'status', 'last_reminded')
     list_filter = ('role', 'status')
 admin.site.register(Attendee, AttendeeAdmin)
 
