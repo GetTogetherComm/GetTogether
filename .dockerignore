@@ -1,0 +1,6 @@
+*.sqlite*
+*.pyc
+*local_settings.*
+Dockerfile
+README.md
+LICENSE

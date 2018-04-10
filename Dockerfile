@@ -1,8 +1,22 @@
-FROM ubuntu:latest
-EXPOSE 8000
-RUN apt-get update && apt-get upgrade -y && apt-get install -y python3 python3-pip
-COPY . /home/python
+FROM python:3-alpine as builder
+
 WORKDIR /home/python
-RUN pip3 install -r requirements.txt
-RUN python3 manage.py migrate
-ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000
+
+RUN apk add --no-cache zlib-dev build-base python-dev jpeg-dev
+RUN pip install virtualenv
+RUN virtualenv venv
+
+ADD requirements.txt /home/python/
+RUN venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN virtualenv --relocatable venv/
+
+ADD . /home/python/
+RUN venv/bin/python manage.py migrate
+
+FROM python:3-alpine
+
+WORKDIR /home/python
+COPY --from=builder /home/python /home/python
+
+ENTRYPOINT ["venv/bin/python"]
+CMD ["manage.py", "runserver", "0.0.0.0:8000"]
