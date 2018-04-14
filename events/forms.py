@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
 from .models.profiles import Team, UserProfile
-from .models.events import Event, EventComment ,CommonEvent, Place, EventPhoto
+from .models.events import Event, EventComment ,CommonEvent, EventSeries, Place, EventPhoto
 
 import pytz
 from datetime import time
@@ -167,7 +167,7 @@ class DeleteTeamForm(forms.Form):
 class TeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'summary', 'place', 'web_url', 'announce_url', 'tags']
+        fields = ['name', 'start_time', 'end_time', 'summary', 'web_url', 'announce_url', 'tags']
         widgets = {
             'place': Lookup(source=Place),
             'start_time': DateTimeWidget,
@@ -191,7 +191,7 @@ class TeamEventForm(forms.ModelForm):
 class NewTeamEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary']
+        fields = ['name', 'start_time', 'end_time', 'summary']
         widgets = {
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
@@ -213,6 +213,18 @@ class NewTeamEventForm(forms.ModelForm):
 
 class DeleteEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete event", required=True)
+
+class EventSeriesForm(forms.ModelForm):
+    class Meta:
+        model = EventSeries
+        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary']
+        widgets = {
+            'start_time': TimeWidget,
+            'end_time': TimeWidget
+        }
+
+class DeleteEventSeriesForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete series", required=True)
 
 class UploadEventPhotoForm(forms.ModelForm):
     class Meta:

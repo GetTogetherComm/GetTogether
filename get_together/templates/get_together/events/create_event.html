@@ -5,11 +5,6 @@
     gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}', {'page_path': '/team/+create-event/'});
 {% endblock %}
 
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'recurrence/css/recurrence.css' %}">
-    <script src="{% static 'recurrence/js/recurrence.js' %}"></script>
-{% endblock %}
-
 {% block content %}
 <h2>Plan a <strong>{{team.name}}</strong> get together</h2>
 {% if event.parent %}<p class="text-muted">As part of <a href="{% url "show-common-event" event.parent.id event.parent.slug %}">{{ event.parent.name }}</a></p>{% endif %}

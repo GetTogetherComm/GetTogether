@@ -71,6 +71,9 @@ urlpatterns = [
     path('events/<int:event_id>/+comment/', event_views.comment_event, name='comment-event'),
     path('events/<int:event_id>/+photo/', views.add_event_photo, name='add-event-photo'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
+    path('series/<int:series_id>/+edit/', views.edit_series, name='edit-series'),
+    path('series/<int:series_id>/+delete/', views.delete_series, name='delete-series'),
+    path('series/<int:series_id>/<str:series_slug>/', views.show_series, name='show-series'),
 
     path('org/<str:org_slug>/', views.show_org, name='show-org'),
     path('org/<str:org_slug>/+create-event/', views.create_common_event, name='create-common-event'),

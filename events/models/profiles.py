@@ -98,6 +98,20 @@ class UserProfile(models.Model):
             return True
         return False
 
+    def can_edit_series(self, series):
+        try:
+            if self.user.is_superuser:
+                return True
+        except:
+            return False
+        if series.created_by == self:
+            return True
+        if series.team.owner_profile == self:
+            return True
+        if self in series.team.moderators:
+            return True
+        return False
+
     def can_edit_event(self, event):
         try:
             if self.user.is_superuser:

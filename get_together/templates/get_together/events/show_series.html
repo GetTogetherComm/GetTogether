@@ -1,0 +1,108 @@
+{% extends "get_together/base.html" %}
+{% load markup static tz %}
+
+{% block add_to_title %} | {{series.name}}{% endblock %}
+
+{% block meta %}
+  <meta property="og:url"           content="{{series.get_full_url}}" />
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="{{series.name}}" />
+  <meta property="og:description"   content="{{series.summary}}" />
+  {% if series.team.category %}
+  <meta property="og:image"         content="{{series.team.category.img_url}}" />
+  {% else %}
+  <meta property="og:image"         content="https://gettogether.community{% static 'img/team_placeholder.png' %}" />
+  {% endif %}
+{% endblock %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+    <style>
+.gt-profile {
+    position: relative;
+}
+.gt-profile .gt-profile-badges {
+    position: relative;
+    top: 16px;
+    left: -42px;
+}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-md-9">
+            <h2>{{ series.name }}
+                {% if can_edit_event %}
+                <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm">Edit Series</a>
+                {% endif %}
+            </h2>
+            <p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p>
+            <hr/>
+
+            <p>{{ series.summary|markdown }}</p>
+
+            <table class="table">
+            {% if series.parent %}
+            <tr>
+	            <td width="120px"><b>Part of:</b></td><td><a href="{{ series.parent.get_absolute_url }}" target="_blank">{{ series.parent.name }}</a></td>
+            </tr>
+            {% endif %}
+            <tr>
+	            <td width="120px"><b>Repeats:</b></td><td>
+                {% for rule in series.recurrences.rrules %}
+                {{rule.to_text|capfirst}}
+	            {% endfor %}
+            </td>
+            </tr>
+            <tr>
+	            <td width="120px"><b>Time:</b></td><td>{{ series.start_time }} - {{ series.end_time }}</td>
+            </tr>
+            <tr>
+	            <td width="120px"><b>Place:</b></td><td>
+                      {% if series.place %}
+                          <a class="" href="{% url 'show-place' series.place.id %}">{{ series.place.name }}</a>
+                          {% if can_edit_event %}<a href="{% url 'add-place' series.id %}" class="btn btn-secondary btn-sm">Change</a>{% endif %}
+                      {% elif can_edit_event %}
+                          <a class="" href="{% url 'add-place' series.id %}">No place selected yet.</a>
+                      {% else %}
+                          No place selected yet.
+                      {% endif %}
+	            </td>
+            </tr>
+            {% if series.web_url %}
+            <tr>
+	            <td width="120px"><b>Website:</b></td><td><a href="{{ series.web_url }}" target="_blank">{{ series.web_url }}</a></td>
+            </tr>
+            {% endif %}
+            </table>
+
+            <div class="container mt-3">
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>Instances</h4><hr/></div>
+                </div>
+                {% for instance in instances %}
+                <div class="row mb-3">
+                    <div class="col media gt-profile">
+                      <div class="media-body">
+                        <h6 class="mt-2 mb-0">
+                          <a href="{{ instance.get_absolute_url }}">{{instance.local_start_time.date}}</a>
+                          <br/><small class="text-muted">{{ instance.name }}</small>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

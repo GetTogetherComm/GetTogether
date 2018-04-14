@@ -1,15 +1,21 @@
 {% extends "get_together/base.html" %}
 {% load static %}
 
+{% block meta %}
+<script type="text/javascript" src="{% static 'recurrence/js/recurrence.js' %}"></script>
+<script type="text/javascript" src="{% static 'recurrence/js/recurrence-widget.js' %}"></script>
+<link href="{% static 'recurrence/css/recurrence.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<h2>Updating {{event.name}}</h2>
-<form action="{% url "edit-event" event.id%}" method="post">
+<h2>Updating {{series.name}}</h2>
+<form action="{% url "edit-series" series.id%}" method="post">
 {% csrf_token %}
-{% include "events/event_form.html" %}
+{% include "events/series_form.html" %}
 	<br />
 <button type="submit" class="btn btn-primary">Save</button>
 </form>
-<a href="{% url 'delete-event' event.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'delete-series' series.id %}" class="btn btn-danger">Delete</a>
 {% endblock %}
 
 {% block javascript %}

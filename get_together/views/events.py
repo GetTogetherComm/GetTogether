@@ -7,9 +7,19 @@ from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
-from events.models.events import Event, CommonEvent, EventPhoto, Place, Attendee
+from events.models.events import Event, CommonEvent, EventSeries, EventPhoto, Place, Attendee
 from events.models.profiles import Team, Organization, UserProfile, Member
-from events.forms import TeamEventForm, NewTeamEventForm, DeleteEventForm, EventCommentForm, NewPlaceForm, UploadEventPhotoForm, NewCommonEventForm
+from events.forms import (
+    TeamEventForm,
+    NewTeamEventForm,
+    DeleteEventForm,
+    EventSeriesForm,
+    DeleteEventSeriesForm,
+    EventCommentForm,
+    NewPlaceForm,
+    UploadEventPhotoForm,
+    NewCommonEventForm
+    )
 from events import location
 
 import datetime
@@ -48,6 +58,16 @@ def show_event(request, event_id, event_slug):
         'can_edit_event': request.user.profile.can_edit_event(event),
     }
     return render(request, 'get_together/events/show_event.html', context)
+
+def show_series(request, series_id, series_slug):
+    series = EventSeries.objects.get(id=series_id)
+    context = {
+        'team': series.team,
+        'series': series,
+        'instances': series.instances.all().order_by('-start_time'),
+        'can_edit_event': request.user.profile.can_create_event(series.team),
+    }
+    return render(request, 'get_together/events/show_series.html', context)
 
 @login_required
 def create_event_team_select(request):
@@ -223,6 +243,68 @@ def delete_event(request, event_id):
                 'delete_form': form,
             }
             return render(request, 'get_together/events/delete_event.html', context)
+    else:
+     return redirect('home')
+
+def edit_series(request, series_id):
+    series = EventSeries.objects.get(id=series_id)
+
+    if not request.user.profile.can_edit_series(series):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(series.get_absolute_url())
+
+    if request.method == 'GET':
+        form = EventSeriesForm(instance=series)
+
+        context = {
+            'team': series.team,
+            'series': series,
+            'series_form': form,
+        }
+        return render(request, 'get_together/events/edit_series.html', context)
+    elif request.method == 'POST':
+        form = EventSeriesForm(request.POST,instance=series)
+        if form.is_valid:
+            new_series = form.save()
+            return redirect(new_series.get_absolute_url())
+        else:
+            context = {
+                'team': event.team,
+                'series': series,
+                'series_form': form,
+            }
+            return render(request, 'get_together/events/edit_series.html', context)
+    else:
+     return redirect('home')
+
+def delete_series(request, series_id):
+    series = EventSeries.objects.get(id=series_id)
+    if not request.user.profile.can_edit_series(series):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(series.get_absolute_url())
+
+    if request.method == 'GET':
+        form = DeleteEventSeriesForm()
+
+        context = {
+            'team': series.team,
+            'series': series,
+            'delete_form': form,
+        }
+        return render(request, 'get_together/events/delete_series.html', context)
+    elif request.method == 'POST':
+        form = DeleteEventSeriesForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            team_id = series.team_id
+            series.delete()
+            return redirect('show-team', team_id)
+        else:
+            context = {
+                'team': series.team,
+                'series': series,
+                'delete_form': form,
+            }
+            return render(request, 'get_together/events/delete_series.html', context)
     else:
      return redirect('home')
 

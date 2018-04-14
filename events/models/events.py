@@ -58,10 +58,10 @@ class Event(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='participating_events', null=True, blank=True, on_delete=models.SET_NULL)
+    series = models.ForeignKey('EventSeries',related_name='instances',  null=True, blank=True, on_delete=models.SET_NULL)
 
     start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
     end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
-    recurrences = RecurrenceField(null=True)
 
     summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
 
@@ -290,4 +290,68 @@ class CommonEvent(models.Model):
 
     def __str__(self):
         return self.name
+
+class EventSeries(models.Model):
+    name = models.CharField(max_length=150, verbose_name=_('Event Name'))
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    parent = models.ForeignKey('CommonEvent', related_name='planned_events', null=True, blank=True, on_delete=models.SET_NULL)
+
+    recurrences = RecurrenceField(null=True)
+    last_time = models.DateTimeField(help_text=_('Date and time of the last created instance in this series'), default=timezone.now, db_index=True)
+    start_time = models.TimeField(help_text=_('Local time that the event starts'), verbose_name=_('Start Time'), db_index=True)
+    end_time = models.TimeField(help_text=_('Local time that the event ends'), verbose_name=_('End Time'), db_index=True)
+
+    summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
+
+    place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.CASCADE)
+
+    created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
+
+    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
+
+    def create_next_in_series(self):
+        next_date = self.recurrences.after(self.last_time, dtstart=self.last_time)
+        event_tz = pytz.timezone(self.tz)
+
+        next_start = pytz.utc.localize(timezone.make_naive(event_tz.localize(datetime.datetime.combine(next_date.date(), self.start_time))))
+        next_end = pytz.utc.localize(timezone.make_naive(event_tz.localize(datetime.datetime.combine(next_date.date(), self.end_time))))
+        next_event = Event(
+            series=self,
+            team=self.team,
+            name=self.name,
+            start_time=next_start,
+            end_time=next_end,
+            summary=self.summary,
+            place=self.place,
+            created_by=self.created_by,
+        )
+        next_event.save()
+        self.last_time = next_event.start_time
+        self.save()
+        return next_event
+
+    def get_absolute_url(self):
+        return reverse('show-series', kwargs={'series_id': self.id, 'series_slug': self.slug})
+
+    def get_full_url(self):
+        site = Site.objects.get(id=1)
+        return "https://%s%s" % (site.domain, self.get_absolute_url())
+
+    @property
+    def slug(self):
+        return slugify(self.name)
+
+    @property
+    def tz(self):
+        if self.place is not None:
+            return self.place.tz
+        elif self.team is not None:
+            return self.team.tz
+        else:
+            return settings.TIME_ZONE
+
+    def __str__(self):
+        return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
+
 

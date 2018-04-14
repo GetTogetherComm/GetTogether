@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
 from .models.search import Searchable
-from .models.events import Place, Event, EventComment, EventPhoto, CommonEvent, Attendee
+from .models.events import Place, Event, EventComment, EventSeries, EventPhoto, CommonEvent, Attendee
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -80,6 +80,15 @@ class CommonEventAdmin(admin.ModelAdmin):
         return event.participating_events.all().count()
     participant_count.short_description = 'Participants'
 admin.site.register(CommonEvent, CommonEventAdmin)
+
+class EventSeriesAdmin(admin.ModelAdmin):
+    raw_id_fields = ('place', 'team')
+    list_display = ('__str__', 'instance_count', 'team', 'start_time', 'last_time')
+    ordering = ('-last_time',)
+    def instance_count(self, series):
+        return series.instances.all().count()
+    instance_count.short_description = 'Instances'
+admin.site.register(EventSeries, EventSeriesAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'role')
