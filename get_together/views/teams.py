@@ -37,7 +37,7 @@ def teams_list_all(request, *args, **kwargs):
     return render(request, 'get_together/teams/list_teams.html', context)
 
 def show_team(request, team_id, *args, **kwargs):
-    team = Team.objects.get(id=team_id)
+    team = get_object_or_404(Team, id=team_id)
     upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
     recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
     context = {
@@ -76,7 +76,7 @@ def create_team(request, *args, **kwargs):
      return redirect('home')
 
 def edit_team(request, team_id):
-    team = Team.objects.get(id=team_id)
+    team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
         return redirect('show-team', team_id=team.pk)
@@ -106,7 +106,7 @@ def edit_team(request, team_id):
      return redirect('home')
 
 def delete_team(request, team_id):
-    team = Team.objects.get(id=team_id)
+    team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
         return redirect('show-team', team_id)

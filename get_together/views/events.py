@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
@@ -47,7 +47,7 @@ def events_list_all(request, *args, **kwargs):
     return render(request, 'get_together/events/list_events.html', context)
 
 def show_event(request, event_id, event_slug):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     comment_form = EventCommentForm()
     context = {
         'team': event.team,
@@ -60,7 +60,7 @@ def show_event(request, event_id, event_slug):
     return render(request, 'get_together/events/show_event.html', context)
 
 def show_series(request, series_id, series_slug):
-    series = EventSeries.objects.get(id=series_id)
+    series = get_object_or_404(EventSeries, id=series_id)
     context = {
         'team': series.team,
         'series': series,
@@ -79,7 +79,7 @@ def create_event_team_select(request):
 
 @login_required
 def create_event(request, team_id):
-    team = Team.objects.get(id=team_id)
+    team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_create_event(team):
         messages.add_message(request, messages.WARNING, message=_('You can not create events for this team.'))
         return redirect('show-team', team_id=team.pk)
@@ -123,7 +123,7 @@ def create_event(request, team_id):
      return redirect('home')
 
 def add_event_photo(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
         return redirect(event.get_absolute_url())
@@ -152,7 +152,7 @@ def add_event_photo(request, event_id):
      return redirect('home')
 
 def add_place_to_event(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
         return redirect(event.get_absolute_url())
@@ -187,7 +187,7 @@ def add_place_to_event(request, event_id):
      return redirect('home')
 
 def add_place_to_series(request, series_id):
-    series = EventSeries.objects.get(id=series_id)
+    series = get_object_or_404(EventSeries, id=series_id)
     if not request.user.profile.can_edit_series(series):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
         return redirect(series.get_absolute_url())
@@ -219,14 +219,14 @@ def add_place_to_series(request, series_id):
      return redirect('home')
 
 def share_event(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     context = {
         'event': event,
     }
     return render(request, 'get_together/events/share_event.html', context)
 
 def edit_event(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
 
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
@@ -257,7 +257,7 @@ def edit_event(request, event_id):
      return redirect('home')
 
 def delete_event(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
         return redirect(event.get_absolute_url())
@@ -288,7 +288,7 @@ def delete_event(request, event_id):
      return redirect('home')
 
 def edit_series(request, series_id):
-    series = EventSeries.objects.get(id=series_id)
+    series = get_object_or_404(EventSeries, id=series_id)
 
     if not request.user.profile.can_edit_series(series):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
@@ -319,7 +319,7 @@ def edit_series(request, series_id):
      return redirect('home')
 
 def delete_series(request, series_id):
-    series = EventSeries.objects.get(id=series_id)
+    series = get_object_or_404(EventSeries, id=series_id)
     if not request.user.profile.can_edit_series(series):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
         return redirect(series.get_absolute_url())
@@ -350,7 +350,7 @@ def delete_series(request, series_id):
      return redirect('home')
 
 def show_common_event(request, event_id, event_slug):
-    event = CommonEvent.objects.get(id=event_id)
+    event = get_object_or_404(CommonEvent, id=event_id)
     context = {
         'org': event.organization,
         'common_event': event,
@@ -360,7 +360,7 @@ def show_common_event(request, event_id, event_slug):
 
 @login_required
 def create_common_event(request, org_slug):
-    org = Organization.objects.get(slug=org_slug)
+    org = get_object_or_404(Organization, slug=org_slug)
     if not request.user.profile.can_create_common_event(org):
         messages.add_message(request, messages.WARNING, message=_('You can not create events for this org.'))
         return redirect('show-org', org_id=org.pk)
@@ -389,7 +389,7 @@ def create_common_event(request, org_slug):
      return redirect('home')
 
 def share_common_event(request, event_id):
-    event = CommonEvent.objects.get(id=event_id)
+    event = get_object_or_404(CommonEvent, id=event_id)
     context = {
         'event': event,
     }

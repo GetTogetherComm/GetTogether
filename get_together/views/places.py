@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 
 from events.models.profiles import Team, UserProfile, Member
@@ -22,7 +22,7 @@ def places_list(request, *args, **kwargs):
     return render(request, 'get_together/places/list_places.html', context)
 
 def show_place(request, place_id):
-    place = Place.objects.get(id=place_id)
+    place = get_object_or_404(Place, id=place_id)
     context = {
         'place': place,
         'event_list': Event.objects.filter(place=place).order_by('-start_time'),

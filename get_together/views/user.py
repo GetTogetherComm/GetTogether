@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -30,13 +30,7 @@ def login(request):
 
 
 def show_profile(request, user_id):
-
-    template = 'get_together/users/show_profile.html'
-
-    try:
-        user = UserProfile.objects.get(id=user_id)
-    except ObjectDoesNotExist:
-        return render(request, template, {'user': None}, status=404)
+    user = get_object_or_404(UserProfile, id=user_id)
 
     teams = user.memberships.all()
 
@@ -45,7 +39,7 @@ def show_profile(request, user_id):
             'teams': teams,
     }
 
-    return render(request, template, context)
+    return render(request, 'get_together/users/show_profile.html', context)
 
 
 def edit_profile(request):
