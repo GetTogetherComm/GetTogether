@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
 from .models.profiles import Team, UserProfile
 from .models.events import Event, EventComment ,CommonEvent, EventSeries, Place, EventPhoto
+import recurrence
 
 import pytz
 from datetime import time
@@ -189,9 +190,10 @@ class TeamEventForm(forms.ModelForm):
         return cleaned_data
 
 class NewTeamEventForm(forms.ModelForm):
+    recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'summary']
+        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary']
         widgets = {
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget

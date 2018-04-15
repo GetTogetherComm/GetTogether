@@ -105,6 +105,12 @@ def create_event(request, team_id):
         if form.is_valid:
             new_event = form.save()
             Attendee.objects.create(event=new_event, user=request.user.profile, role=Attendee.HOST, status=Attendee.YES)
+
+            if form.cleaned_data.get('recurrences', None):
+                new_series = EventSeries.from_event(new_event, recurrences=form.cleaned_data['recurrences'])
+                new_series.save()
+                new_event.series = new_series
+                new_event.save()
             return redirect('add-place', new_event.id)
         else:
             context = {

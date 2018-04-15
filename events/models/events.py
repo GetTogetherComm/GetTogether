@@ -310,8 +310,26 @@ class EventSeries(models.Model):
 
     tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
 
+    @classmethod
+    def from_event(klass, event, recurrences):
+        new_series = EventSeries(
+            team=event.team,
+            parent=event.parent,
+            name=event.name,
+            start_time=event.local_start_time.time(),
+            end_time=event.local_end_time.time(),
+            last_time=event.start_time,
+            summary=event.summary,
+            place=event.place,
+            created_by=event.created_by,
+            recurrences=recurrences,
+        )
+        return new_series
+
     def create_next_in_series(self):
         next_date = self.recurrences.after(self.last_time, dtstart=self.last_time)
+        if next_date is None:
+            return None
         event_tz = pytz.timezone(self.tz)
 
         next_start = pytz.utc.localize(timezone.make_naive(event_tz.localize(datetime.datetime.combine(next_date.date(), self.start_time))))
