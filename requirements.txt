@@ -11,7 +11,7 @@ django-imagekit==4.0.2
 django-imagekit-cropper==1.16
 django-js-asset==1.0.0
 django-mptt==0.9.0
-django-recurrence==1.5.0
+https://github.com/GetTogetherComm/django-recurrence/releases/download/1.5.0/django-recurrence_1.5.0.tar.gz
 django-settings-export==1.2.1
 djangorestframework==3.7.7
 future==0.16.0
