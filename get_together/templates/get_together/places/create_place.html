@@ -14,7 +14,7 @@
             <br />
             <button type="submit" class="btn btn-primary">Announce your Get Together!</button>
             </form>
-            <a class="btn btn-secondary" href="{% url 'show-event' event.id %}">Add a Place later</a>
+            <a class="btn btn-secondary" href="{% url 'show-event' event.id event.slug %}">Add a Place later</a>
         </div>
         <div id="map" class="col-md-6"></div>
     </div>
