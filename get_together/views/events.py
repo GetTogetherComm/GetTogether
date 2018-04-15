@@ -173,6 +173,9 @@ def add_place_to_event(request, event_id):
             new_place = form.save()
             event.place = new_place
             event.save()
+            if event.series is not None and event.series.place is None:
+                event.series.place = new_place;
+                event.series.save()
             return redirect('share-event', event.id)
         else:
             context = {
@@ -180,6 +183,38 @@ def add_place_to_event(request, event_id):
                 'place_form': form,
             }
             return render(request, 'get_together/places/create_place.html', context)
+    else:
+     return redirect('home')
+
+def add_place_to_series(request, series_id):
+    series = EventSeries.objects.get(id=series_id)
+    if not request.user.profile.can_edit_series(series):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(series.get_absolute_url())
+
+    if request.method == 'GET':
+        form = NewPlaceForm()
+
+        context = {
+            'series': series,
+            'place_form': form,
+        }
+        return render(request, 'get_together/places/add_place_to_series.html', context)
+    elif request.method == 'POST':
+        form = NewPlaceForm(request.POST)
+        if form.is_valid:
+            if request.POST.get('id', None):
+                form.instance.id = request.POST.get('id')
+            new_place = form.save()
+            series.place = new_place
+            series.save()
+            return redirect('show-series', series.id, series.slug)
+        else:
+            context = {
+                'series': series,
+                'place_form': form,
+            }
+            return render(request, 'get_together/places/add_place_to_series.html', context)
     else:
      return redirect('home')
 

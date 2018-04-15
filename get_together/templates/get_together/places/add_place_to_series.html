@@ -6,7 +6,7 @@
         <div class="col-md-6">
 
             <h2>Choose your meeting place</h2>
-            <form action="{% url "add-place" event.id %}" method="post">
+            <form action="{% url "add-place-to-series" series.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" id="id_id" name="id" value="" />
             {% include "events/place_form.html" %}
@@ -14,7 +14,7 @@
             <br />
             <button type="submit" class="btn btn-primary">Announce your Get Together!</button>
             </form>
-            <a class="btn btn-secondary" href="{% url 'show-event' event.id %}">Add a Place later</a>
+            <a class="btn btn-secondary" href="{% url 'show-series' series.id series.slug %}">Add a Place later</a>
         </div>
         <div id="map" class="col-md-6"></div>
     </div>
@@ -48,7 +48,7 @@
                 html_addr: null,
                 mapOptions: {
                     zoom: 12,
-                    center: {lat: {{event.team.city.latitude}}, lng: {{event.team.city.longitude}}},
+                    center: { lat: {{series.team.city.latitude|default:'0.0'}}, lng: {{series.team.city.longitude|default:'0.0'}} },
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: false
                 }

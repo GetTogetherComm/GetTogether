@@ -73,6 +73,7 @@ urlpatterns = [
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
     path('series/<int:series_id>/+edit/', views.edit_series, name='edit-series'),
     path('series/<int:series_id>/+delete/', views.delete_series, name='delete-series'),
+    path('series/<int:series_id>/+add_place/', views.add_place_to_series, name='add-place-to-series'),
     path('series/<int:series_id>/<str:series_slug>/', views.show_series, name='show-series'),
 
     path('org/<str:org_slug>/', views.show_org, name='show-org'),
