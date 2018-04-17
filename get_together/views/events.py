@@ -7,7 +7,8 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
-from events.models.events import Event, CommonEvent, EventSeries, EventPhoto, Place, Attendee
+from events.models.events import Event, CommonEvent, EventSeries, EventPhoto, Place, Attendee, update_event_searchable, \
+    delete_event_searchable
 from events.models.profiles import Team, Organization, UserProfile, Member
 from events.forms import (
     TeamEventForm,
@@ -276,6 +277,7 @@ def delete_event(request, event_id):
         form = DeleteEventForm(request.POST)
         if form.is_valid() and form.cleaned_data['confirm']:
             team_id = event.team_id
+            delete_event_searchable(event);
             event.delete()
             return redirect('show-team', team_id)
         else:

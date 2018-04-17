@@ -173,6 +173,29 @@ def update_event_searchable(event):
 
     searchable.save()
 
+def delete_event_searchable(event):
+    site = Site.objects.get(id=1)
+    event_url = "https://%s%s" % (site.domain, event.get_absolute_url())
+    origin_url = "https://%s%s" % (site.domain, reverse('searchables'))
+
+    md5 = hashlib.md5()
+    federation_url = event_url.split('/')
+    federation_node = '/'.join(federation_url[:3])
+    federation_id = '/'.join(federation_url[:5])
+    md5.update(bytes(federation_id, 'utf8'))
+    event_uri = federation_node + '/' + md5.hexdigest()
+
+    try:
+        searchable = Searchable.objects.get(event_uri=event_uri)
+    except:
+        searchable = Searchable(event_uri)
+        searchable.origin_node = origin_url
+        searchable.federation_node = origin_url
+        searchable.federation_time = timezone.now()
+
+    searchable.event_url = event_url
+    searchable.delete()
+
 def slugify(s, ok=SLUG_OK, lower=True, spaces=False):
     # L and N signify letter/number.
     # http://www.unicode.org/reports/tr44/tr44-4.html#GC_Values_Table
