@@ -153,7 +153,7 @@ class TeamForm(forms.ModelForm):
 class NewTeamForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ['name', 'description', 'category', 'city', 'web_url', 'tz']
+        fields = ['name', 'city', 'tz']
         widgets = {
             'city': Lookup(source=City),
         }
@@ -161,6 +161,11 @@ class NewTeamForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['city'].required = True
+
+class TeamDefinitionForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ['category', 'web_url', 'description']
 
 class DeleteTeamForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete team", required=True)

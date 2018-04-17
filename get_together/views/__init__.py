@@ -26,6 +26,7 @@ from .events import *
 from .places import *
 from .user import *
 from .new_user import *
+from .new_team import *
 from .utils import *
 
 KM_PER_DEGREE_LAT = 110.574
@@ -54,7 +55,7 @@ def home(request, *args, **kwards):
     else :
         context['city_search'] = False
         try:
-            g = get_geoip(request)
+            g = location.get_geoip(request)
             if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
                 ll = g.latlng
                 context['geoip_lookup'] = True
@@ -76,7 +77,7 @@ def home(request, *args, **kwards):
 
         except Exception as err:
             context['geoip_lookup'] = False
-            print("Geocoder lookup failed for %s" % client_ip, err)
+            print("Geocoder lookup failed for %s" % request.META.get('REMOTE_ADDR'), err)
             traceback.print_exc()
 
     #import pdb; pdb.set_trace()
@@ -98,6 +99,11 @@ def home(request, *args, **kwards):
 
             near_teams = Team.objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
             context['near_teams'] = sorted(near_teams, key=lambda team: location.team_distance_from(ll, team))
+
+#            # If there aren't any teams in the user's geoip area, direct them to start one
+            if context['geoip_lookup'] and len(near_teams) < 1 and len(near_events) < 1:
+                messages.add_message(request, messages.INFO, message=_('There are no teams or events yet in your area, be the first to start one!'))
+                return redirect('create-team')
         except Exception as err:
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()

@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.conf import settings
 
+from .models.locale import City
+
 import math
 import pytz
 import datetime
@@ -27,8 +29,8 @@ def get_geoip(request):
     client_ip = get_client_ip(request)
     if client_ip == '127.0.0.1' or client_ip == 'localhost':
         if settings.DEBUG:
-            client_ip = '8.8.8.8' # Try Google's server
-            print("Client is localhost, using 8.8.8.8 for geoip instead")
+            client_ip = getattr(settings, 'DEBUG_IP', '8.8.8.8') # Try Google's server
+            print("Client is localhost, using %s for geoip instead" % client_ip)
         else:
             raise Exception("Client is localhost")
 
@@ -47,7 +49,6 @@ def distance(center1, center2):
     dlat = (center2[0] - center1[0]) * KM_PER_DEGREE_LAT
     dlng = (center2[1] - center1[1]) * (KM_PER_DEGREE_LNG*math.cos(math.radians(avglat)))
     dkm = math.sqrt((dlat*dlat) + (dlng*dlng))
-    print("Distance between %s and %s is %s" % (center1, center2, dkm))
     return dkm
 
 def city_distance_from(ll, city):
@@ -76,4 +77,17 @@ def searchable_distance_from(ll, searchable):
     else:
         return 99999
 
-
+def get_nearest_city(ll, max_distance=100):
+    city = None
+    city_distance = 1 #km
+    while city is None and city_distance <= max_distance:
+        minlat = ll[0]-(city_distance/KM_PER_DEGREE_LAT)
+        maxlat = ll[0]+(city_distance/KM_PER_DEGREE_LAT)
+        minlng = ll[1]-(city_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(ll[0]))))
+        maxlng = ll[1]+(city_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(ll[0]))))
+        nearby_cities = City.objects.filter(latitude__gte=minlat, latitude__lte=maxlat, longitude__gte=minlng, longitude__lte=maxlng)
+        if len(nearby_cities) == 0:
+            city_distance += 1
+        else:
+            return sorted(nearby_cities, key=lambda city: city_distance_from(ll, city))[0]
+    return city

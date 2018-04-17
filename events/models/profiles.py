@@ -197,7 +197,7 @@ class Team(models.Model):
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
     organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
 
-    description = models.TextField(help_text=_('Team Description'), blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.CASCADE)

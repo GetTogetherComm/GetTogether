@@ -111,6 +111,7 @@ def create_event(request, team_id):
                 new_series.save()
                 new_event.series = new_series
                 new_event.save()
+                messages.add_message(request, messages.SUCCESS, message=_('Your event has been scheduled! Next, find a place for your event.'))
             return redirect('add-place', new_event.id)
         else:
             context = {

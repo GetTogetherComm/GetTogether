@@ -60,7 +60,8 @@ urlpatterns = [
     path('team/<int:team_id>/+delete/', views.delete_team, name='delete-team'),
     path('team/<int:team_id>/events.ics', feeds.TeamEventsCalendar(), name='team-event-ical'),
 
-    path('+create-team/', views.create_team, name='create-team'),
+    path('+create-team/', views.start_new_team, name='create-team'),
+    path('team/<int:team_id>/+define/', views.define_new_team, name='define-team'),
     path('team/+create-event/', views.create_event_team_select, name='create-event-team-select'),
     path('team/<int:team_id>/+create-event/', views.create_event, name='create-event'),
     path('events/<int:event_id>/+edit/', views.edit_event, name='edit-event'),
