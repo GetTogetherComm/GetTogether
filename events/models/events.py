@@ -187,14 +187,10 @@ def delete_event_searchable(event):
 
     try:
         searchable = Searchable.objects.get(event_uri=event_uri)
+        searchable.delete()
     except:
-        searchable = Searchable(event_uri)
-        searchable.origin_node = origin_url
-        searchable.federation_node = origin_url
-        searchable.federation_time = timezone.now()
+        pass
 
-    searchable.event_url = event_url
-    searchable.delete()
 
 def slugify(s, ok=SLUG_OK, lower=True, spaces=False):
     # L and N signify letter/number.
