@@ -10,6 +10,7 @@ from imagekit.processors import ResizeToFill
 
 from .locale import *
 from .. import location
+from ..utils import slugify
 
 import uuid
 import pytz
@@ -27,6 +28,7 @@ class UserProfile(models.Model):
                                            processors=[ResizeToFill(128, 128)],
                                            format='PNG',
                                            blank=True)
+    city = models.ForeignKey(City, verbose_name=_('Home city'), null=True, blank=True, on_delete=models.CASCADE)
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter Name'), max_length=32, blank=True, null=True)
@@ -275,17 +277,60 @@ class Member(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
+    slug = models.CharField(max_length=256, blank=True)
     img_url = models.URLField(blank=False, null=False)
 
+    class Meta:
+        verbose_name_plural = 'Categories'
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Topic(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=256)
-    description = models.TextField()
+    slug = models.CharField(max_length=256, blank=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+class Speaker(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+
+    categories = models.ManyToManyField('Category', blank=True)
+    topics = models.ManyToManyField('Topic', blank=True)
+
+class Talk(models.Model):
+    PRESENTATION=0
+    WORKSHOP=1
+    PANEL=2
+    ROUNDTABLE=3
+    QANDA=4
+    DEMO=5
+    TYPES = [
+        (PRESENTATION, _("Presentation")),
+        (WORKSHOP, _("Workshop")),
+        (PANEL, _("Panel")),
+        (ROUNDTABLE, _("Roundtable")),
+        (QANDA, _("Q & A")),
+        (DEMO, _("Demonstration")),
+    ]
+    speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
+    title = models.CharField(max_length=256)
+    abstract = models.TextField()
+    talk_type = models.SmallIntegerField(_("Type"), choices=TYPES, default=PRESENTATION)
+    web_url = models.URLField(_("Website"), null=True, blank=True)
+
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
+    topics = models.ManyToManyField('Topic', blank=True)
 
 

@@ -24,6 +24,7 @@ class CityAdmin(admin.ModelAdmin):
 admin.site.register(City, CityAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
+    raw_id_fields = ('city',)
     list_display = ('user', 'realname', 'avatar', 'web_url')
 admin.site.register(UserProfile, ProfileAdmin)
 
@@ -101,12 +102,16 @@ class AttendeeAdmin(admin.ModelAdmin):
 admin.site.register(Attendee, AttendeeAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
+    list_display = ('name', 'slug', 'image')
+    exclude = ('slug', )
     def image(self, obj):
         return (mark_safe('<img src="%s" title="%s" height="64px" />' % (obj.img_url, obj.name)))
     image.short_description = 'Image'
 admin.site.register(Category, CategoryAdmin)
 
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('name', 'slug', 'category')
     list_filter = ('category',)
+    exclude = ('slug', )
+admin.site.register(Topic, TopicAdmin)
+

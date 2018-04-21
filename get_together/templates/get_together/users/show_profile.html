@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-3">
             {% if teams %}
-                <h4>Your Teams</h4>
+                <h4>Teams</h4>
                 <ul>
                 {% for t in teams %}
 		            <li>
@@ -33,6 +33,14 @@
                 {% endfor %}
                 </ul>
             {% endif %}
+            <h4>Categories</h4>
+            <ul>
+            {% for c in user.categories.all %}
+	            <li>
+		            {{c.name}}
+	            </li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
 </div>

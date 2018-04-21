@@ -72,6 +72,11 @@ def home(request, *args, **kwards):
                             city_distance += 1
                         else:
                             city = sorted(nearby_cities, key=lambda city: location.city_distance_from(ll, city))[0]
+
+                    if request.user.profile.city is None:
+                        profile = request.user.profile
+                        profile.city = city
+                        profile.save()
                 except:
                     pass # City lookup failed
 

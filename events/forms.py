@@ -262,15 +262,27 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'realname', 'tz', 'send_notifications']
+        fields = ['avatar', 'realname', 'city', 'tz', 'send_notifications']
         labels = {
             'send_notifications': _('Send me notification emails'),
         }
+        widgets = {
+            'city': Lookup(source=City),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class ConfirmProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'realname', 'tz']
+        fields = ['avatar', 'realname', 'city']
+        widgets = {
+            'city': Lookup(source=City),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class SendNotificationsForm(forms.ModelForm):
     class Meta:

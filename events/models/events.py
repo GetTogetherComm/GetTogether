@@ -11,6 +11,7 @@ from recurrence.fields import RecurrenceField
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
+from ..utils import slugify
 from .locale import *
 from .profiles import *
 from .search import *
@@ -19,10 +20,7 @@ from .. import location
 import re
 import pytz
 import datetime
-import unicodedata
 import hashlib
-
-SLUG_OK = '-_~'
 
 class Place(models.Model):
     name = models.CharField(help_text=_('Name of the Place'), max_length=150)
@@ -192,21 +190,6 @@ def delete_event_searchable(event):
         pass
 
 
-def slugify(s, ok=SLUG_OK, lower=True, spaces=False):
-    # L and N signify letter/number.
-    # http://www.unicode.org/reports/tr44/tr44-4.html#GC_Values_Table
-    rv = []
-    for c in unicodedata.normalize('NFKC', s):
-        cat = unicodedata.category(c)[0]
-        if cat in 'LN' or c in ok:
-            rv.append(c)
-        if cat == 'Z':  # space
-            rv.append(' ')
-    new = ''.join(rv).strip()
-    if not spaces:
-        new = re.sub('[-\s]+', '-', new)
-    return new.lower() if lower else new
-
 class Attendee(models.Model):
     NORMAL=0
     CREW=1
@@ -311,6 +294,8 @@ class CommonEvent(models.Model):
         return self.name
 
 class EventSeries(models.Model):
+    class Meta:
+        verbose_name_plural = 'Event series'
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='planned_events', null=True, blank=True, on_delete=models.SET_NULL)
@@ -391,4 +376,12 @@ class EventSeries(models.Model):
     def __str__(self):
         return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
 
+class SpeakerRequest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    topics = models.ManyToManyField('Topic', blank=True)
+
+class Presentation(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    talk = models.ForeignKey(Talk, on_delete=models.SET_NULL, blank=False, null=True)
+    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
 
