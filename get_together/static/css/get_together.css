@@ -41,3 +41,39 @@ form {
     height: 16px;
 }
 
+.btn-googleplus {
+    color: #FFFFFF;
+    background-color: #DB4437;
+    border-color: #DB4437;
+}
+.btn-googleplus:hover:active {
+    color: #FFFFFF;
+}
+
+.btn-facebook {
+    color: #FFFFFF;
+    background-color: #3B5998;
+    border-color: #3B5998;
+}
+.btn-facebook:hover, .btn-facebook:active {
+    color: #FFFFFF;
+}
+
+.btn-twitter {
+    color: #FFFFFF;
+    background-color: #1DA1F2;
+    border-color: #1DA1F2;
+}
+.btn-twitter:hover, .btn-twitter:active {
+    color: #FFFFFF;
+}
+
+.btn-github {
+    color: #FFFFFF;
+    background-color: #24292e;
+    border-color: #24292e;
+}
+.btn-github:hover, .btn-github:active {
+    color: #FFFFFF;
+}
+

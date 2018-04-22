@@ -26,7 +26,56 @@
     border-top: none;
 }
     </style>
-{% endblock %}
+{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId            : '{{settings.SOCIAL_AUTH_FACEBOOK_KEY}}',
+      autoLogAppEvents : true,
+      xfbml            : true,
+      version          : 'v2.12'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   function shareFacebook() {
+        FB.ui({
+          display: 'popup',
+          method: 'share',
+          href: '{{common_event.get_full_url}}',
+          quote: 'I\'m having a Get Together!\n\n{{common_event.name|jsencode}}',
+          hashtag: '#gettogether',
+          summary: "Let's have a Get Together!"
+        }, function(response){});
+   }
+</script>
+{% endif %}
+{% if settings.SOCIAL_AUTH_TWITTER_KEY %}
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+</script>
+{% endif %}{% endblock %}
 
 {% block content %}
 <div class="fluid-container">
@@ -34,9 +83,14 @@
         <div class="col-md-9">
             <h2>{{ common_event.name }}
                 {% if can_edit_event %}
-                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm">Edit Event</a>
+                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm">Edit</a>
                 {% endif %}
-                <a href="{% url 'share-common-event' common_event.id %}" class="btn btn-primary btn-sm">Share</a>
+                {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
+                    <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
+                {% endif %}
+                {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
+                    <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fa fa-facebook-official"></i> Share</a>
+                {% endif %}
             </h2><p class="text-muted">Organized by <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p><hr/>
 
             <p>{{ common_event.summary|markdown }}</p>

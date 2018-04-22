@@ -8,10 +8,10 @@
 <a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/><br/>
 <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
 -->
-{% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}">Google</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}">Faceboook</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}">Twitter</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-primary" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}">GitHub</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-googleplus" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-google-plus-official"></i> Google</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-facebook" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-facebook-official"></i> Faceboook</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-twitter" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-twitter"></i> Twitter</a></span>{% endif %}
+{% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-github" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-github"></i> GitHub</a></span>{% endif %}
 {% if settings.DEBUG %}<span><a class="btn btn-secondary" href="{% url 'admin:login' %}?{{ request.META.QUERY_STRING }}">Local</a></span>{% endif %}
 <br>
 </center>

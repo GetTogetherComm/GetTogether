@@ -68,7 +68,6 @@ urlpatterns = [
     path('events/<int:event_id>/+attend/', event_views.attend_event, name='attend-event'),
     path('events/<int:event_id>/+delete/', views.delete_event, name='delete-event'),
     path('events/<int:event_id>/+add_place/', views.add_place_to_event, name='add-place'),
-    path('events/<int:event_id>/+share/', views.share_event, name='share-event'),
     path('events/<int:event_id>/+comment/', event_views.comment_event, name='comment-event'),
     path('events/<int:event_id>/+photo/', views.add_event_photo, name='add-event-photo'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
@@ -79,7 +78,6 @@ urlpatterns = [
 
     path('org/<str:org_slug>/', views.show_org, name='show-org'),
     path('org/<str:org_slug>/+create-event/', views.create_common_event, name='create-common-event'),
-    path('common/<int:event_id>/+share/', views.share_common_event, name='share-common-event'),
     path('common/<int:event_id>/+create-event/', views.create_common_event_team_select, name='create-common-event-team-select'),
     path('common/<int:event_id>/<str:event_slug>/', views.show_common_event, name='show-common-event'),
 
