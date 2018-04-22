@@ -309,6 +309,9 @@ class Speaker(models.Model):
     categories = models.ManyToManyField('Category', blank=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
+    def __str__(self):
+        return self.user.__str__()
+
 class Talk(models.Model):
     PRESENTATION=0
     WORKSHOP=1
@@ -333,4 +336,6 @@ class Talk(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
+    def __str__(self):
+        return self.title
 

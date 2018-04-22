@@ -381,7 +381,10 @@ class SpeakerRequest(models.Model):
     topics = models.ManyToManyField('Topic', blank=True)
 
 class Presentation(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    talk = models.ForeignKey(Talk, on_delete=models.SET_NULL, blank=False, null=True)
+    event = models.ForeignKey(Event, related_name='presentations', on_delete=models.CASCADE)
+    talk = models.ForeignKey(Talk, related_name='presentations', on_delete=models.SET_NULL, blank=False, null=True)
     start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
+
+    def __str__(self):
+        return '%s at %s' % (self.talk.title, self.event.name)
 

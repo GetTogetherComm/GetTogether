@@ -3,9 +3,27 @@ from django.utils.safestring import mark_safe
 
 # Register your models here.
 from .models.locale import Language, Continent, Country, SPR, City
-from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
+from .models.profiles import (
+    UserProfile,
+    Organization,
+    Team,
+    Member,
+    Category,
+    Topic,
+    Speaker,
+    Talk,
+)
 from .models.search import Searchable
-from .models.events import Place, Event, EventComment, EventSeries, EventPhoto, CommonEvent, Attendee
+from .models.events import (
+    Place,
+    Event,
+    EventComment,
+    EventSeries,
+    EventPhoto,
+    CommonEvent,
+    Attendee,
+    Presentation,
+)
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -114,4 +132,8 @@ class TopicAdmin(admin.ModelAdmin):
     list_filter = ('category',)
     exclude = ('slug', )
 admin.site.register(Topic, TopicAdmin)
+
+admin.site.register(Speaker)
+admin.site.register(Talk)
+admin.site.register(Presentation)
 
