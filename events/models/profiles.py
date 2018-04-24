@@ -86,6 +86,10 @@ class UserProfile(models.Model):
     def moderating(self):
         return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR))]
 
+    @property
+    def talks(self):
+        return Talk.objects.filter(speaker__user=self)
+
     def can_create_event(self, team):
         try:
             if self.user.is_superuser:
@@ -304,12 +308,26 @@ class Topic(models.Model):
 
 class Speaker(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
+    avatar = ProcessedImageField(verbose_name=_("Photo Image"),
+                                           upload_to='avatars',
+                                           processors=[ResizeToFill(128, 128)],
+                                           format='PNG',
+                                           blank=True)
+    title = models.CharField(max_length=256, blank=True, null=True)
+    bio = models.TextField(verbose_name=_('Biography'), blank=True)
 
     categories = models.ManyToManyField('Category', blank=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
+    def headshot(self):
+        if self.avatar:
+            return self.avatar
+        else:
+            return self.user.avatar
+
     def __str__(self):
+        if self.title:
+            return self.title
         return self.user.__str__()
 
 class Talk(models.Model):
@@ -327,7 +345,7 @@ class Talk(models.Model):
         (QANDA, _("Q & A")),
         (DEMO, _("Demonstration")),
     ]
-    speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
+    speaker = models.ForeignKey(Speaker, verbose_name=_('Speaker Bio'), on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     abstract = models.TextField()
     talk_type = models.SmallIntegerField(_("Type"), choices=TYPES, default=PRESENTATION)
@@ -335,6 +353,14 @@ class Talk(models.Model):
 
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
+
+    @property
+    def future_presentations(self):
+        return self.presentations.filter(status__gte=0, event__start_time__gt=timezone.now())
+
+    @property
+    def past_presentations(self):
+        return self.presentations.filter(status=1, event__start_time__lte=timezone.now())
 
     def __str__(self):
         return self.title

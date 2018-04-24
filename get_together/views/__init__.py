@@ -27,6 +27,7 @@ from .places import *
 from .user import *
 from .new_user import *
 from .new_team import *
+from .speakers import *
 from .utils import *
 
 KM_PER_DEGREE_LAT = 110.574

@@ -1,0 +1,200 @@
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib import messages
+from django.contrib.auth import logout as logout_user
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+
+from events.models.profiles import UserProfile, Speaker, Talk
+from events.forms import (
+    SpeakerBioForm,
+    UserTalkForm,
+    DeleteTalkForm,
+    SchedulePresentationForm,
+)
+
+from events.models.events import Event, Presentation
+
+import datetime
+import simplejson
+
+from .teams import *
+from .events import *
+
+@login_required
+def list_user_talks(request):
+    profile = request.user.profile
+    speaker_bios = Speaker.objects.filter(user=profile)
+    talks = list(Talk.objects.filter(speaker__user=profile))
+    context = {
+        'speaker_bios': speaker_bios,
+        'talks': talks,
+    }
+    return render(request, 'get_together/speakers/list_user_talks.html', context)
+
+def add_speaker(request):
+    new_speaker = Speaker(user=request.user.profile)
+    if request.method == 'GET':
+        speaker_form = SpeakerBioForm(instance=new_speaker)
+        context = {
+            'speaker': new_speaker,
+            'speaker_form': speaker_form,
+        }
+        return render(request, 'get_together/speakers/create_speaker.html', context)
+    elif request.method == 'POST':
+        speaker_form = SpeakerBioForm(request.POST, request.FILES, instance=new_speaker)
+        if speaker_form.is_valid():
+            new_speaker = speaker_form.save()
+            return redirect('show-talks')
+        else:
+            context = {
+                'speaker': new_speaker,
+                'speaker_form': speaker_form,
+            }
+            return render(request, 'get_together/speakers/create_speaker.html', context)
+    return redirect('home')
+
+def edit_speaker(request, speaker_id):
+    speaker = get_object_or_404(Speaker, id=speaker_id)
+    if request.method == 'GET':
+        speaker_form = SpeakerBioForm(instance=speaker)
+        context = {
+            'speaker': speaker,
+            'speaker_form': speaker_form,
+        }
+        return render(request, 'get_together/speakers/edit_speaker.html', context)
+    elif request.method == 'POST':
+        speaker_form = SpeakerBioForm(request.POST, request.FILES, instance=speaker)
+        if speaker_form.is_valid():
+            speaker = speaker_form.save()
+            return redirect('user-talks')
+        else:
+            context = {
+                'speaker': speaker,
+                'speaker_form': speaker_form,
+            }
+            return render(request, 'get_together/speakers/edit_speaker.html', context)
+    return redirect('home')
+
+def delete_speaker(request, speaker_id):
+    pass
+
+def show_talk(request, talk_id):
+    pass
+
+def add_talk(request):
+    new_talk = Talk()
+    if request.method == 'GET':
+        talk_form = UserTalkForm(instance=new_talk)
+        talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
+        context = {
+            'talk': new_talk,
+            'talk_form': talk_form,
+        }
+        return render(request, 'get_together/speakers/create_talk.html', context)
+    elif request.method == 'POST':
+        talk_form = UserTalkForm(request.POST, instance=new_talk)
+        talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
+        if talk_form.is_valid():
+            new_talk = talk_form.save()
+            return redirect('user-talks')
+        else:
+            context = {
+                'talk': new_talk,
+                'talk_form': talk_form,
+            }
+            return render(request, 'get_together/speakers/create_talk.html', context)
+    return redirect('home')
+
+def edit_talk(request, talk_id):
+    talk = get_object_or_404(Talk, id=talk_id)
+    if not talk.speaker.user == request.user.profile:
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this talk.'))
+        return redirect('show-talk', talk_id)
+
+    if request.method == 'GET':
+        talk_form = UserTalkForm(instance=talk)
+        talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
+        context = {
+            'talk': talk,
+            'talk_form': talk_form,
+        }
+        return render(request, 'get_together/speakers/edit_talk.html', context)
+    elif request.method == 'POST':
+        talk_form = UserTalkForm(request.POST, instance=talk)
+        talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
+        if talk_form.is_valid():
+            talk = talk_form.save()
+            return redirect('user-talks')
+        else:
+            context = {
+                'talk': talk,
+                'talk_form': talk_form,
+            }
+            return render(request, 'get_together/speakers/edit_talk.html', context)
+    return redirect('home')
+
+def delete_talk(request, talk_id):
+    talk = get_object_or_404(Talk, id=talk_id)
+    if not talk.speaker.user == request.user.profile:
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this talk.'))
+        return redirect('show-talk', talk_id)
+
+    if request.method == 'GET':
+        form = DeleteTalkForm()
+
+        context = {
+            'talk': talk,
+            'delete_form': form,
+        }
+        return render(request, 'get_together/speakers/delete_talk.html', context)
+    elif request.method == 'POST':
+        form = DeleteTalkForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            talk.delete()
+            return redirect('user-talks')
+        else:
+            context = {
+                'talk': talk,
+                'delete_form': form,
+            }
+            return render(request, 'get_together/speakers/delete_talk.html', context)
+    else:
+     return redirect('home')
+
+@login_required
+def propose_event_talk(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == 'GET':
+        profile = request.user.profile
+        talks = list(Talk.objects.filter(speaker__user=profile))
+        presentations = event.presentations.all().order_by('-status')
+        for presentation in presentations:
+            if presentation.talk in talks:
+                talks.remove(presentation.talk)
+
+        context = {
+            'event': event,
+            'available_talks': talks,
+            'proposed_talks': presentations,
+        }
+        return render(request, 'get_together/speakers/list_user_presentations.html', context)
+    elif request.method == 'POST':
+        talk = get_object_or_404(Talk, id=request.POST.get('talk_id'))
+        new_proposal = Presentation.objects.create(
+            event=event,
+            talk=talk,
+            status=Presentation.PROPOSED,
+            start_time=event.local_start_time,
+            created_by=request.user.profile,
+        )
+        messages.add_message(request, messages.SUCCESS, message=_('Your talk has been submitted to the event organizer.'))
+        return redirect(event.get_absolute_url())
+    else:
+        redirect('home')
+
+def schedule_event_talks(request, event_id):
+    pass
+
+

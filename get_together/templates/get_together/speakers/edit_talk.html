@@ -1,0 +1,32 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<h2>Edit Talk</h2>
+
+
+<form action="{% url "edit-talk" talk.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+    <table class="table">
+        {{talk_form}}
+    </table>
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</div>
+</form>
+<a href="{% url 'delete-talk' talk.id %}" class="btn btn-danger">Delete</a>
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#id_speaker").selectmenu()
+    $("#id_talk_type").selectmenu()
+    $("#id_category").selectmenu()
+});
+</script>
+{% endblock %}

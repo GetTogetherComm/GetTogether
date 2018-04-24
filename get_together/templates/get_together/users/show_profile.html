@@ -1,4 +1,10 @@
 {% extends "get_together/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
+{% endblock %}
 
 {% block content %}
 
@@ -6,11 +12,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-2"></div>
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="h2">
                 <img class="align-bottom" border="1" src="{{user.avatar_url}}" height="128px"/> {{user.user}}
                 {% if user.user.id == request.user.id %}
-                <a href="{% url 'edit-profile'  %}" class="btn btn-secondary btn-sm">Edit Profile</a>
+                <div class="btn-group dropdown">
+                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Edit
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="editMenuButton">
+                        <a href="{% url 'edit-profile'  %}" class="dropdown-item">Profile</a>
+                        <a href="{% url 'user-talks'  %}" class="dropdown-item">Talks</a>
+                    </div>
+                </div>
                 <a href="{% url 'user-event-ical' request.user.profile.secret_key %}" class="btn btn-success btn-sm">iCal</a>
                 {% endif %}
 
@@ -21,6 +35,25 @@
             {% if user.weburl %}
             <p>Homepage: {{user.weburl}}</p>
             {% endif %}
+{% if user.talks %}
+            <h3>Talks</h3>
+            <div class="container">
+            <div class="row">
+            {% for talk in user.talks %}
+                <div class="mr-3 mb-3 col-md-5">
+                  <div class="card box-shadow" >
+                    <div class="card-body">
+                      <p class="card-title"><strong><a href="{% url 'show-talk' talk.id %}">{{talk.title}}</a></strong></p>
+                      <div class="card-text">
+                        <small class="text-muted mb-1">{{ talk.speaker }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+            </div>
+            </div>
+{% endif %}
         </div>
         <div class="col-md-3">
             {% if teams %}

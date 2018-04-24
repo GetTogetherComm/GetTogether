@@ -1,0 +1,57 @@
+{% extends "get_together/base.html" %}
+{% load static tz %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid">
+        <div class="row">
+{% for speaker in speaker_bios %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow" style="width: 18rem;">
+                <div class="card-img-top mt-1" style="text-align: center"><img src="{{speaker.headshot.url}}"/></div>
+                <div class="card-body">
+                  <p class="card-title" style="height: 2rem;">
+                      <strong><a href="{% url 'edit-speaker' speaker.id %}">{{speaker.title}}</a></strong>
+                  </p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ speaker.bio }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endfor %}
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'add-speaker' %}" class="btn btn-success"><i class="fa fa-plus"></i> Speaker Bio</a>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row">
+{% for talk in talks %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow" style="width: 18rem;">
+                <div class="card-body">
+                  <p class="card-title" style="height: 2rem;"><strong><a href="{% url 'edit-talk' talk.id %}">{{talk.title}}</a></strong></p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ talk.abstract }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endfor %}
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'add-talk' %}" class="btn btn-success"><i class="fa fa-plus"></i> Talk</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

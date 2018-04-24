@@ -133,7 +133,17 @@ class TopicAdmin(admin.ModelAdmin):
     exclude = ('slug', )
 admin.site.register(Topic, TopicAdmin)
 
-admin.site.register(Speaker)
-admin.site.register(Talk)
-admin.site.register(Presentation)
+class SpeakerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'avatar')
+admin.site.register(Speaker, SpeakerAdmin)
+
+class TalkAdmin(admin.ModelAdmin):
+    list_display = ('title', 'speaker', 'category')
+    list_filter = ('category',)
+admin.site.register(Talk, TalkAdmin)
+
+class PresentationAdmin(admin.ModelAdmin):
+    list_display = ('talk', 'status', 'event')
+    list_filter = ('status',)
+admin.site.register(Presentation, PresentationAdmin)
 

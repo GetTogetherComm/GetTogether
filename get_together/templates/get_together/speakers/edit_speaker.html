@@ -1,0 +1,46 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<h2>Edit Speaker</h2>
+
+
+<form enctype="multipart/form-data" action="{% url "edit-speaker" speaker.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+    <table class="table">
+        <tr><th></th><td><img src="{{speaker.headshot.url}}"/></td></tr>
+        {{speaker_form}}
+    </table>
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+            if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
+        }
+    });
+    $("#id_categories").selectmenu()
+});
+</script>
+{% endblock %}
