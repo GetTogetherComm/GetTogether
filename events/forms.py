@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
-from .models.profiles import Team, UserProfile, Speaker, Talk
+from .models.profiles import Team, UserProfile
 from .models.events import (
     Event,
     EventComment,
@@ -14,6 +14,10 @@ from .models.events import (
     EventSeries,
     Place,
     EventPhoto,
+)
+from .models.speakers import (
+    Speaker,
+    Talk,
     Presentation,
     SpeakerRequest,
 )
@@ -342,6 +346,9 @@ class SpeakerBioForm(forms.ModelForm):
     class Meta:
         model = Speaker
         fields = ['avatar', 'title', 'bio', 'categories']
+
+class DeleteSpeakerForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete series", required=True)
 
 class UserTalkForm(forms.ModelForm):
     class Meta:

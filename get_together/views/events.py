@@ -14,10 +14,10 @@ from events.models.events import (
     EventPhoto,
     Place,
     Attendee,
-    Presentation,
     update_event_searchable,
     delete_event_searchable,
 )
+from events.models.speakers import Speaker, Talk, SpeakerRequest, Presentation
 from events.models.profiles import Team, Organization, UserProfile, Member
 from events.forms import (
     TeamEventForm,

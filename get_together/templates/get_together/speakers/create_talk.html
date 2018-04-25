@@ -8,6 +8,8 @@
 
 <form action="{% url "add-talk" %}" method="post">
 {% csrf_token %}
+{% if event %}<input type="hidden" name="event" value="{{event.id}}" />{% endif %}
+
 <div class="form-group">
     <table class="table">
         {{talk_form}}

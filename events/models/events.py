@@ -376,28 +376,4 @@ class EventSeries(models.Model):
     def __str__(self):
         return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
 
-class SpeakerRequest(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    topics = models.ManyToManyField('Topic', blank=True)
-
-class Presentation(models.Model):
-    DECLINED=-1
-    PROPOSED=0
-    ACCEPTED=1
-
-    STATUSES = [
-        (DECLINED, _("Declined")),
-        (PROPOSED, _("Proposed")),
-        (ACCEPTED, _("Accepted")),
-    ]
-    event = models.ForeignKey(Event, related_name='presentations', on_delete=models.CASCADE)
-    talk = models.ForeignKey(Talk, related_name='presentations', on_delete=models.SET_NULL, blank=False, null=True)
-    status = models.SmallIntegerField(choices=STATUSES, default=PROPOSED, db_index=True)
-    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True, null=True, blank=True)
-
-    created_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=False)
-    created_time = models.DateTimeField(default=timezone.now, db_index=True)
-
-    def __str__(self):
-        return '%s at %s' % (self.talk.title, self.event.name)
 

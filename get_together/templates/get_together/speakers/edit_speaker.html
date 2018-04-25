@@ -17,6 +17,8 @@
 <button type="submit" class="btn btn-primary">Save</button>
 </div>
 </form>
+<a href="{% url 'delete-speaker' speaker.id %}" class="btn btn-danger">Delete</a>
+
 {% endblock %}
 
 {% block javascript %}

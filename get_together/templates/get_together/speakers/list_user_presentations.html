@@ -55,7 +55,7 @@
         <div class="row">
             <div class="col">
                 <a href="{{event.get_absolute_url}}" class="btn btn-secondary">Cancel</a>
-                <a href="{% url 'add-user-talk' %}" class="btn btn-success">New Talk</a>
+                <a href="{% url 'add-talk' %}?event={{event.id}}" class="btn btn-success">New Talk</a>
             </div>
         </div>
     </div>

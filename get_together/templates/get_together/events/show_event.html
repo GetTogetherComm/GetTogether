@@ -151,7 +151,7 @@
 	            <td width="120px"><b>Presentations:</b></td>
                 <td>
                     {% for presentation in presentation_list %}
-                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-profile' presentation.talk.speaker.user.id %}">{{presentation.talk.speaker}}</a></div>
+                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-profile' presentation.talk.speaker.user.id %}">{{presentation.talk.speaker.user}}</a>, {{presentation.talk.speaker.title}}</div>
                     {% endfor %}
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
                 </td>

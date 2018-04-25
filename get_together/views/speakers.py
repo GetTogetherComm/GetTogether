@@ -6,16 +6,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 
-from events.models.profiles import UserProfile, Speaker, Talk
+from events.models.profiles import UserProfile
 from events.forms import (
     SpeakerBioForm,
+    DeleteSpeakerForm,
     UserTalkForm,
     DeleteTalkForm,
     SchedulePresentationForm,
 )
 
-from events.models.events import Event, Presentation
-
+from events.models.events import Event
+from events.models.speakers import Speaker, Talk, Presentation, SpeakerRequest
 import datetime
 import simplejson
 
@@ -46,7 +47,7 @@ def add_speaker(request):
         speaker_form = SpeakerBioForm(request.POST, request.FILES, instance=new_speaker)
         if speaker_form.is_valid():
             new_speaker = speaker_form.save()
-            return redirect('show-talks')
+            return redirect('user-talks')
         else:
             context = {
                 'speaker': new_speaker,
@@ -78,10 +79,41 @@ def edit_speaker(request, speaker_id):
     return redirect('home')
 
 def delete_speaker(request, speaker_id):
-    pass
+    speaker = get_object_or_404(Speaker, id=speaker_id)
+    if not speaker.user == request.user.profile:
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this speaker bio.'))
+        return redirect('show-speaker', speaker_id)
+
+    if request.method == 'GET':
+        form = DeleteSpeakerForm()
+
+        context = {
+            'speaker': speaker,
+            'delete_form': form,
+        }
+        return render(request, 'get_together/speakers/delete_speaker.html', context)
+    elif request.method == 'POST':
+        form = DeleteSpeakerForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            speaker.delete()
+            return redirect('user-talks')
+        else:
+            context = {
+                'speaker': speaker,
+                'delete_form': form,
+            }
+            return render(request, 'get_together/speakers/delete_speaker.html', context)
+    else:
+     return redirect('home')
 
 def show_talk(request, talk_id):
-    pass
+    talk = get_object_or_404(Talk, id=talk_id)
+    presentations = Presentation.objects.filter(talk=talk, status=Presentation.ACCEPTED).order_by('-event__start_time')
+    context = {
+        'talk': talk,
+        'presentations': presentations,
+    }
+    return render(request, 'get_together/speakers/show_talk.html', context)
 
 def add_talk(request):
     new_talk = Talk()
@@ -92,13 +124,24 @@ def add_talk(request):
             'talk': new_talk,
             'talk_form': talk_form,
         }
+        if 'event' in request.GET and request.GET['event']:
+            context['event'] = get_object_or_404(Event, id=request.GET['event'])
         return render(request, 'get_together/speakers/create_talk.html', context)
     elif request.method == 'POST':
         talk_form = UserTalkForm(request.POST, instance=new_talk)
         talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
         if talk_form.is_valid():
             new_talk = talk_form.save()
-            return redirect('user-talks')
+            if 'event' in request.POST and request.POST['event']:
+                event = Event.objects.get(id=request.POST['event'])
+                Presentation.objects.create(
+                    event=event,
+                    talk=new_talk,
+                    status=Presentation.PROPOSED,
+                    created_by=request.user.profile
+                )
+                return redirect(event.get_absolute_url())
+            return redirect('show-talk', new_talk.id)
         else:
             context = {
                 'talk': new_talk,
@@ -126,7 +169,7 @@ def edit_talk(request, talk_id):
         talk_form.fields['speaker'].queryset = request.user.profile.speaker_set
         if talk_form.is_valid():
             talk = talk_form.save()
-            return redirect('user-talks')
+            return redirect('show-talk', talk.id)
         else:
             context = {
                 'talk': talk,

@@ -33,10 +33,11 @@ def show_profile(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
 
     teams = user.memberships.all()
-
+    talks = Talk.objects.filter(speaker__user=user)
     context = {
             'user': user,
             'teams': teams,
+            'talks': talks,
     }
 
     return render(request, 'get_together/users/show_profile.html', context)

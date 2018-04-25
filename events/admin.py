@@ -10,8 +10,6 @@ from .models.profiles import (
     Member,
     Category,
     Topic,
-    Speaker,
-    Talk,
 )
 from .models.search import Searchable
 from .models.events import (
@@ -22,7 +20,12 @@ from .models.events import (
     EventPhoto,
     CommonEvent,
     Attendee,
+)
+from .models.speakers import (
+    Speaker,
+    Talk,
     Presentation,
+    SpeakerRequest,
 )
 
 admin.site.register(Language)

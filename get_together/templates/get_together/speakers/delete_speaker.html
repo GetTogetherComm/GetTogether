@@ -2,13 +2,13 @@
 
 {% block content %}
 <h2>Confirm deletion</h2>
-{% if talk.future_presentations.count > 0 %}
+{% if speaker.talks.count > 0 %}
     <div class="alerts">
-        <div class="alert alert-danger">This talk has {{ talk.future_presentations.count }} pending events!</div>
+        <div class="alert alert-danger">This speaker profile has {{ speaker.talks.count }} talks!</div>
     </div>
 {% endif %}
-Are you sure you want to delete <strong>{{talk.title}}</strong>?
-<form action="{% url "delete-talk" talk.id %}" method="post">
+Are you sure you want to delete <strong>{{speaker.title}}</strong>?
+<form action="{% url "delete-speaker" speaker.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {{ delete_form }}

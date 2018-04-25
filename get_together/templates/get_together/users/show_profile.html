@@ -35,11 +35,11 @@
             {% if user.weburl %}
             <p>Homepage: {{user.weburl}}</p>
             {% endif %}
-{% if user.talks %}
+{% if talks %}
             <h3>Talks</h3>
             <div class="container">
             <div class="row">
-            {% for talk in user.talks %}
+            {% for talk in talks %}
                 <div class="mr-3 mb-3 col-md-5">
                   <div class="card box-shadow" >
                     <div class="card-body">
