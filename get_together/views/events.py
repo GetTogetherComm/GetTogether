@@ -178,7 +178,7 @@ def add_place_to_event(request, event_id):
             if event.series is not None and event.series.place is None:
                 event.series.place = new_place;
                 event.series.save()
-            return redirect('share-event', event.id)
+            return redirect('show-event', event.id)
         else:
             context = {
                 'event': event,
