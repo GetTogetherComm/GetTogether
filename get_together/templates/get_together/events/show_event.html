@@ -147,6 +147,7 @@
             </tr>
             {% endif %}
 
+            {% if event.team.is_premium %}
             <tr>
 	            <td width="120px"><b>Presentations:</b></td>
                 <td>
@@ -156,6 +157,7 @@
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
                 </td>
             </tr>
+            {% endif %}
             </table>
 
             <div class="container mt-3">

@@ -224,6 +224,11 @@ class Team(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
+    is_premium = models.BooleanField(default=False)
+    premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, on_delete=models.SET_NULL)
+    premium_started = models.DateTimeField(blank=True, null=True)
+    premium_expires = models.DateTimeField(blank=True, null=True)
+
     @property
     def location_name(self):
         if self.city:

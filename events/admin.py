@@ -55,11 +55,15 @@ admin.site.register(Organization, OrgAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')
-    list_display = ('__str__', 'member_count', 'owner_profile', 'created_date')
+    list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'is_premium', 'premium_expires')
+    list_filter = ('active', 'is_premium', 'organization', 'country',)
     ordering = ('-created_date',)
     def member_count(self, team):
         return team.members.all().count()
     member_count.short_description = 'Members'
+    def event_count(self, team):
+        return team.event_set.all().count()
+    event_count.short_description = 'Events'
 admin.site.register(Team, TeamAdmin)
 
 class SearchableAdmin(admin.ModelAdmin):

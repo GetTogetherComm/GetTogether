@@ -209,6 +209,10 @@ def delete_talk(request, talk_id):
 @login_required
 def propose_event_talk(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+    if not event.team.is_premium:
+        messages.add_message(request, messages.ERROR, message=_("You can not propose a talk to this team's events."))
+        return redirect(event.get_absolute_url())
+
     if request.method == 'GET':
         profile = request.user.profile
         talks = list(Talk.objects.filter(speaker__user=profile))
