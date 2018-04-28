@@ -1,19 +1,58 @@
 {% extends "get_together/base.html" %}
 
 {% block content %}
-<center>
-
-<h4>Signup or Login to get started</h4>
-<!--
-<a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">Facebook</a><br/><br/>
-<a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">Twitter</a>&nbsp; &nbsp;
--->
-{% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-googleplus" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-google-plus-official"></i> Google</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-facebook" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-facebook-official"></i> Faceboook</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-twitter" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-twitter"></i> Twitter</a></span>{% endif %}
-{% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-github" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-github"></i> GitHub</a></span>{% endif %}
-{% if settings.DEBUG %}<span><a class="btn btn-secondary" href="{% url 'admin:login' %}?{{ request.META.QUERY_STRING }}">Local</a></span>{% endif %}
-<br>
-</center>
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <center>
+                <h3>Login using one of these providers:</h3>
+                {% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<span><a class="btn btn-googleplus" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-google-plus-official"></i> Google</a></span>{% endif %}
+                {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<span><a class="btn btn-facebook" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-facebook-official"></i> Faceboook</a></span>{% endif %}
+                {% if settings.SOCIAL_AUTH_TWITTER_KEY %}<span><a class="btn btn-twitter" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-twitter"></i> Twitter</a></span>{% endif %}
+                {% if settings.SOCIAL_AUTH_GITHUB_KEY %}<span><a class="btn btn-github" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-github"></i> GitHub</a></span>{% endif %}
+                <div class="mt-2 alert alert-info"><small><b>Note:</b> The only information GetTogether recieves from these providers is your username and (optionally) your email address. GetTogether will not have access to read any other information from these accounts, not even your password, and will not have access to post information to them. </small></div>
+            </center>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <center>
+                <h4>Or, use a local GetTogether account:</h4>
+<ul class="nav nav-tabs justify-content-center mb-2" id="localTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link {% if action != 'signup' %}active{% endif %}" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if action == 'signup' %}active{% endif %}" id="signup-tab" data-toggle="tab" href="#signup" role="tab" aria-controls="signup" aria-selected="false">Signup</a>
+  </li>
+</ul>
+<div class="tab-content" id="localFormContent">
+  <div class="tab-pane fade {% if action != 'signup' %}show active{% endif %}" id="login" role="tabpanel" aria-labelledby="login-tab">
+    <form action="#" method="POST">
+        {% csrf_token %}
+        <table>
+        {{ login_form }}
+        </table>
+        <button class="btn btn-primary" type="submit" name="action" value="login">Login</button>
+    </form>
+  </div>
+  <div class="tab-pane fade {% if action == 'signup' %}show active{% endif %}" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+    <form action="#" method="POST">
+        {% csrf_token %}
+        <table class="table">
+        {{ signup_form }}
+        </table>
+        <button class="btn btn-primary" type="submit" name="action" value="signup">Signup</button>
+    </form>
+  </div>
+</div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
 {% endblock %}
 

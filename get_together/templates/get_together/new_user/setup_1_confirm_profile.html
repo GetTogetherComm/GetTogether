@@ -1,4 +1,5 @@
 {% extends "get_together/base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container">
@@ -20,8 +21,27 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+            if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
+        }
+    });
     $("#id_tz").selectmenu()
 });
 </script>

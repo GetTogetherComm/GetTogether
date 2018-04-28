@@ -77,3 +77,12 @@ form {
     color: #FFFFFF;
 }
 
+ul.errorlist li {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  background-color: #f2dede;
+  border-color: #ebcccc;
+  color: #a94442;
+}

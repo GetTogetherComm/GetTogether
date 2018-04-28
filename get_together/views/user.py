@@ -2,6 +2,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
+from django.contrib.auth import login as login_user, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
@@ -26,8 +28,37 @@ def login(request):
     if request.user.is_authenticated:
         messages.add_message(request, messages.INFO, message=_('You are already logged in.'))
         return redirect('home')
-    return render(request, 'get_together/users/login.html')
 
+    context = {
+        'login_form': AuthenticationForm(),
+        'signup_form': UserCreationForm(),
+    }
+    if request.method == 'POST':
+        if request.POST.get('action') == 'login':
+            login_form = AuthenticationForm(data=request.POST)
+            if login_form.is_valid():
+                username = login_form.cleaned_data.get('username')
+                raw_password = login_form.cleaned_data.get('password')
+                user = authenticate(username=username, password=raw_password)
+                login_user(request, user, backend=user.backend)
+                return redirect('home')
+            else:
+                context['login_form'] = login_form
+                context['action'] = 'login'
+        elif request.POST.get('action') == 'signup':
+            signup_form = UserCreationForm(data=request.POST)
+            if signup_form.is_valid():
+                signup_form.save()
+                username = signup_form.cleaned_data.get('username')
+                raw_password = signup_form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login_user(request, user, backend=user.backend)
+                return redirect('home')
+            else:
+                context['signup_form'] = signup_form
+                context['action'] = 'signup'
+
+    return render(request, 'get_together/users/login.html', context)
 
 def show_profile(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
