@@ -46,7 +46,8 @@ admin.site.register(City, CityAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ('city',)
-    list_display = ('user', 'realname', 'avatar', 'web_url')
+    list_display = ('user', 'realname', 'city', 'web_url', 'send_notifications')
+    list_filter = ('send_notifications', 'user__last_login')
 admin.site.register(UserProfile, ProfileAdmin)
 
 class OrgAdmin(admin.ModelAdmin):
