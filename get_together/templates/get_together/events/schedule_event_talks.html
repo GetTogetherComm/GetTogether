@@ -13,6 +13,9 @@
         </div>
 {% endif %}
         <div class="container">
+        <h2>Manage talks for: {{event.name}}</h2>
+{% if pending_talks %}
+        <hr/>
         <div class="row">
 {% for presentation in pending_talks %}
             <form action="{% url 'schedule-event-talks' event.id %}" method="POST">
@@ -35,6 +38,7 @@
             </form>
 {% endfor %}
         </div>
+{% endif %}
 {% if accepted_talks %}
         <hr/>
         <div class="row">

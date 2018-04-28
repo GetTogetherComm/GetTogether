@@ -12,7 +12,7 @@
             </h2>
             <table class="table">
             <tr>
-	            <td><b>Speaker:</b></td><td>{{ talk.speaker }}</td>
+	            <td><b>Speaker:</b></td><td><a href="{% url 'show-speaker' talk.speaker.id %}">{{ talk.speaker.user }}, {{ talk.speaker.title }}</a></td>
             </tr>
             <tr>
 	            <td><b>Category:</b></td><td>{{ talk.category }}</td>
@@ -38,6 +38,7 @@
                 <div class="row mb-3">
                     <div class="col">
                         <h6 class="mt-2 mb-0"><a href="{{presentation.event.get_absolute_url}}">{{presentation.event.name}}</a></h6>
+                        <small>{{ presentation.event.team }}</small><br/>
                         <small class="text-muted">{{ presentation.event.local_start_time }}</small>
                     </div>
                 </div>

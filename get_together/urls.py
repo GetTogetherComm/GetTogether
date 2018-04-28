@@ -50,6 +50,7 @@ urlpatterns = [
     path('profile/<str:account_secret>.ics', feeds.UserEventsCalendar(), name='user-event-ical'),
 
     path('profile/+add-speaker', views.add_speaker, name='add-speaker'),
+    path('speaker/<int:speaker_id>/', views.show_speaker, name='show-speaker'),
     path('speaker/<int:speaker_id>/+edit', views.edit_speaker, name='edit-speaker'),
     path('speaker/<int:speaker_id>/+delete', views.delete_speaker, name='delete-speaker'),
 

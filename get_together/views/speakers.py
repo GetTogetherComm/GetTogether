@@ -34,6 +34,16 @@ def list_user_talks(request):
     }
     return render(request, 'get_together/speakers/list_user_talks.html', context)
 
+def show_speaker(request, speaker_id):
+    speaker = get_object_or_404(Speaker, id=speaker_id)
+
+    context = {
+        'speaker': speaker,
+        'talks': Talk.objects.filter(speaker=speaker),
+        'presentations': Presentation.objects.filter(talk__speaker=speaker, status=Presentation.ACCEPTED),
+    }
+    return render(request, 'get_together/speakers/show_speaker.html', context)
+
 def add_speaker(request):
     new_speaker = Speaker(user=request.user.profile)
     if request.method == 'GET':
