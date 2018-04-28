@@ -41,8 +41,8 @@
               width="720"
               height="400"
               frameborder="0" style="border:0"
-              src="https://www.google.com/maps/embed/v1/place?key={{ settings.GOOGLE_MAPS_API_KEY }}
-               &q={{place.name}},{{place.city}}" allowfullscreen>
+              src="https://www.google.com/maps/embed/v1/view?key={{ settings.GOOGLE_MAPS_API_KEY }}
+                &center={{place.latitude},{place.longitude}}" allowfullscreen>
             </iframe>
 
         </div>
