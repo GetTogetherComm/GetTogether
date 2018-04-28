@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.safestring import mark_safe
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.shortcuts import render, redirect, get_object_or_404
@@ -210,7 +210,7 @@ def delete_talk(request, talk_id):
 def propose_event_talk(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not event.team.is_premium:
-        messages.add_message(request, messages.ERROR, message=_("You can not propose a talk to this team's events."))
+        messages.add_message(request, messages.ERROR, message=_("You can not manage talks for this event."))
         return redirect(event.get_absolute_url())
 
     if request.method == 'GET':
@@ -242,6 +242,27 @@ def propose_event_talk(request, event_id):
         redirect('home')
 
 def schedule_event_talks(request, event_id):
-    pass
+    event = get_object_or_404(Event, id=event_id)
+    if not event.team.is_premium:
+        messages.add_message(request, messages.ERROR, message=mark_safe(_('Upgrade this team to a <a href="/about/premium">Premium</a> account to use this feature.')))
+        return redirect(event.get_absolute_url())
 
+    if request.method == 'POST':
+        presentation = get_object_or_404(Presentation, id=request.POST.get('presentation_id'))
+        if request.POST.get('action') == 'accept':
+            presentation.status = Presentation.ACCEPTED
+        elif request.POST.get('action') == 'decline':
+            presentation.status = Presentation.DECLINED
+        elif request.POST.get('action') == 'propose':
+            presentation.status = Presentation.PROPOSED
+        presentation.save()
+
+    context = {
+        'event': event,
+        'talks_count': event.presentations.count(),
+        'accepted_talks': event.presentations.filter(status=Presentation.ACCEPTED).order_by('start_time'),
+        'pending_talks': event.presentations.filter(status=Presentation.PROPOSED).order_by('start_time'),
+        'declined_talks': event.presentations.filter(status=Presentation.DECLINED).order_by('start_time'),
+    }
+    return render(request, 'get_together/events/schedule_event_talks.html', context)
 

@@ -66,6 +66,7 @@ def show_event(request, event_id, event_slug):
         'is_attending': request.user.profile in event.attendees.all(),
         'attendee_list': Attendee.objects.filter(event=event),
         'presentation_list': event.presentations.filter(status=Presentation.ACCEPTED).order_by('start_time'),
+        'pending_presentations': event.presentations.filter(status=Presentation.PROPOSED).count(),
         'can_edit_event': request.user.profile.can_edit_event(event),
     }
     return render(request, 'get_together/events/show_event.html', context)

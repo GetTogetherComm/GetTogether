@@ -94,7 +94,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="editMenuButton">
                             <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
-                            <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Speakers</a>
+                            <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Talks</a>
                     </div>
                 </div>
                 {% endif %}
@@ -155,6 +155,9 @@
                         <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-profile' presentation.talk.speaker.user.id %}">{{presentation.talk.speaker.user}}</a>, {{presentation.talk.speaker.title}}</div>
                     {% endfor %}
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
+                    {% if pending_presentations %}
+                    <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{{pending_presentations}} proposed talks</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endif %}
