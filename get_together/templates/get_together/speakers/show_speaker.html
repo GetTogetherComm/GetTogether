@@ -1,0 +1,61 @@
+{% extends "get_together/base.html" %}
+{% load markup static %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <img src="{{speaker.headshot.url}}"/><hr/>
+            <h3>{{ speaker.user }}</h3>
+            <h5 class="text-muted">{{ speaker.title }}</h5>
+            <p>
+                {{ speaker.bio|markdown }}
+            </p>
+
+{% if talks %}
+        <br/>
+        <h4>Talks</h4>
+        <div class="container">
+        <div class="row">
+        {% for talk in talks %}
+            <div class="col-md-4">
+              <div class="card box-shadow" >
+                <div class="card-body">
+                  <p class="card-title"><strong><a href="{% url 'show-talk' talk.id %}">{{talk.title}}</a></strong></p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ talk.speaker }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+        </div>
+{% endif %}
+        </div>
+        <div class="col-md-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>Events ({{presentations.count}})</h4><hr/></div>
+                </div>
+                {% for presentation in presentations %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <h6 class="mt-2 mb-0"><a href="{{presentation.event.get_absolute_url}}">{{presentation.event.name}}</a></h6>
+                        <small>{{ presentation.event.team }}</small><br/>
+                        <small class="text-muted">{{ presentation.event.local_start_time }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

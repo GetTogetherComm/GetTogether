@@ -27,6 +27,7 @@ from .places import *
 from .user import *
 from .new_user import *
 from .new_team import *
+from .speakers import *
 from .utils import *
 
 KM_PER_DEGREE_LAT = 110.574
@@ -72,6 +73,11 @@ def home(request, *args, **kwards):
                             city_distance += 1
                         else:
                             city = sorted(nearby_cities, key=lambda city: location.city_distance_from(ll, city))[0]
+
+                    if request.user.profile.city is None:
+                        profile = request.user.profile
+                        profile.city = city
+                        profile.save()
                 except:
                     pass # City lookup failed
 

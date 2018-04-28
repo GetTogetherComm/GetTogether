@@ -15,3 +15,4 @@ DATABASES['default'].update(dj_database_url.config())
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 STATIC_URL = os.environ.get('STATIC_URL', '/static/')
 
+EVENTS_TEAMS_DEFAULT_PREMIUM = os.environ.get('EVENTS_TEAMS_DEFAULT_PREMIUM', False)

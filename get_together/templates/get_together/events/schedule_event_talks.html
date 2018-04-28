@@ -1,0 +1,116 @@
+{% extends "get_together/base.html" %}
+{% load static tz %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block content %}
+{% if talks_count == 0 %}
+        <div class="alerts">
+            <div class="alert alert-info">No talks have been proposed for this event.</div>
+        </div>
+{% endif %}
+        <div class="container">
+        <h2>Manage talks for: {{event.name}}</h2>
+{% if pending_talks %}
+        <hr/>
+        <div class="row">
+{% for presentation in pending_talks %}
+            <form action="{% url 'schedule-event-talks' event.id %}" method="POST">
+            <input type="hidden" name="presentation_id" value="{{presentation.id}}"/>
+            {% csrf_token %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow" style="width: 18rem;">
+                <div class="card-body">
+                  <p class="card-title" style="height: 2rem;"><strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong></p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
+                    <div>
+                        <button class="btn btn-sm btn-success" type="submit" name="action" value="accept">Accept</button>
+                        <button class="btn btn-sm btn-danger" type="submit" name="action" value="decline">Decline</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+{% endfor %}
+        </div>
+{% endif %}
+{% if accepted_talks %}
+        <hr/>
+        <div class="row">
+{% for presentation in accepted_talks %}
+            <form action="{% url 'schedule-event-talks' event.id %}" method="POST">
+            <input type="hidden" name="presentation_id" value="{{presentation.id}}"/>
+            {% csrf_token %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow" style="width: 18rem;">
+                <div class="card-body">
+                  <p class="card-title" style="height: 2rem;">
+                      <strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong>
+                    {% if presentation.status == -1 %}
+                        <span class="badge badge-danger" >Declined</span>
+                    {% elif presentation.status == 1 %}
+                        <span class="badge badge-success" >Accepted</span>
+                    {% else %}
+                        <span class="badge badge-info" >Submitted</span>
+                    {% endif %}
+                  </p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
+                    <div>
+                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+{% endfor %}
+        </div>
+{% endif %}
+{% if declined_talks %}
+        <hr/>
+        <div class="row">
+{% for presentation in declined_talks %}
+            <form action="{% url 'schedule-event-talks' event.id %}" method="POST">
+            <input type="hidden" name="presentation_id" value="{{presentation.id}}"/>
+            {% csrf_token %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow" style="width: 18rem;">
+                <div class="card-body">
+                  <p class="card-title" style="height: 2rem;">
+                      <strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong>
+                    {% if presentation.status == -1 %}
+                        <span class="badge badge-danger" >Declined</span>
+                    {% elif presentation.status == 1 %}
+                        <span class="badge badge-success" >Accepted</span>
+                    {% else %}
+                        <span class="badge badge-info" >Submitted</span>
+                    {% endif %}
+                  </p>
+                  <div class="card-text">
+                    <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
+                    <div>
+                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+{% endfor %}
+        </div>
+{% endif %}
+        <div class="row">
+            <div class="col">
+                <a href="{{event.get_absolute_url}}" class="btn btn-primary">Done</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

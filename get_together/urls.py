@@ -49,6 +49,17 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.show_profile, name='show-profile'),
     path('profile/<str:account_secret>.ics', feeds.UserEventsCalendar(), name='user-event-ical'),
 
+    path('profile/+add-speaker', views.add_speaker, name='add-speaker'),
+    path('speaker/<int:speaker_id>/', views.show_speaker, name='show-speaker'),
+    path('speaker/<int:speaker_id>/+edit', views.edit_speaker, name='edit-speaker'),
+    path('speaker/<int:speaker_id>/+delete', views.delete_speaker, name='delete-speaker'),
+
+    path('profile/+talks', views.list_user_talks, name='user-talks'),
+    path('profile/+add-talk', views.add_talk, name='add-talk'),
+    path('talk/<int:talk_id>/', views.show_talk, name='show-talk'),
+    path('talk/<int:talk_id>/+edit', views.edit_talk, name='edit-talk'),
+    path('talk/<int:talk_id>/+delete', views.delete_talk, name='delete-talk'),
+
     path('events/', views.events_list, name='events'),
     path('events/all/', views.events_list_all, name='all-events'),
     path('teams/', views.teams_list, name='teams'),
@@ -70,7 +81,10 @@ urlpatterns = [
     path('events/<int:event_id>/+add_place/', views.add_place_to_event, name='add-place'),
     path('events/<int:event_id>/+comment/', event_views.comment_event, name='comment-event'),
     path('events/<int:event_id>/+photo/', views.add_event_photo, name='add-event-photo'),
+    path('events/<int:event_id>/+propose-talk/', views.propose_event_talk, name='propose-event-talk'),
+    path('events/<int:event_id>/+schedule-talks/', views.schedule_event_talks, name='schedule-event-talks'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
+
     path('series/<int:series_id>/+edit/', views.edit_series, name='edit-series'),
     path('series/<int:series_id>/+delete/', views.delete_series, name='delete-series'),
     path('series/<int:series_id>/+add_place/', views.add_place_to_series, name='add-place-to-series'),

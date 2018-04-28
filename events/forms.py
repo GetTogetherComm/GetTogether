@@ -7,7 +7,20 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
 from .models.profiles import Team, UserProfile
-from .models.events import Event, EventComment ,CommonEvent, EventSeries, Place, EventPhoto
+from .models.events import (
+    Event,
+    EventComment,
+    CommonEvent,
+    EventSeries,
+    Place,
+    EventPhoto,
+)
+from .models.speakers import (
+    Speaker,
+    Talk,
+    Presentation,
+    SpeakerRequest,
+)
 import recurrence
 
 import pytz
@@ -262,15 +275,27 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'realname', 'tz', 'send_notifications']
+        fields = ['avatar', 'realname', 'city', 'tz', 'send_notifications']
         labels = {
             'send_notifications': _('Send me notification emails'),
         }
+        widgets = {
+            'city': Lookup(source=City),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class ConfirmProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'realname', 'tz']
+        fields = ['avatar', 'realname', 'city']
+        widgets = {
+            'city': Lookup(source=City),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].required = True
 
 class SendNotificationsForm(forms.ModelForm):
     class Meta:
@@ -316,4 +341,25 @@ class NewCommonEventForm(forms.ModelForm):
             'start_time': DateTimeWidget,
             'end_time': DateTimeWidget
         }
+
+class SpeakerBioForm(forms.ModelForm):
+    class Meta:
+        model = Speaker
+        fields = ['avatar', 'title', 'bio', 'categories']
+
+class DeleteSpeakerForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete series", required=True)
+
+class UserTalkForm(forms.ModelForm):
+    class Meta:
+        model = Talk
+        fields = ['speaker', 'title', 'abstract', 'talk_type', 'web_url', 'category']
+
+class DeleteTalkForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, delete series", required=True)
+
+class SchedulePresentationForm(forms.ModelForm):
+    class Meta:
+        model = Presentation
+        fields = ['start_time']
 

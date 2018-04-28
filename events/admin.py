@@ -3,9 +3,30 @@ from django.utils.safestring import mark_safe
 
 # Register your models here.
 from .models.locale import Language, Continent, Country, SPR, City
-from .models.profiles import UserProfile, Organization, Team, Member, Category, Topic
+from .models.profiles import (
+    UserProfile,
+    Organization,
+    Team,
+    Member,
+    Category,
+    Topic,
+)
 from .models.search import Searchable
-from .models.events import Place, Event, EventComment, EventSeries, EventPhoto, CommonEvent, Attendee
+from .models.events import (
+    Place,
+    Event,
+    EventComment,
+    EventSeries,
+    EventPhoto,
+    CommonEvent,
+    Attendee,
+)
+from .models.speakers import (
+    Speaker,
+    Talk,
+    Presentation,
+    SpeakerRequest,
+)
 
 admin.site.register(Language)
 admin.site.register(Continent)
@@ -24,6 +45,7 @@ class CityAdmin(admin.ModelAdmin):
 admin.site.register(City, CityAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
+    raw_id_fields = ('city',)
     list_display = ('user', 'realname', 'avatar', 'web_url')
 admin.site.register(UserProfile, ProfileAdmin)
 
@@ -33,11 +55,15 @@ admin.site.register(Organization, OrgAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')
-    list_display = ('__str__', 'member_count', 'owner_profile', 'created_date')
+    list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'is_premium', 'premium_expires')
+    list_filter = ('active', 'is_premium', 'organization', 'country',)
     ordering = ('-created_date',)
     def member_count(self, team):
         return team.members.all().count()
     member_count.short_description = 'Members'
+    def event_count(self, team):
+        return team.event_set.all().count()
+    event_count.short_description = 'Events'
 admin.site.register(Team, TeamAdmin)
 
 class SearchableAdmin(admin.ModelAdmin):
@@ -101,12 +127,30 @@ class AttendeeAdmin(admin.ModelAdmin):
 admin.site.register(Attendee, AttendeeAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
+    list_display = ('name', 'slug', 'image')
+    exclude = ('slug', )
     def image(self, obj):
         return (mark_safe('<img src="%s" title="%s" height="64px" />' % (obj.img_url, obj.name)))
     image.short_description = 'Image'
 admin.site.register(Category, CategoryAdmin)
 
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('name', 'slug', 'category')
     list_filter = ('category',)
+    exclude = ('slug', )
+admin.site.register(Topic, TopicAdmin)
+
+class SpeakerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'avatar')
+admin.site.register(Speaker, SpeakerAdmin)
+
+class TalkAdmin(admin.ModelAdmin):
+    list_display = ('title', 'speaker', 'category')
+    list_filter = ('category',)
+admin.site.register(Talk, TalkAdmin)
+
+class PresentationAdmin(admin.ModelAdmin):
+    list_display = ('talk', 'status', 'event')
+    list_filter = ('status',)
+admin.site.register(Presentation, PresentationAdmin)
+

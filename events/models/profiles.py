@@ -10,6 +10,7 @@ from imagekit.processors import ResizeToFill
 
 from .locale import *
 from .. import location
+from ..utils import slugify
 
 import uuid
 import pytz
@@ -27,6 +28,7 @@ class UserProfile(models.Model):
                                            processors=[ResizeToFill(128, 128)],
                                            format='PNG',
                                            blank=True)
+    city = models.ForeignKey(City, verbose_name=_('Home city'), null=True, blank=True, on_delete=models.CASCADE)
 
     web_url = models.URLField(verbose_name=_('Website URL'), blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter Name'), max_length=32, blank=True, null=True)
@@ -222,6 +224,11 @@ class Team(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
+    is_premium = models.BooleanField(default=settings.EVENTS_TEAMS_DEFAULT_PREMIUM)
+    premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, on_delete=models.SET_NULL)
+    premium_started = models.DateTimeField(blank=True, null=True)
+    premium_expires = models.DateTimeField(blank=True, null=True)
+
     @property
     def location_name(self):
         if self.city:
@@ -275,17 +282,28 @@ class Member(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
+    slug = models.CharField(max_length=256, blank=True)
     img_url = models.URLField(blank=False, null=False)
 
+    class Meta:
+        verbose_name_plural = 'Categories'
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Topic(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=256)
-    description = models.TextField()
+    slug = models.CharField(max_length=256, blank=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 

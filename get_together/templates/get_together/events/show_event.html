@@ -94,6 +94,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="editMenuButton">
                             <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
+                            <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Talks</a>
                     </div>
                 </div>
                 {% endif %}
@@ -146,6 +147,20 @@
             </tr>
             {% endif %}
 
+            {% if event.team.is_premium %}
+            <tr>
+	            <td width="120px"><b>Presentations:</b></td>
+                <td>
+                    {% for presentation in presentation_list %}
+                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker.user}}, {{presentation.talk.speaker.title}}</a></div>
+                    {% endfor %}
+                    <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
+                    {% if pending_presentations %}
+                    <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{{pending_presentations}} proposed talks</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
             </table>
 
             <div class="container mt-3">

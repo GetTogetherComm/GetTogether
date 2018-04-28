@@ -1,0 +1,20 @@
+{% extends "get_together/base.html" %}
+
+{% block content %}
+<h2>Confirm deletion</h2>
+{% if speaker.talks.count > 0 %}
+    <div class="alerts">
+        <div class="alert alert-danger">This speaker profile has {{ speaker.talks.count }} talks!</div>
+    </div>
+{% endif %}
+Are you sure you want to delete <strong>{{speaker.title}}</strong>?
+<form action="{% url "delete-speaker" speaker.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{{ delete_form }}
+	<br />
+<button type="submit" class="btn btn-danger">Delete Talk</button>
+</div>
+</form>
+{% endblock %}
+

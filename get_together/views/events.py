@@ -7,8 +7,17 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
-from events.models.events import Event, CommonEvent, EventSeries, EventPhoto, Place, Attendee, update_event_searchable, \
-    delete_event_searchable
+from events.models.events import (
+    Event,
+    CommonEvent,
+    EventSeries,
+    EventPhoto,
+    Place,
+    Attendee,
+    update_event_searchable,
+    delete_event_searchable,
+)
+from events.models.speakers import Speaker, Talk, SpeakerRequest, Presentation
 from events.models.profiles import Team, Organization, UserProfile, Member
 from events.forms import (
     TeamEventForm,
@@ -20,7 +29,7 @@ from events.forms import (
     NewPlaceForm,
     UploadEventPhotoForm,
     NewCommonEventForm
-    )
+)
 from events import location
 
 import datetime
@@ -56,6 +65,8 @@ def show_event(request, event_id, event_slug):
         'comment_form': comment_form,
         'is_attending': request.user.profile in event.attendees.all(),
         'attendee_list': Attendee.objects.filter(event=event),
+        'presentation_list': event.presentations.filter(status=Presentation.ACCEPTED).order_by('start_time'),
+        'pending_presentations': event.presentations.filter(status=Presentation.PROPOSED).count(),
         'can_edit_event': request.user.profile.can_edit_event(event),
     }
     return render(request, 'get_together/events/show_event.html', context)
@@ -219,13 +230,6 @@ def add_place_to_series(request, series_id):
             return render(request, 'get_together/places/add_place_to_series.html', context)
     else:
      return redirect('home')
-
-def share_event(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-    context = {
-        'event': event,
-    }
-    return render(request, 'get_together/events/share_event.html', context)
 
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -391,14 +395,6 @@ def create_common_event(request, org_slug):
     else:
      return redirect('home')
 
-def share_common_event(request, event_id):
-    event = get_object_or_404(CommonEvent, id=event_id)
-    context = {
-        'event': event,
-    }
-    return render(request, 'get_together/orgs/share_common_event.html', context)
-
-@login_required
 def create_common_event_team_select(request, event_id):
     teams = request.user.profile.moderating
     if len(teams) == 1:

@@ -1,0 +1,33 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+
+{% block content %}
+<h2>New Talk</h2>
+
+
+<form action="{% url "add-talk" %}" method="post">
+{% csrf_token %}
+{% if event %}<input type="hidden" name="event" value="{{event.id}}" />{% endif %}
+
+<div class="form-group">
+    <table class="table">
+        {{talk_form}}
+    </table>
+	<br />
+<button type="submit" class="btn btn-primary">Save</button>
+</div>
+</form>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#id_speaker").selectmenu()
+    $("#id_talk_type").selectmenu()
+    $("#id_category").selectmenu()
+});
+</script>
+{% endblock %}
