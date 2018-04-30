@@ -5,7 +5,7 @@ You have an event coming up!
 
 Name: {{ event.name|striptags }}
 Time: {{event.local_start_time}}
-Location: {{ event.location|striptags }}
+Location: {{ event.place|striptags }}
 
 Event page: {{event.get_full_url}}
 {% endblock %}
