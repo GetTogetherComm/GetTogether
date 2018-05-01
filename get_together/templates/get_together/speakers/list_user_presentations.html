@@ -8,6 +8,10 @@
 
 {% block content %}
         <div class="container">
+{% if not has_talks %}
+            <div class="alert alert-warning">You must create a talk before it can be proposed to this event.</div>
+{% endif %}
+
 {% if proposed_talks %}
         <div class="row">
 {% for presentation in proposed_talks %}

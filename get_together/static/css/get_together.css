@@ -32,7 +32,7 @@ form {
   display: inline;
 }
 .ui-selectmenu-menu .ui-menu {
-    height: 200px;
+    max-height: 200px;
 }
 .gt_lookup .ui-selectmenu-icon.ui-icon {
     background-position: 0px 0px;
@@ -74,6 +74,15 @@ form {
     border-color: #24292e;
 }
 .btn-github:hover, .btn-github:active {
+    color: #FFFFFF;
+}
+
+.btn-linkedin {
+    color: #FFFFFF;
+    background-color: #0084bf;
+    border-color: #0084bf;
+}
+.btn-linkedin:hover, .btn-linkedin:active {
     color: #FFFFFF;
 }
 

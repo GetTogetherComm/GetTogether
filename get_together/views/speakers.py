@@ -126,6 +126,10 @@ def show_talk(request, talk_id):
     return render(request, 'get_together/speakers/show_talk.html', context)
 
 def add_talk(request):
+    if Speaker.objects.filter(user=request.user.profile).count() < 1:
+        messages.add_message(request, messages.WARNING, message=_('You must create a new Speaker profile before you can add a talk'))
+        return redirect('add-speaker')
+
     new_talk = Talk()
     if request.method == 'GET':
         talk_form = UserTalkForm(instance=new_talk)
@@ -226,13 +230,15 @@ def propose_event_talk(request, event_id):
     if request.method == 'GET':
         profile = request.user.profile
         talks = list(Talk.objects.filter(speaker__user=profile))
-        presentations = event.presentations.all().order_by('-status')
+        has_talks = len(talks) > 0
+        presentations = event.presentations.filter(talk__speaker__user=profile).order_by('-status')
         for presentation in presentations:
             if presentation.talk in talks:
                 talks.remove(presentation.talk)
 
         context = {
             'event': event,
+            'has_talks': has_talks,
             'available_talks': talks,
             'proposed_talks': presentations,
         }
@@ -253,6 +259,9 @@ def propose_event_talk(request, event_id):
 
 def schedule_event_talks(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.ERROR, message=mark_safe(_('You can not manage talks for this event.')))
+        return redirect(event.get_absolute_url())
     if not event.team.is_premium:
         messages.add_message(request, messages.ERROR, message=mark_safe(_('Upgrade this team to a <a href="/about/premium">Premium</a> account to use this feature.')))
         return redirect(event.get_absolute_url())

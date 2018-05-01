@@ -78,6 +78,21 @@
 }(document, "script", "twitter-wjs"));
 </script>
 {% endif %}
+{% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
+
+<script type="text/javascript">
+
+  // Use the API call wrapper to share content on LinkedIn
+  function shareLinkedIn() {
+    //https://www.linkedin.com/cws/share?url=https%3A%2F%2Fdeveloper.linkedin.com%2Fetc%2Fdesigns%2Flinkedin%2Fkaty%2Fglobal%2Fclientlibs%2Fhtml%2Fsandbox.html%3Falign-class%3Dmiddle-center&original_referer=https%3A%2F%2Fdeveloper.linkedin.com%2Fetc%2Fdesigns%2Flinkedin%2Fkaty%2Fglobal%2Fclientlibs%2Fhtml%2Fsandbox.html%3Falign-class%3Dmiddle-center&token=&isFramed=true&lang=en_US&_ts=1525145063073.7769&xd_origin_host=https%3A%2F%2Fdeveloper.linkedin.com
+    // Build the JSON payload containing the content to be shared
+    window.open(
+    'https://www.linkedin.com/shareArticle?mini=true&url={{event.get_full_url|urlencode}}&summary={{event.name|urlencode}}&title=I\'m+having+a+Get+Together!&source=GetTogether.Community',
+    '_blank',
+    'height=300,width=400');
+  }
+
+</script>{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -103,6 +118,9 @@
                 {% endif %}
                 {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
                     <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fa fa-facebook-official"></i> Share</a>
+                {% endif %}
+                {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
+                    <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fa fa-linkedin"></i> Share</a>
                 {% endif %}
                 {% if not is_attending %}
                     <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
@@ -155,7 +173,7 @@
                         <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker.user}}, {{presentation.talk.speaker.title}}</a></div>
                     {% endfor %}
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
-                    {% if pending_presentations %}
+                    {% if pending_presentations and can_edit_event %}
                     <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{{pending_presentations}} proposed talks</a>
                     {% endif %}
                 </td>

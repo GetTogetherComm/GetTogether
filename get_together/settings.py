@@ -66,7 +66,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.yahoo.YahooOpenId',
+#    'social_core.backends.linkedin.LinkedinOAuth2',
 )
 
 MIDDLEWARE = [
@@ -163,7 +163,20 @@ GOOGLE_MAPS_API_KEY=None
 SOCIAL_AUTH_GITHUB_KEY=None
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=None
 SOCIAL_AUTH_FACEBOOK_KEY=None
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'fields': 'id, name, email'
+}
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.12'
 SOCIAL_AUTH_TWITTER_KEY=None
+SOCIAL_AUTH_LINKEDIN_KEY=None
+SOCIAL_AUTH_LINKEDIN_SECRET=None
+SOCIAL_AUTH_LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+SOCIAL_AUTH_LINKEDIN_FIELD_SELECTORS = ['email-address']
+SOCIAL_AUTH_LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                                   ('firstName', 'first_name'),
+                                   ('lastName', 'last_name'),
+                                   ('emailAddress', 'email_address')]
 SETTINGS_EXPORT = [
     'DEBUG',
     'GOOGLE_ANALYTICS_ID',
@@ -172,6 +185,7 @@ SETTINGS_EXPORT = [
     'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY',
     'SOCIAL_AUTH_FACEBOOK_KEY',
     'SOCIAL_AUTH_TWITTER_KEY',
+    'SOCIAL_AUTH_LINKEDIN_KEY',
 ]
 
 # Make django messages framework use Bootstrap's alert style classes
