@@ -123,7 +123,8 @@ def create_event(request, team_id):
                 new_series.save()
                 new_event.series = new_series
                 new_event.save()
-                messages.add_message(request, messages.SUCCESS, message=_('Your event has been scheduled! Next, find a place for your event.'))
+
+            messages.add_message(request, messages.SUCCESS, message=_('Your event has been scheduled! Next, find a place for your event.'))
             return redirect('add-place', new_event.id)
         else:
             context = {
@@ -240,6 +241,8 @@ def edit_event(request, event_id):
 
     if request.method == 'GET':
         form = TeamEventForm(instance=event)
+        if event.series is not None:
+            form.initial['recurrences'] = event.series.recurrences
 
         context = {
             'team': event.team,
@@ -251,6 +254,17 @@ def edit_event(request, event_id):
         form = TeamEventForm(request.POST,instance=event)
         if form.is_valid:
             new_event = form.save()
+
+            if form.cleaned_data.get('recurrences', None):
+                if event.series is not None:
+                    event.series.recurrences = form.cleaned_data['recurrences']
+                    event.series.save()
+                else:
+                    new_series = EventSeries.from_event(new_event, recurrences=form.cleaned_data['recurrences'])
+                    new_series.save()
+                    new_event.series = new_series
+                    new_event.save()
+
             return redirect(new_event.get_absolute_url())
         else:
             context = {

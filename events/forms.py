@@ -184,9 +184,10 @@ class DeleteTeamForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete team", required=True)
 
 class TeamEventForm(forms.ModelForm):
+    recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'summary', 'web_url', 'announce_url', 'tags']
+        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary', 'web_url', 'announce_url', 'tags']
         widgets = {
             'place': Lookup(source=Place),
             'start_time': DateTimeWidget,
