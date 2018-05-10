@@ -183,6 +183,10 @@ class TeamDefinitionForm(forms.ModelForm):
 class DeleteTeamForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete team", required=True)
 
+class TeamContactForm(forms.Form):
+    to = forms.ChoiceField(label=_(""))
+    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+
 class TeamEventForm(forms.ModelForm):
     recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
     class Meta:

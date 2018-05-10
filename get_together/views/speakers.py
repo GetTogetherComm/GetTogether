@@ -40,7 +40,7 @@ def show_speaker(request, speaker_id):
     context = {
         'speaker': speaker,
         'talks': Talk.objects.filter(speaker=speaker),
-        'presentations': Presentation.objects.filter(talk__speaker=speaker, status=Presentation.ACCEPTED),
+        'presentations': Presentation.objects.filter(talk__speaker=speaker, status=Presentation.ACCEPTED).order_by('-event__start_time'),
     }
     return render(request, 'get_together/speakers/show_speaker.html', context)
 

@@ -102,17 +102,6 @@
             <h2>{{ event.name }}
             </h2>
             <p class="text-muted">Hosted by <a href="{% url "show-team" team.id %}">{{ team.name }}</a></p>
-                {% if can_edit_event %}
-                <div class="btn-group dropdown">
-                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Edit
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="editMenuButton">
-                            <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
-                            <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Talks</a>
-                    </div>
-                </div>
-                {% endif %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
                     <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
                 {% endif %}
@@ -124,6 +113,17 @@
                 {% endif %}
                 {% if not is_attending %}
                     <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
+                {% endif %}
+                {% if can_edit_event %}
+                <div class="btn-group dropdown">
+                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Edit
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="editMenuButton">
+                            <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
+                            <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Talks</a>
+                    </div>
+                </div>
                 {% endif %}
             <hr/>
 

@@ -136,6 +136,7 @@ def create_event(request, team_id):
     else:
      return redirect('home')
 
+@login_required
 def add_event_photo(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
@@ -165,6 +166,7 @@ def add_event_photo(request, event_id):
     else:
      return redirect('home')
 
+@login_required
 def add_place_to_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
@@ -200,6 +202,7 @@ def add_place_to_event(request, event_id):
     else:
      return redirect('home')
 
+@login_required
 def add_place_to_series(request, series_id):
     series = get_object_or_404(EventSeries, id=series_id)
     if not request.user.profile.can_edit_series(series):
@@ -232,6 +235,7 @@ def add_place_to_series(request, series_id):
     else:
      return redirect('home')
 
+@login_required
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
@@ -276,6 +280,7 @@ def edit_event(request, event_id):
     else:
      return redirect('home')
 
+@login_required
 def delete_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
@@ -308,6 +313,7 @@ def delete_event(request, event_id):
     else:
      return redirect('home')
 
+@login_required
 def edit_series(request, series_id):
     series = get_object_or_404(EventSeries, id=series_id)
 
@@ -339,6 +345,7 @@ def edit_series(request, series_id):
     else:
      return redirect('home')
 
+@login_required
 def delete_series(request, series_id):
     series = get_object_or_404(EventSeries, id=series_id)
     if not request.user.profile.can_edit_series(series):
@@ -409,6 +416,7 @@ def create_common_event(request, org_slug):
     else:
      return redirect('home')
 
+@login_required
 def create_common_event_team_select(request, event_id):
     teams = request.user.profile.moderating
     if len(teams) == 1:

@@ -1,17 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
 
-from django.contrib import messages
-from django.contrib.auth import logout as logout_user
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
-
-from events.models.locale import City
-from events.models.events import Event, Place, Attendee
-from events.models.profiles import Team, UserProfile, Member
-from events.models.search import Searchable
-from events.forms import SearchForm
-
-from accounts.decorators import setup_wanted
 from django.conf import settings
 
 import datetime
@@ -20,15 +8,12 @@ import geocoder
 import math
 import traceback
 
-from .teams import *
-from .events import *
-from .places import *
-from .user import *
 from .new_user import *
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator
 DEFAULT_NEAR_DISTANCE = 100 # kilometeres
+
 
 def get_geoip(request):
     client_ip = get_client_ip(request)
@@ -41,6 +26,7 @@ def get_geoip(request):
 
     g = geocoder.ip(client_ip)
     return g
+
 
 def get_nearby_teams(request, near_distance=DEFAULT_NEAR_DISTANCE):
     g = get_geoip(request)
@@ -59,6 +45,7 @@ def get_nearby_teams(request, near_distance=DEFAULT_NEAR_DISTANCE):
         print("Error looking for local teams: ", e)
         return Team.objects.none()
 
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -66,3 +53,6 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+

@@ -3,12 +3,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.models import Site
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
+from django.core.mail import send_mail
+from django.template.loader import get_template, render_to_string
+from django.conf import settings
+
 
 from events.models.profiles import Organization, Team, UserProfile, Member
 from events.models.events import Event, CommonEvent, Place, Attendee
-from events.forms import TeamForm, NewTeamForm, DeleteTeamForm
+from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm
 from events import location
 
 import datetime
@@ -51,6 +56,7 @@ def show_team(request, team_id, *args, **kwargs):
     }
     return render(request, 'get_together/teams/show_team.html', context)
 
+@login_required
 def create_team(request, *args, **kwargs):
     if request.method == 'GET':
         form = NewTeamForm()
@@ -75,6 +81,7 @@ def create_team(request, *args, **kwargs):
     else:
      return redirect('home')
 
+@login_required
 def edit_team(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
@@ -105,6 +112,7 @@ def edit_team(request, team_id):
     else:
      return redirect('home')
 
+@login_required
 def delete_team(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
@@ -132,6 +140,86 @@ def delete_team(request, team_id):
             return render(request, 'get_together/teams/delete_team.html', context)
     else:
      return redirect('home')
+
+
+@login_required
+def manage_members(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    if not request.user.profile.can_edit_team(team):
+        messages.add_message(request, messages.WARNING, message=_('You can not manage this team\'s members.'))
+        return redirect('show-team', team_id)
+
+    members = Member.objects.filter(team=team).order_by('user__realname')
+    member_choices = [(member.id, member.user) for member in members if member.user.user.account.is_email_confirmed]
+    default_choices = [('all', 'All Members (%s)' % len(member_choices)), ('admins', 'Only Administrators')]
+    if request.method == 'POST':
+        contact_form = TeamContactForm(request.POST)
+        contact_form.fields['to'].choices = default_choices + member_choices
+        if contact_form.is_valid():
+            to = contact_form.cleaned_data['to']
+            body = contact_form.cleaned_data['body']
+            if to is not 'admins' and not request.user.profile.can_edit_team(team):
+                messages.add_message(request, messages.WARNING, message=_('You can not contact this team\'s members.'))
+                return redirect('show-team', team_id)
+            if to == 'all':
+                count = 0
+                for member in Member.objects.filter(team=team):
+                    if member.user.user.account.is_email_confirmed:
+                        contact_member(member, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s users' % count))
+            elif to == 'admins':
+                count = 0
+                for member in Member.objects.filter(team=team, role=Member.ADMIN):
+                    if member.user.user.account.is_email_confirmed:
+                        contact_member(member, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s users' % count))
+            else:
+                try:
+                    member = Member.objects.get(id=to)
+                    contact_member(member, body, request.user.profile)
+                    messages.add_message(request, messages.SUCCESS, message=_('Emailed %s' % member.user))
+                except Member.DoesNotExist:
+                    messages.add_message(request, messages.ERROR, message=_('Error sending message: Unknown user (%s)'%to))
+                    pass
+            return redirect('manage-members', team_id)
+        else:
+            messages.add_message(request, messages.ERROR, message=_('Error sending message: %s' % contact_form.errors))
+    else:
+        contact_form = TeamContactForm()
+        contact_form.fields['to'].choices = default_choices + member_choices
+
+    context = {
+        'team': team,
+        'members': members,
+        'contact_form': contact_form,
+        'can_edit_team': request.user.profile.can_edit_team(team),
+    }
+    return render(request, 'get_together/teams/manage_members.html', context)
+
+
+def contact_member(member, body, sender):
+    context = {
+        'sender': sender,
+        'team': member.team,
+        'body': body,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Message from %s' % member.team
+    email_body_text = render_to_string('get_together/emails/member_contact.txt', context)
+    email_body_html = render_to_string('get_together/emails/member_contact.html', context)
+    email_recipients = [member.user.user.email]
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=email_recipients,
+        subject=email_subject,
+        fail_silently=True,
+    )
 
 def show_org(request, org_slug):
     org = get_object_or_404(Organization, slug=org_slug)
