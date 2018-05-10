@@ -34,7 +34,7 @@
             {% for member in members %}
             <tr>
                 <td><img class="gt-profile-avatar rounded-circle" src="{{member.user.avatar_url}}" width="32px" height="32px"></td>
-                <td>{{member.user}}</td>
+                <td><a href="{% url 'show-profile' member.user.id %}">{{member.user}}</a></td>
                 <td>
                     {% if member.user.user.account.is_email_confirmed %}
                     <a href="javascript:contact_member({{member.id}});" class="fa fa-envelope" title="Contact"></a>
