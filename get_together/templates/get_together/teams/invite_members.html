@@ -1,0 +1,25 @@
+{% extends "get_together/base.html" %}
+{% load markup tz %}
+
+{% block add_to_title %} | {{team.name}}{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2>Invite people to <a href="{% url 'show-team' team.id %}">{{ team.name }}</a>
+            </h2>
+            <p>Add a list of emails, separated by commas</p>
+            <form action="{% url 'invite-members' team.id %}" method="POST">
+                {% csrf_token %}
+                {{ invite_form.as_p }}
+                <button type="submit" class="btn btn-primary btn-sm">Send Invites</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

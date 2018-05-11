@@ -1,6 +1,7 @@
 from django.utils.safestring import mark_safe
 from django import forms
 from django.forms.widgets import TextInput, Media
+from django.core.validators import validate_email
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -186,6 +187,25 @@ class DeleteTeamForm(forms.Form):
 class TeamContactForm(forms.Form):
     to = forms.ChoiceField(label=_(""))
     body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+
+class MultiEmailField(forms.Field):
+    def to_python(self, value):
+        """Normalize data to a list of strings."""
+        # Return an empty list if no input was given.
+        if not value:
+            return []
+        return [email.strip() for email in value.split(',')]
+
+    def validate(self, value):
+        """Check if value consists only of valid emails."""
+        # Use the parent's handling of required fields, etc.
+        super().validate(value)
+        for email in value:
+            validate_email(email)
+
+class TeamInviteForm(forms.Form):
+    to = MultiEmailField(label=_(""), widget=forms.widgets.Textarea)
+
 
 class TeamEventForm(forms.ModelForm):
     recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)

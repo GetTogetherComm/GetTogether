@@ -13,7 +13,7 @@ from django.conf import settings
 
 from events.models.profiles import Organization, Team, UserProfile, Member
 from events.models.events import Event, CommonEvent, Place, Attendee
-from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm
+from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm, TeamInviteForm
 from events import location
 
 import datetime
@@ -197,6 +197,59 @@ def manage_members(request, team_id):
         'can_edit_team': request.user.profile.can_edit_team(team),
     }
     return render(request, 'get_together/teams/manage_members.html', context)
+
+
+@login_required
+def invite_members(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    if not request.user.profile.can_edit_team(team):
+        messages.add_message(request, messages.WARNING, message=_('You can not manage this team\'s members.'))
+        return redirect('manage-members', team_id)
+    if not request.user.account.is_email_confirmed:
+        messages.add_message(request, messages.WARNING, message=_('You must confirm your own email address before you can invite others.'))
+        return redirect('edit-profile')
+
+    if request.method == 'POST':
+        invite_form = TeamInviteForm(request.POST)
+        if invite_form.is_valid():
+            to = invite_form.cleaned_data['to']
+            for email in to:
+                invite_member(email, team, request.user.profile)
+
+            messages.add_message(request, messages.SUCCESS, message=_('Sent %s invites' % len(to)))
+            return redirect('manage-members', team_id)
+
+    else:
+        invite_form = TeamInviteForm()
+
+    context = {
+        'team': team,
+        'invite_form': invite_form,
+        'can_edit_team': request.user.profile.can_edit_team(team),
+    }
+    return render(request, 'get_together/teams/invite_members.html', context)
+
+
+def invite_member(email, team, sender):
+    context = {
+        'sender': sender,
+        'team': team,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Invite to join %s' % team
+    email_body_text = render_to_string('get_together/emails/member_invite.txt', context)
+    email_body_html = render_to_string('get_together/emails/member_invite.html', context)
+    email_recipients = [email]
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=email_recipients,
+        subject=email_subject,
+        fail_silently=True,
+    )
 
 
 def contact_member(member, body, sender):

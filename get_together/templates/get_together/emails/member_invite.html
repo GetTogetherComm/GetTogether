@@ -1,0 +1,12 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>You've been invited to join {{team.name|striptags}}</h3>
+
+<p>{{ sender }} has invited you to join their Get Together team: {{team.name}}.
+</p>
+
+<br>
+<a href="https://{{site.domain}}{% url 'show-team' team.id %}" title="{{ team.name|striptags }} page.">View and join this team.</a>
+</p>
+{% endblock %}

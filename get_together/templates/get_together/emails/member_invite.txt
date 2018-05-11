@@ -1,0 +1,8 @@
+{% block content %}
+== You've been invited to join {{team.name}} ==
+
+{{ sender }} has invited you to join their Get Together team: {{team.name}}.
+
+Click here to view and join this team: https://{{site.domain}}{% url 'show-team' team.id %}
+
+{% endblock %}
