@@ -1,0 +1,13 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>You've been invited to attend {{event.name|striptags}}</h3>
+
+<p>{{ sender }} has invited you to an event by <b>{{team.name}}</b>.</p>
+
+<h4>{{event.name|striptags}}</h4>
+<p>{{event.summary|striptags}}</p>
+<br>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">View this event.</a>
+</p>
+{% endblock %}

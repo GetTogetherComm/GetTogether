@@ -1,0 +1,11 @@
+{% block content %}
+== You've been invited to attend {{event.name|striptags}} ==
+
+{{ sender }} has invited you to an event by {{team.name}}
+
+=== {{event.name|striptags}} ===
+{{event.summary}}
+
+Click here to view this event: {{event.get_full_url}}
+
+{% endblock %}

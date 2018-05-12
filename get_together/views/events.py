@@ -4,8 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.contrib.sites.models import Site
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.template.loader import get_template, render_to_string
+from django.conf import settings
 
 from events.models.events import (
     Event,
@@ -28,7 +31,9 @@ from events.forms import (
     EventCommentForm,
     NewPlaceForm,
     UploadEventPhotoForm,
-    NewCommonEventForm
+    NewCommonEventForm,
+    EventInviteEmailForm,
+    EventInviteMemberForm,
 )
 from events import location
 
@@ -68,6 +73,8 @@ def show_event(request, event_id, event_slug):
         'presentation_list': event.presentations.filter(status=Presentation.ACCEPTED).order_by('start_time'),
         'pending_presentations': event.presentations.filter(status=Presentation.PROPOSED).count(),
         'can_edit_event': request.user.profile.can_edit_event(event),
+        'can_edit_team': request.user.profile.can_edit_team(event.team),
+        'is_email_confirmed': request.user.account.is_email_confirmed,
     }
     return render(request, 'get_together/events/show_event.html', context)
 
@@ -135,6 +142,88 @@ def create_event(request, team_id):
             return render(request, 'get_together/events/create_event.html', context)
     else:
      return redirect('home')
+
+
+@login_required
+def invite_attendees(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    attendee_userids = [attendee.user.id for attendee in Attendee.objects.filter(event=event)]
+    members = Member.objects.filter(team=event.team, ).order_by('user__realname')
+    member_choices = [(member.id, member.user) for member in members if member.user.user.account.is_email_confirmed and member.user.id not in attendee_userids]
+    default_choices = [('all', 'All Members (%s)' % len(member_choices))]
+
+    if request.method == 'POST' and request.POST.get('form', None) == 'email':
+        email_form = EventInviteEmailForm(request.POST)
+        if email_form.is_valid():
+            to = email_form.cleaned_data['emails']
+            for email in to:
+                invite_attendee(email, event, request.user.profile)
+            messages.add_message(request, messages.SUCCESS, message=_('Sent %s invites' % len(to)))
+            return redirect(event.get_absolute_url())
+        team_form = EventInviteMemberForm()
+        team_form.fields['member'].choices = default_choices + member_choices
+    elif request.method == 'POST' and request.POST.get('form', None) == 'team':
+        team_form = EventInviteMemberForm(request.POST)
+        team_form.fields['member'].choices = default_choices + member_choices
+        if team_form.is_valid():
+            to = team_form.cleaned_data['member']
+            if to == 'all':
+                for (member_id, user) in member_choices:
+                    try:
+                        attendee = Attendee.objects.get(event=event, user=user)
+                    except:
+                        # No attendee record found, so send the invite
+                        invite_attendee(user.user.email, event, request.user.profile)
+                messages.add_message(request, messages.SUCCESS, message=_('Sent %s invites' % len(member_choices)))
+                return redirect(event.get_absolute_url())
+            else:
+                member = get_object_or_404(Member, id=to)
+                try:
+                    attendee = Attendee.objects.get(event=event, user=member.user)
+                except:
+                    # No attendee record found, so send the invite
+                    invite_attendee(member.user.user.email, event, request.user.profile)
+                    messages.add_message(request, messages.SUCCESS, message=_('Invited %s' % member.user))
+                return redirect(event.get_absolute_url())
+        email_form = EventInviteEmailForm()
+    else:
+        email_form = EventInviteEmailForm()
+        team_form = EventInviteMemberForm()
+        team_form.fields['member'].choices = default_choices + member_choices
+
+    context = {
+        'event': event,
+        'email_form': email_form,
+        'team_form': team_form,
+        'member_choice_count': len(member_choices),
+        'can_edit_team': request.user.profile.can_edit_team(event.team),
+        'is_email_confirmed': request.user.account.is_email_confirmed,
+    }
+    return render(request, 'get_together/events/invite_attendees.html', context)
+
+
+def invite_attendee(email, event, sender):
+    context = {
+        'sender': sender,
+        'team': event.team,
+        'event': event,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Invite to attend %s' % event.name
+    email_body_text = render_to_string('get_together/emails/attendee_invite.txt', context)
+    email_body_html = render_to_string('get_together/emails/attendee_invite.html', context)
+    email_recipients = [email]
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=email_recipients,
+        subject=email_subject,
+        fail_silently=True,
+    )
+
 
 @login_required
 def add_event_photo(request, event_id):

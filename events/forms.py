@@ -259,6 +259,12 @@ class NewTeamEventForm(forms.ModelForm):
 class DeleteEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete event", required=True)
 
+class EventInviteMemberForm(forms.Form):
+    member = forms.ChoiceField(label=_(""))
+
+class EventInviteEmailForm(forms.Form):
+    emails = MultiEmailField(label=_(""), widget=forms.widgets.Textarea)
+
 class EventSeriesForm(forms.ModelForm):
     class Meta:
         model = EventSeries
