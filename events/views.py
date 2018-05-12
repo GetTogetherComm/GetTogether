@@ -120,11 +120,20 @@ def attend_event(request, event_id):
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
         return redirect(event.get_absolute_url())
-    if request.user.profile in event.attendees.all():
-        messages.add_message(request, messages.INFO, message=_('You are already attending this event.'))
-        return redirect(event.get_absolute_url())
-    new_attendee = Attendee.objects.create(event=event, user=request.user.profile, role=Attendee.NORMAL, status=Attendee.YES)
-    messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
+
+    try:
+        attendee = Attendee.objects.get(event=event, user=request.user.profile)
+    except:
+        attendee = Attendee(event=event, user=request.user.profile, role=Attendee.NORMAL)
+
+    attendee.status = Attendee.YES
+    if request.GET.get('response', None) == 'maybe':
+        attendee.status = Attendee.MAYBE
+    if request.GET.get('response', None) == 'no':
+        attendee.status = Attendee.NO
+    attendee.save()
+    if attendee.status == Attendee.YES:
+        messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
     return redirect(event.get_absolute_url())
 
 def comment_event(request, event_id):
