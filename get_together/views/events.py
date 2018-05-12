@@ -12,6 +12,7 @@ from django.conf import settings
 
 from events.models.events import (
     Event,
+    EventComment,
     CommonEvent,
     EventSeries,
     EventPhoto,
@@ -225,6 +226,65 @@ def invite_attendee(email, event, sender):
         fail_silently=True,
     )
 
+
+def attend_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.user.is_anonymous:
+        messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
+        return redirect(event.get_absolute_url())
+
+    try:
+        attendee = Attendee.objects.get(event=event, user=request.user.profile)
+    except:
+        attendee = Attendee(event=event, user=request.user.profile, role=Attendee.NORMAL)
+
+    attendee.status = Attendee.YES
+    if request.GET.get('response', None) == 'maybe':
+        attendee.status = Attendee.MAYBE
+    if request.GET.get('response', None) == 'no':
+        attendee.status = Attendee.NO
+    attendee.save()
+    if attendee.status == Attendee.YES:
+        messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
+    return redirect(event.get_absolute_url())
+
+
+def comment_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.user.is_anonymous:
+        messages.add_message(request, messages.WARNING, message=_("You must be logged in to comment."))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'POST':
+        new_comment = EventComment(author=request.user.profile, event=event)
+        comment_form = EventCommentForm(request.POST, instance=new_comment)
+        if comment_form.is_valid():
+            new_comment = comment_form.save()
+            send_comment_emails(new_comment)
+            return redirect(event.get_absolute_url()+'#comment-%s'%new_comment.id)
+
+    return redirect(event.get_absolute_url())
+
+
+def send_comment_emails(comment):
+    context = {
+        'comment': comment,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Comment on %s' % comment.event.name
+    email_body_text = render_to_string('get_together/emails/event_comment.txt', context)
+    email_body_html = render_to_string('get_together/emails/event_comment.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    for attendee in comment.event.attendees.filter(user__account__is_email_confirmed=True):
+        send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=[attendee.user.email],
+            subject=email_subject,
+            fail_silently=True,
+        )
 
 @login_required
 def add_event_photo(request, event_id):

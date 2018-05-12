@@ -1,0 +1,12 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Comment on {{comment.event.name|striptags}}</h3>
+
+<p><b>By:</b> {{ comment.author }} - {{comment.created_time}}</p>
+
+<p>{{comment.body|striptags}}</p>
+<br>
+<a href="{{comment.event.get_full_url}}#comment-{{comment.id}}" title="{{ comment.event.name|striptags }} page.">View this comment.</a>
+</p>
+{% endblock %}

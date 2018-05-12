@@ -115,39 +115,3 @@ def leave_team(request, team_id):
     messages.add_message(request, messages.SUCCESS, message=_('You are no longer on this team.'))
     return redirect('show-team', team_id=team_id)
 
-def attend_event(request, event_id):
-    event = Event.objects.get(id=event_id)
-    if request.user.is_anonymous:
-        messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
-        return redirect(event.get_absolute_url())
-
-    try:
-        attendee = Attendee.objects.get(event=event, user=request.user.profile)
-    except:
-        attendee = Attendee(event=event, user=request.user.profile, role=Attendee.NORMAL)
-
-    attendee.status = Attendee.YES
-    if request.GET.get('response', None) == 'maybe':
-        attendee.status = Attendee.MAYBE
-    if request.GET.get('response', None) == 'no':
-        attendee.status = Attendee.NO
-    attendee.save()
-    if attendee.status == Attendee.YES:
-        messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
-    return redirect(event.get_absolute_url())
-
-def comment_event(request, event_id):
-    event = Event.objects.get(id=event_id)
-    if request.user.is_anonymous:
-        messages.add_message(request, messages.WARNING, message=_("You must be logged in to comment."))
-        return redirect(event.get_absolute_url())
-
-    if request.method == 'POST':
-        new_comment = EventComment(author=request.user.profile, event=event)
-        comment_form = EventCommentForm(request.POST, instance=new_comment)
-        if comment_form.is_valid():
-            new_comment = comment_form.save()
-            return redirect(event.get_absolute_url()+'#comment-%s'%new_comment.id)
-
-    return redirect(event.get_absolute_url())
-

@@ -200,7 +200,7 @@
                     {% load mptt_tags %}
                     <ul class="col list-group">
                         {% recursetree event.comments.all %}
-                            <div class="list-group-item flex-container">
+                            <div id="comment-{{node.id}}" class="list-group-item flex-container">
                               <div class="row w-100 ml-0">
                                   <div class="w-100 d-flex justify-content-between">
                                       <div class="media gt-profile">
