@@ -1,3 +1,4 @@
+{% extends 'get_together/emails/base.txt' %}
 {% block content %}
 == Event Reminder Notification ==
 

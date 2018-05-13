@@ -1,0 +1,13 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Your new event is ready</h3>
+
+<p><b>Name:</b> {{event.name|striptags}}</p>
+<p><b>Date:</b> {{event.local_start_time}}</p>
+<p><b>Recurring:</b> {% for rule in event.series.recurrences.rrules %}{{rule.to_text|capfirst}}{% endfor %}</p>
+
+<br>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">View your event.</a>
+</p>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== Your new event is ready ==
+
+Name: {{event.name|striptags}}
+Date: {{event.local_start_time}}
+Recurring: {% for rule in event.series.recurrences.rrules %}{{rule.to_text|capfirst}}{% endfor %}
+
+Click here to view your event: {{event.get_full_url}}
+
+{% endblock %}

@@ -1,3 +1,4 @@
+{% extends 'get_together/emails/base.txt' %}
 {% block content %}
 == You've been invited to join {{team.name}} ==
 

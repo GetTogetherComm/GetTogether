@@ -349,6 +349,7 @@ class EventSeries(models.Model):
             created_by=self.created_by,
         )
         next_event.save()
+        Attendee.objects.create(event=next_event, user=self.created_by, role=Attendee.HOST, status=Attendee.YES)
         self.last_time = next_event.start_time
         self.save()
         return next_event
