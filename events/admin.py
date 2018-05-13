@@ -118,8 +118,8 @@ class EventSeriesAdmin(admin.ModelAdmin):
 admin.site.register(EventSeries, EventSeriesAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'role')
-    list_filter = ('role', 'team')
+    list_display = ('__str__', 'role', 'joined_date')
+    list_filter = ('role', 'team', 'joined_date')
 admin.site.register(Member, MemberAdmin)
 
 class AttendeeAdmin(admin.ModelAdmin):
