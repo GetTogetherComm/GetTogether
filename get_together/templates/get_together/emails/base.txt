@@ -1,3 +1,6 @@
+= Email from GetTogether.Community =
+
+{% block content %}{% endblock %}
 --
 This is an automated email sent by https://gettogether.community
 Learn more at https://github.com/GetTogetherComm/GetTogether/

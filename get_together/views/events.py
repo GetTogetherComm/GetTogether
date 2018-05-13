@@ -243,6 +243,7 @@ def attend_event(request, event_id):
         attendee.status = Attendee.MAYBE
     if request.GET.get('response', None) == 'no':
         attendee.status = Attendee.NO
+    attendee.joined_date = timezone.now()
     attendee.save()
     if attendee.status == Attendee.YES:
         messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))

@@ -1,0 +1,11 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== You have new attendees for {{event.name|striptags}} ==
+
+{% for attendee in attendees %}
+ * {{attendee.user}} - {{attendee.status_name}}
+{% endfor %}
+
+Click here to view this event: {{event.get_full_url}}
+
+{% endblock %}

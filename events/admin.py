@@ -123,8 +123,8 @@ class MemberAdmin(admin.ModelAdmin):
 admin.site.register(Member, MemberAdmin)
 
 class AttendeeAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'role', 'status', 'last_reminded')
-    list_filter = ('role', 'status')
+    list_display = ('__str__', 'role', 'status', 'joined_date', 'last_reminded')
+    list_filter = ('role', 'status', 'joined_date')
 admin.site.register(Attendee, AttendeeAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):

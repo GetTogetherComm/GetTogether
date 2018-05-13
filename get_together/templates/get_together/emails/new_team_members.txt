@@ -1,0 +1,11 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== You have new members of {{team.name|striptags}} ==
+
+{% for member in members %}
+ * {{member.user}}
+{% endfor %}
+
+Click here to view this team: https://{{site.domain}}{% url 'show-team' team.id %}
+
+{% endblock %}

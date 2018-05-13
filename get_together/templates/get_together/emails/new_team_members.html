@@ -1,0 +1,14 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>You have members of <b>{{team.name|striptags}}</b></h3>
+
+<ul>
+    {% for member in members %}
+    <li><a href="https://{{site.domain}}{% url 'show-profile' member.user.id %}">{{member.user}}</a></li>
+    {% endfor %}
+</ul>
+<br>
+<a href="https://{{site.domain}}{% url 'show-team' team.id %}" title="{{ team.name|striptags }} page.">View this team.</a>
+</p>
+{% endblock %}

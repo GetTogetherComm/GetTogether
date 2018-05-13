@@ -1,0 +1,14 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>You have new attendees for <b>{{event.name|striptags}}</b></h3>
+
+<ul>
+    {% for attendee in attendees %}
+    <li><a href="https://{{site.domain}}{% url 'show-profile' attendee.user.id %}">{{attendee.user}}</a> - {{attendee.status_name}}</li>
+    {% endfor %}
+</ul>
+<br>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">View this event.</a>
+</p>
+{% endblock %}
