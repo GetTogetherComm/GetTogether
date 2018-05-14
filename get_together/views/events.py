@@ -303,8 +303,8 @@ def send_comment_emails(comment):
         )
         EmailRecord.objects.create(
             sender=comment.author.user,
-            recipient=attendee.user.user,
-            email=attendee.user.user.email,
+            recipient=attendee.user,
+            email=attendee.user.email,
             subject=email_subject,
             body=email_body_text,
             ok=success
