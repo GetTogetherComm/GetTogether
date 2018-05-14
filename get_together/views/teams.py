@@ -16,6 +16,8 @@ from events.models.events import Event, CommonEvent, Place, Attendee
 from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm, TeamInviteForm
 from events import location
 
+from accounts.models import EmailRecord
+
 import datetime
 import simplejson
 
@@ -242,13 +244,22 @@ def invite_member(email, team, sender):
     email_recipients = [email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-    send_mail(
+    success = send_mail(
         from_email=email_from,
         html_message=email_body_html,
         message=email_body_text,
         recipient_list=email_recipients,
         subject=email_subject,
         fail_silently=True,
+    )
+
+    EmailRecord.objects.create(
+        sender=sender.user,
+        recipient=None,
+        email=email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
     )
 
 
@@ -265,13 +276,21 @@ def contact_member(member, body, sender):
     email_recipients = [member.user.user.email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-    send_mail(
+    success = send_mail(
         from_email=email_from,
         html_message=email_body_html,
         message=email_body_text,
         recipient_list=email_recipients,
         subject=email_subject,
         fail_silently=True,
+    )
+    EmailRecord.objects.create(
+        sender=sender.user,
+        recipient=member.user.user,
+        email=member.user.user.email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
     )
 
 def show_org(request, org_slug):

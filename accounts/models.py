@@ -107,3 +107,24 @@ class BadgeGrant(models.Model):
         return '%s for %s' % (self.badge.name, self.account.acctname)
 
 
+class EmailRecord(models.Model):
+    """
+    Model to store all the outgoing emails.
+    """
+    when = models.DateTimeField(
+        null=False, auto_now_add=True
+    )
+    sender = models.ForeignKey(User, related_name='sent_messages', null=True, blank=True, on_delete=models.SET_NULL)
+    recipient = models.ForeignKey(User, related_name='recv_messages', null=True, blank=True, on_delete=models.SET_NULL)
+    email = models.EmailField(
+        null=False, blank=False,
+    )
+    subject = models.CharField(
+         null=False, max_length=128,
+    )
+    body = models.TextField(
+        null=False, max_length=1024,
+    )
+    ok = models.BooleanField(
+        null=False, default=True,
+    )

@@ -5,7 +5,7 @@ from django.template.loader import get_template, render_to_string
 from django.conf import settings
 from django.contrib.sites.models import Site
 
-from accounts.models import Account, EmailConfirmation
+from accounts.models import Account, EmailConfirmation, EmailRecord
 
 import time
 import urllib
@@ -47,13 +47,23 @@ class Command(BaseCommand):
             email_body_html = render_to_string('get_together/emails/confirm_email.html', context)
             email_recipients = [account.user.email]
             email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
-            send_mail(
+            success = send_mail(
                 subject=email_subject,
                 message=email_body_text,
                 from_email=email_from,
                 recipient_list=email_recipients,
                 html_message=email_body_html
             )
+
+            EmailRecord.objects.create(
+                sender=None,
+                recipient=account.user,
+                email=account.user.email,
+                subject=email_subject,
+                body=email_body_text,
+                ok=success
+            )
             time.sleep(0.1)
+
 
 

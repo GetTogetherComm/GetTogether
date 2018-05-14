@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.utils import timezone
 from django.db.models import Q
 
-from accounts.models import Account, EmailConfirmation
+from accounts.models import EmailRecord
 from events.models import Event, Attendee
 
 import time
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             email_recipients = [attendee.user.user.email]
             email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-            send_mail(
+            success = send_mail(
                 from_email=email_from,
                 html_message=email_body_html,
                 message=email_body_text,
@@ -58,4 +58,12 @@ class Command(BaseCommand):
             attendee.last_reminded = timezone.now()
             attendee.save()
 
+            EmailRecord.objects.create(
+                sender=None,
+                recipient=attendee.user.user,
+                email=attendee.user.user.email,
+                subject=email_subject,
+                body=email_body_text,
+                ok=success
+            )
             time.sleep(0.1)

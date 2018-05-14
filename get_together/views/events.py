@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import messages
-from django.contrib.auth import logout as logout_user
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.sites.models import Site
@@ -37,6 +37,8 @@ from events.forms import (
     EventInviteMemberForm,
 )
 from events import location
+
+from accounts.models import EmailRecord
 
 import datetime
 import simplejson
@@ -159,7 +161,7 @@ def invite_attendees(request, event_id):
         if email_form.is_valid():
             to = email_form.cleaned_data['emails']
             for email in to:
-                invite_attendee(email, event, request.user.profile)
+                invite_attendee(email, event, request.user)
             messages.add_message(request, messages.SUCCESS, message=_('Sent %s invites' % len(to)))
             return redirect(event.get_absolute_url())
         team_form = EventInviteMemberForm()
@@ -175,7 +177,7 @@ def invite_attendees(request, event_id):
                         attendee = Attendee.objects.get(event=event, user=user)
                     except:
                         # No attendee record found, so send the invite
-                        invite_attendee(user.user.email, event, request.user.profile)
+                        invite_attendee(user.user, event, request.user)
                 messages.add_message(request, messages.SUCCESS, message=_('Sent %s invites' % len(member_choices)))
                 return redirect(event.get_absolute_url())
             else:
@@ -184,7 +186,7 @@ def invite_attendees(request, event_id):
                     attendee = Attendee.objects.get(event=event, user=member.user)
                 except:
                     # No attendee record found, so send the invite
-                    invite_attendee(member.user.user.email, event, request.user.profile)
+                    invite_attendee(member.user.user, event, request.user)
                     messages.add_message(request, messages.SUCCESS, message=_('Invited %s' % member.user))
                 return redirect(event.get_absolute_url())
         email_form = EventInviteEmailForm()
@@ -206,24 +208,37 @@ def invite_attendees(request, event_id):
 
 def invite_attendee(email, event, sender):
     context = {
-        'sender': sender,
+        'sender': sender.profile,
         'team': event.team,
         'event': event,
         'site': Site.objects.get(id=1),
     }
+    recipient = None
+    if type(email) == User:
+        recipient = email
+        email = recipient.email
+
     email_subject = '[GetTogether] Invite to attend %s' % event.name
     email_body_text = render_to_string('get_together/emails/attendee_invite.txt', context)
     email_body_html = render_to_string('get_together/emails/attendee_invite.html', context)
     email_recipients = [email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-    send_mail(
+    success = send_mail(
         from_email=email_from,
         html_message=email_body_html,
         message=email_body_text,
         recipient_list=email_recipients,
         subject=email_subject,
         fail_silently=True,
+    )
+    EmailRecord.objects.create(
+        sender=sender,
+        recipient=recipient,
+        email=email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
     )
 
 
@@ -278,13 +293,21 @@ def send_comment_emails(comment):
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
     for attendee in comment.event.attendees.filter(user__account__is_email_confirmed=True):
-        send_mail(
+        success = send_mail(
             from_email=email_from,
             html_message=email_body_html,
             message=email_body_text,
             recipient_list=[attendee.user.email],
             subject=email_subject,
             fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=comment.author.user,
+            recipient=attendee.user.user,
+            email=attendee.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
         )
 
 @login_required

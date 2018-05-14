@@ -7,6 +7,7 @@ from django.contrib.sites.models import Site
 from django.utils import timezone
 
 from events.models import Event, Attendee
+from accounts.models import EmailRecord
 
 import datetime
 
@@ -35,8 +36,8 @@ class Command(BaseCommand):
 def send_new_attendees(event, new_attendees):
     if len(new_attendees) < 1:
         return
-    host_emails = [attendee.user.user.email for attendee in Attendee.objects.filter(event=event, role=Attendee.HOST) if attendee.user.user.account.is_email_confirmed]
-    if len(host_emails) < 1:
+    hosts = [attendee.user.user for attendee in Attendee.objects.filter(event=event, role=Attendee.HOST) if attendee.user.user.account.is_email_confirmed]
+    if len(hosts) < 1:
         return
     context = {
         'event': event,
@@ -47,13 +48,23 @@ def send_new_attendees(event, new_attendees):
     email_subject = '[GetTogether] New event attendees'
     email_body_text = render_to_string('get_together/emails/new_event_attendees.txt', context)
     email_body_html = render_to_string('get_together/emails/new_event_attendees.html', context)
-    email_recipients = host_emails
+    email_recipients = [host.email for host in hosts]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-    send_mail(
+    success = send_mail(
         from_email=email_from,
         html_message=email_body_html,
         message=email_body_text,
         recipient_list=email_recipients,
         subject=email_subject,
     )
+
+    for host in hosts:
+        EmailRecord.objects.create(
+            sender=None,
+            recipient=host,
+            email=host.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )

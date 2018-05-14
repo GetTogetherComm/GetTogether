@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import get_template, render_to_string
 
 from events.models import Event, EventSeries, Attendee
+from accounts.models import EmailRecord
 
 import time
 import datetime
@@ -34,11 +35,19 @@ def email_host_new_event(event):
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
     for attendee in Attendee.objects.filter(event=event, role=Attendee.HOST, user__user__account__is_email_confirmed=True):
-        send_mail(
+        success = send_mail(
             from_email=email_from,
             html_message=email_body_html,
             message=email_body_text,
             recipient_list=[attendee.user.user.email],
             subject=email_subject,
             fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=None,
+            recipient=attendee.user.user,
+            email=attendee.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
         )

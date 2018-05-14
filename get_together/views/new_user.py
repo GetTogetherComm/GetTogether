@@ -13,6 +13,8 @@ from events.models.profiles import Team, UserProfile, Member, Category
 from events.models.events import Event, Place, Attendee
 from events.forms import SendNotificationsForm, UserForm, ConfirmProfileForm
 
+from accounts.models import EmailRecord
+
 from .utils import get_nearby_teams
 
 import datetime
@@ -146,12 +148,20 @@ def user_send_confirmation_email(request):
     email_body_html = render_to_string('get_together/emails/confirm_email.html', context, request)
     email_recipients = [request.user.email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
-    send_mail(
+    success = send_mail(
         subject=email_subject,
         message=email_body_text,
         from_email=email_from,
         recipient_list=email_recipients,
         html_message=email_body_html
+    )
+    EmailRecord.objects.create(
+        sender=request.user,
+        recipient=request.user,
+        email=request.user.email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
     )
     return render(request, 'get_together/new_user/sent_email_confirmation.html', context)
 

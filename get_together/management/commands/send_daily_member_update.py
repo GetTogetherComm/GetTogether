@@ -7,6 +7,7 @@ from django.contrib.sites.models import Site
 from django.utils import timezone
 
 from events.models import Event, Member
+from accounts.models import EmailRecord
 
 import datetime
 
@@ -35,8 +36,8 @@ class Command(BaseCommand):
 def send_new_members(team, new_members):
     if len(new_members) < 1:
         return
-    admin_emails = [member.user.user.email for member in Member.objects.filter(team=team, role=Member.ADMIN) if member.user.user.account.is_email_confirmed]
-    if len(admin_emails) < 1:
+    admins = [member.user.user for member in Member.objects.filter(team=team, role=Member.ADMIN) if member.user.user.account.is_email_confirmed]
+    if len(admins) < 1:
         return
     context = {
         'team': team,
@@ -47,13 +48,23 @@ def send_new_members(team, new_members):
     email_subject = '[GetTogether] New team members'
     email_body_text = render_to_string('get_together/emails/new_team_members.txt', context)
     email_body_html = render_to_string('get_together/emails/new_team_members.html', context)
-    email_recipients = admin_emails
+    email_recipients = [admin.email for admin in admins]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
-    send_mail(
+    success = send_mail(
         from_email=email_from,
         html_message=email_body_html,
         message=email_body_text,
         recipient_list=email_recipients,
         subject=email_subject,
     )
+
+    for admin in admins:
+        EmailRecord.objects.create(
+            sender=None,
+            recipient=admin,
+            email=admin.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
