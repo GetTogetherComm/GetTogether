@@ -1,0 +1,492 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2018
+# This file is distributed under the same license as the GetTogether package.
+# Marcin Mikołajczak <me@m4sk.in>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-03 13:11+0000\n"
+"PO-Revision-Date: 2018-05-16 10:23+0002\n"
+"Last-Translator: Marcin Mikołajczak <me@m4sk.in>\n"
+"Language-Team: Polish <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: accounts/models.py:16
+msgid "Account Name"
+msgstr "Nazwa konta"
+
+#: accounts/models.py:81
+msgid "Anonymous User"
+msgstr "Użytkownik anonimowy"
+
+#: accounts/models.py:93
+msgid "Badge Name"
+msgstr "Nazwa odznaki"
+
+#: accounts/models.py:94
+msgid "Badge Image"
+msgstr "Obraz odznaki"
+
+#: events/forms.py:91
+msgid "AM"
+msgstr "AM"
+
+#: events/forms.py:91
+msgid "PM"
+msgstr "PM"
+
+#: events/forms.py:280 events/forms.py:305
+msgid "Send me notification emails"
+msgstr "Wysyłaj mi wiadomości e-mail z powiadomieniami"
+
+#: events/forms.py:310
+msgid "Distance(km)"
+msgstr "Odległość (w kilometrach)"
+
+#: events/models/events.py:26
+msgid "Name of the Place"
+msgstr "Nazwa miejsca"
+
+#: events/models/events.py:27
+msgid "City"
+msgstr "Miasto"
+
+#: events/models/events.py:28
+msgid "Address with Street and Number"
+msgstr "Adres wraz z ulicą i numerem"
+
+#: events/models/events.py:29 events/models/locale.py:97
+msgid "Longitude in Degrees East"
+msgstr "Długość geograficzna w stopniach na wschód"
+
+#: events/models/events.py:30 events/models/locale.py:98
+msgid "Latitude in Degrees North"
+msgstr "Szerokość geograficzna w stopniach na północ"
+
+#: events/models/events.py:31 events/models/profiles.py:25
+msgid "Timezone"
+msgstr "Strefa czasowa"
+
+#: events/models/events.py:32
+msgid "URL for the Place Homepage"
+msgstr "Adres strony internetowej miejsca"
+
+#: events/models/events.py:32
+msgid "URL of the Place"
+msgstr "Adres URL miejsca"
+
+#: events/models/events.py:33
+msgid "Place photo"
+msgstr "Zdjęcie miejsca"
+
+#: events/models/events.py:56 events/models/events.py:259
+#: events/models/events.py:299
+msgid "Event Name"
+msgstr "Nazwa wydarzenia"
+
+#: events/models/events.py:61 events/models/events.py:263
+msgid "Date and time that the event starts"
+msgstr "Data i godzina rozpoczęcia wydarzenia"
+
+#: events/models/events.py:61 events/models/events.py:263
+#: events/models/events.py:305 events/models/speakers.py:94
+msgid "Start Time"
+msgstr "Data rozpoczęcia"
+
+#: events/models/events.py:62 events/models/events.py:264
+msgid "Date and time that the event ends"
+msgstr "Data i godzina zakończenia wydarzenia"
+
+#: events/models/events.py:62 events/models/events.py:264
+#: events/models/events.py:306
+msgid "End Time"
+msgstr "Koniec wydarzenia"
+
+#: events/models/events.py:64 events/models/events.py:265
+#: events/models/events.py:308
+msgid "Summary of the Event"
+msgstr "Podsumowanie wydarzenia"
+
+#: events/models/events.py:68 events/models/events.py:272
+#: events/models/profiles.py:208 events/models/speakers.py:61
+msgid "Website"
+msgstr "Strona internetowa"
+
+#: events/models/events.py:68 events/models/events.py:272
+msgid "URL for the event"
+msgstr "Adres URL wydarzenia"
+
+#: events/models/events.py:69 events/models/events.py:273
+msgid "Announcement"
+msgstr "Ogłoszenie"
+
+#: events/models/events.py:69 events/models/events.py:273
+msgid "URL for the announcement"
+msgstr "Adres URL ogłoszenia"
+
+#: events/models/events.py:72 events/models/events.py:276
+#: events/models/events.py:313
+msgid "the date and time when the event was created"
+msgstr "data i czas utworzenia wydarzenia"
+
+#: events/models/events.py:74 events/models/events.py:280
+#: events/models/events.py:315
+msgid "Keyword Tags"
+msgstr "Słowa kluczowe"
+
+#: events/models/events.py:198 events/models/profiles.py:266
+msgid "Normal"
+msgstr "Normalny"
+
+#: events/models/events.py:199
+msgid "Crew"
+msgstr "Ekipa"
+
+#: events/models/events.py:200
+msgid "Host"
+msgstr "Organizator"
+
+#: events/models/events.py:206
+msgid "No"
+msgstr "Nie"
+
+#: events/models/events.py:207
+msgid "Maybe"
+msgstr "Może"
+
+#: events/models/events.py:208
+msgid "Yes"
+msgstr "Tak"
+
+#: events/models/events.py:212
+msgid "Role"
+msgstr "Rola"
+
+#: events/models/events.py:213
+msgid "Attending?"
+msgstr "Uczestniczysz?"
+
+#: events/models/events.py:232
+msgid "Photo"
+msgstr "Zdjęcie"
+
+#: events/models/events.py:244
+msgid "Removed"
+msgstr "Usunięto"
+
+#: events/models/events.py:245
+msgid "Pending"
+msgstr "Oczekuję"
+
+#: events/models/events.py:246
+msgid "Approved"
+msgstr "Zatwierdzono"
+
+#: events/models/events.py:304
+msgid "Date and time of the last created instance in this series"
+msgstr "Data i godzina ostatnio utworzonej instancji w tej serii"
+
+#: events/models/events.py:305
+msgid "Local time that the event starts"
+msgstr "Lokalny czas rozpoczęcia wydarzenia"
+
+#: events/models/events.py:306
+msgid "Local time that the event ends"
+msgstr "Lokalny czas zakończenia wydarzenia"
+
+#: events/models/locale.py:11
+msgid "Language"
+msgstr "Język"
+
+#: events/models/locale.py:12
+msgid "Language Code"
+msgstr "Kod języka"
+
+#: events/models/locale.py:19 events/models/locale.py:29
+#: events/models/locale.py:59 events/models/locale.py:94
+msgid "Name"
+msgstr "Nazwa"
+
+#: events/models/locale.py:30
+msgid "Country Code"
+msgstr "Kod pocztowy"
+
+#: events/models/locale.py:60
+msgid "Admin Code"
+msgstr "Kod administracyjny"
+
+#: events/models/locale.py:92
+msgid "Cities"
+msgstr "Miasta"
+
+#: events/models/locale.py:96 events/models/profiles.py:220
+#: events/models/search.py:25
+msgid "Default Timezone"
+msgstr "Domyślna strefa czasowa"
+
+#: events/models/locale.py:96 events/models/profiles.py:220
+#: events/models/search.py:25
+msgid "The most commonly used timezone for this Team."
+msgstr "Najczęściej używaną strefa czasowa w tym zespole"
+
+#: events/models/profiles.py:24
+msgid "Real Name"
+msgstr "Imię i nazwisko"
+
+#: events/models/profiles.py:26 events/models/speakers.py:20
+msgid "Photo Image"
+msgstr "Obraz profilowy"
+
+#: events/models/profiles.py:31
+msgid "Home city"
+msgstr "Miasto zamieszkania"
+
+#: events/models/profiles.py:33
+msgid "Website URL"
+msgstr "Strona internetowa"
+
+#: events/models/profiles.py:34
+msgid "Twitter Name"
+msgstr "Nazwa na Twitterze"
+
+#: events/models/profiles.py:35
+msgid "Facebook URL"
+msgstr "Konto na Facebooku"
+
+#: events/models/profiles.py:37
+msgid "Send notification emails"
+msgstr "Wysyłaj e-maile z powiadomieniami"
+
+#: events/models/profiles.py:199
+msgid "Team Name"
+msgstr "Nazwa zespołu"
+
+#: events/models/profiles.py:209
+msgid "Email Address"
+msgstr "Adres e-mail"
+
+#: events/models/profiles.py:211
+msgid "Date Created"
+msgstr "Data utworzenia"
+
+#: events/models/profiles.py:217
+msgid "Team Photo"
+msgstr "Zdjęcie zespołu"
+
+#: events/models/profiles.py:219
+msgid "Active Team"
+msgstr "Aktywny zespół"
+
+#: events/models/profiles.py:267
+msgid "Moderator"
+msgstr "Moderator"
+
+#: events/models/profiles.py:268
+msgid "Administrator"
+msgstr "Administrator"
+
+#: events/models/profiles.py:272
+msgid "Member Role"
+msgstr "Rola członka"
+
+#: events/models/speakers.py:26
+msgid "Biography"
+msgstr "Biografia"
+
+#: events/models/speakers.py:50
+msgid "Presentation"
+msgstr "Prezentacja"
+
+#: events/models/speakers.py:51
+msgid "Workshop"
+msgstr "Prace"
+
+#: events/models/speakers.py:52
+msgid "Panel"
+msgstr "Panel"
+
+#: events/models/speakers.py:53
+msgid "Roundtable"
+msgstr "Okrągły stół"
+
+#: events/models/speakers.py:54
+msgid "Q & A"
+msgstr "Pytania i odpowiedzi"
+
+#: events/models/speakers.py:55
+msgid "Demonstration"
+msgstr "Demonstracja"
+
+#: events/models/speakers.py:57
+msgid "Speaker Bio"
+msgstr "Biografia mówcy"
+
+#: events/models/speakers.py:60
+msgid "Type"
+msgstr "Rodzaj"
+
+#: events/models/speakers.py:87
+msgid "Declined"
+msgstr "Odmówiono"
+
+#: events/models/speakers.py:88
+msgid "Proposed"
+msgstr "Zaproponowano"
+
+#: events/models/speakers.py:89
+msgid "Accepted"
+msgstr "Zakceptowano"
+
+#: events/views.py:96
+msgid "You must be logged in to join a team."
+msgstr "Musisz się zalogować, aby dołączyć do zespołu."
+
+#: events/views.py:100
+msgid "You are already a member of this team."
+msgstr "Jesteś już członkiem zespołu."
+
+#: events/views.py:103
+msgid "Welcome to the team!"
+msgstr "Witaj w zespole!"
+
+#: events/views.py:108
+msgid "You must be logged in to leave a team."
+msgstr "Musisz się zalogować, aby opuścić zespół."
+
+#: events/views.py:112
+msgid "You are not a member of this team."
+msgstr "Nie jesteś członkiem tego zespołu."
+
+#: events/views.py:115
+msgid "You are no longer on this team."
+msgstr "Nie jesteś już członkiem tego zespołu."
+
+#: events/views.py:121
+msgid "You must be logged in to say you're attending."
+msgstr "Musisz się zalogować, aby zadeklarować udział."
+
+#: events/views.py:124
+msgid "You are already attending this event."
+msgstr "Już zadeklarowano udział w tym wydarzeniu."
+
+#: events/views.py:127
+msgid "We'll see you there!"
+msgstr "Zobaczymy się tutaj!"
+
+#: events/views.py:133
+msgid "You must be logged in to comment."
+msgstr "Musisz się zalogować, aby dodać komentarz"
+
+#: get_together/settings.py:146
+msgid "English"
+msgstr "angielski"
+
+#: get_together/settings.py:147
+msgid "German"
+msgstr "niemiecki"
+
+#: get_together/settings.py:148
+msgid "Spanish"
+msgstr "hiszpański"
+
+#: get_together/settings.py:149
+msgid "French"
+msgstr "francuski"
+
+#: get_together/settings.py:150
+msgid "Indonesian"
+msgstr "indonezyjski"
+
+#: get_together/settings.py:151
+msgid "Portuguese (Brazil)"
+msgstr "portugalski (Brazylia)"
+
+#: get_together/views/__init__.py:111
+msgid ""
+"There are no teams or events yet in your area, be the first to start one!"
+msgstr "Nie istnieją zespoły ani wydarzenia w Twojej okolicy, utwórz pierwsze!"
+
+#: get_together/views/events.py:96
+msgid "You can not create events for this team."
+msgstr "Nie możesz tworzyć wydarzeń w tym zespole."
+
+#: get_together/views/events.py:126
+msgid "Your event has been scheduled! Next, find a place for your event."
+msgstr "Wydarzenie zostało zaplanowane! Teraz znajdź miejsce wydarzenia."
+
+#: get_together/views/events.py:141 get_together/views/events.py:170
+#: get_together/views/events.py:205 get_together/views/events.py:238
+#: get_together/views/events.py:268 get_together/views/events.py:301
+#: get_together/views/events.py:331
+msgid "You can not make changes to this event."
+msgstr "Nie możesz dokonać zmian w tym wydarzeniu."
+
+#: get_together/views/events.py:372
+msgid "You can not create events for this org."
+msgstr "Nie możesz tworzyć wydarzeń dla tej organizacji."
+
+#: get_together/views/new_team.py:61
+msgid "Your new team is ready to go! Now it's time to plan your first event."
+msgstr "Twój nowy zespół może zacząć działać! Czas na zaplanowanie pierwszego wydarzenia."
+
+#: get_together/views/new_user.py:129
+msgid "Your setup is complete, welcome to GetTogether!"
+msgstr "Pomyślnie skonfigurowano konto, witaj w GetTogether!"
+
+#: get_together/views/new_user.py:161
+msgid "Your email address has been confirmed."
+msgstr "Twój adres e-mail został potwierdzony."
+
+#: get_together/views/speakers.py:94
+msgid "You can not make changes to this speaker bio."
+msgstr "Nie możesz dokonać zmian w biografii tego mówcy."
+
+#: get_together/views/speakers.py:130
+msgid "You must create a new Speaker profile before you can add a talk"
+msgstr "Musisz utworzyć nowe konto mówcy, zanim dodasz przemowę."
+
+#: get_together/views/speakers.py:170 get_together/views/speakers.py:198
+msgid "You can not make changes to this talk."
+msgstr "Nie możesz dokonać zmian w tej przemowie"
+
+#: get_together/views/speakers.py:227 get_together/views/speakers.py:263
+msgid "You can not manage talks for this event."
+msgstr "Nie możesz zarządzać przemowami dla tego wydarzenia."
+
+#: get_together/views/speakers.py:255
+msgid "Your talk has been submitted to the event organizer."
+msgstr "Twoja przemowa została wysłana organizatorowi wydarzenia."
+
+#: get_together/views/speakers.py:266
+msgid ""
+"Upgrade this team to a <a href=\"/about/premium\">Premium</a> account to use "
+"this feature."
+msgstr ""
+"Przejdź na konto <a href=\"/about/premium\">Premium</a>, aby skorzystać "
+"z tej funkcji."
+
+#: get_together/views/teams.py:81 get_together/views/teams.py:111
+msgid "You can not make changes to this team."
+msgstr "Nie możesz dokonywać zmian w tym zespole."
+
+#: get_together/views/user.py:29
+msgid "You are already logged in."
+msgstr "Jesteś już zalogowany."
+
+#: get_together/views/user.py:79
+msgid "You must be logged in to edit your profile."
+msgstr "Musisz zalogować się, aby edytować profil."
+
+#: get_together/views/user.py:106
+msgid "Your email address has been removed."
+msgstr "Twój adres e-mail został usunięty."
+
+#: get_together/views/user.py:110
+msgid "Your email address has changed, please confirm your new address."
+msgstr "Twój adres e-mail został zmienoony, potwierdź nowy adres e-mail."
