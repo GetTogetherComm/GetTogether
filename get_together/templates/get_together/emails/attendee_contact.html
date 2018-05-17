@@ -1,0 +1,13 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Message about {{event.name|striptags}}</h3>
+
+<p><strong>Sender</strong>: {{ sender|striptags }}<br></p>
+
+<p>{{body|striptags}}</p>
+
+<br>
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">Go to the event page.</a>
+</p>
+{% endblock %}

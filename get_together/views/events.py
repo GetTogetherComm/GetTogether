@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template, render_to_string
 from django.conf import settings
+from django.http import JsonResponse
 
 from events.models.events import (
     Event,
@@ -35,6 +36,7 @@ from events.forms import (
     NewCommonEventForm,
     EventInviteEmailForm,
     EventInviteMemberForm,
+    EventContactForm,
 )
 from events import location
 
@@ -149,6 +151,80 @@ def create_event(request, team_id):
 
 
 @login_required
+def manage_attendees(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not manage this event\'s attendees.'))
+        return redirect(event.get_absolute_url())
+    attendees = Attendee.objects.filter(event=event).order_by('-actual', '-status', 'user__realname')
+
+    attendee_choices = [(attendee.id, attendee.user) for attendee in attendees if attendee.user.user.account.is_email_confirmed]
+    default_choices = [('all', 'Everyone (%s)' % len(attendee_choices)), ('hosts', 'Only Hosts')]
+    if event.is_over:
+        default_choices.append(('attended', 'Only Attended'))
+    else:
+        default_choices.append(('attending', 'Only Attending'))
+
+    if request.method == 'POST':
+        contact_form = EventContactForm(request.POST)
+        contact_form.fields['to'].choices = default_choices + attendee_choices
+        if contact_form.is_valid():
+            to = contact_form.cleaned_data['to']
+            body = contact_form.cleaned_data['body']
+            if to is not 'hosts' and not request.user.profile.can_edit_event(event):
+                messages.add_message(request, messages.WARNING, message=_('You can not contact this events\'s attendees.'))
+                return redirect(event.get_absolute_url())
+            if to == 'all':
+                count = 0
+                for attendee in Attendee.objects.filter(event=event):
+                    if attendee.user.user.account.is_email_confirmed:
+                        contact_attendee(attendee, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s attendees' % count))
+            elif to == 'hosts':
+                count = 0
+                for attendee in Attendee.objects.filter(event=event, role=Attendee.HOST):
+                    if attendee.user.user.account.is_email_confirmed:
+                        contact_attendee(attendee, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s attendees' % count))
+            elif to == 'attending':
+                count = 0
+                for attendee in Attendee.objects.filter(event=event, status=Attendee.YES):
+                    if attendee.user.user.account.is_email_confirmed:
+                        contact_attendee(attendee, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s attendees' % count))
+            elif to == 'attended':
+                count = 0
+                for attendee in Attendee.objects.filter(event=event, actual=Attendee.YES):
+                    if attendee.user.user.account.is_email_confirmed:
+                        contact_attendee(attendee, body, request.user.profile)
+                        count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s attendees' % count))
+            else:
+                try:
+                    attendee = Attendee.objects.get(id=to)
+                    contact_attendee(attendee, body, request.user.profile)
+                    messages.add_message(request, messages.SUCCESS, message=_('Emailed %s' % attendee.user))
+                except Member.DoesNotExist:
+                    messages.add_message(request, messages.ERROR, message=_('Error sending message: Unknown user (%s)'%to))
+                    pass
+            return redirect('manage-attendees', event.id)
+        else:
+            messages.add_message(request, messages.ERROR, message=_('Error sending message: %s' % contact_form.errors))
+    else:
+        contact_form = EventContactForm()
+        contact_form.fields['to'].choices = default_choices + attendee_choices
+    context = {
+        'event': event,
+        'attendees': attendees,
+        'contact_form': contact_form,
+        'can_edit_event': request.user.profile.can_edit_event(event),
+    }
+    return render(request, 'get_together/events/manage_attendees.html', context)
+
+@login_required
 def invite_attendees(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     attendee_userids = [attendee.user.id for attendee in Attendee.objects.filter(event=event)]
@@ -242,10 +318,45 @@ def invite_attendee(email, event, sender):
     )
 
 
+def contact_attendee(attendee, body, sender):
+    context = {
+        'sender': sender,
+        'event': attendee.event,
+        'body': body,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Message about %s' % attendee.event.name
+    email_body_text = render_to_string('get_together/emails/attendee_contact.txt', context)
+    email_body_html = render_to_string('get_together/emails/attendee_contact.html', context)
+    email_recipients = [attendee.user.user.email]
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    success = send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=email_recipients,
+        subject=email_subject,
+        fail_silently=True,
+    )
+    EmailRecord.objects.create(
+        sender=sender.user,
+        recipient=attendee.user.user,
+        email=attendee.user.user.email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
+    )
+
+
 def attend_event(request, event_id):
     event = Event.objects.get(id=event_id)
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
+        return redirect(event.get_absolute_url())
+
+    if event.is_over:
+        messages.add_message(request, messages.WARNING, message=_("You can not change your status on an event that has ended."))
         return redirect(event.get_absolute_url())
 
     try:
@@ -263,6 +374,24 @@ def attend_event(request, event_id):
     if attendee.status == Attendee.YES:
         messages.add_message(request, messages.SUCCESS, message=_("We'll see you there!"))
     return redirect(event.get_absolute_url())
+
+
+def attended_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    attendee = get_object_or_404(Attendee, id=request.GET.get('attendee', None))
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'ERROR', 'message': _("You must be logged in mark an attendee's actual status.")})
+
+    if not event.is_over:
+        return JsonResponse({'status': 'ERROR', 'message': _("You can not set an attendee's actual status until the event is over")})
+
+    if request.GET.get('response', None) == 'yes':
+        attendee.actual = Attendee.YES
+    if request.GET.get('response', None) == 'no':
+        attendee.actual = Attendee.NO
+    attendee.save()
+
+    return JsonResponse({'status': 'OK', 'attendee_id': attendee.id, 'actual': attendee.actual_name})
 
 
 def comment_event(request, event_id):

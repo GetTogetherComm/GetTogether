@@ -114,7 +114,7 @@
             {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
                 <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fa fa-linkedin"></i> Share</a>
             {% endif %}
-            {% if not is_attending %}
+            {% if not event.is_over and not is_attending %}
                 <div class="btn-group">
                   <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
                   <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -134,6 +134,7 @@
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
                         <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
                         <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Manage Talks</a>
+                        <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">Manage Attendees</a>
                 </div>
             </div>
             {% endif %}
@@ -183,7 +184,9 @@
                     {% for presentation in presentation_list %}
                         <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker.user}}, {{presentation.talk.speaker.title}}</a></div>
                     {% endfor %}
+                    {% if not event.is_over %}
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
+                    {% endif %}
                     {% if pending_presentations and can_edit_event %}
                     <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{{pending_presentations}} proposed talks</a>
                     {% endif %}
@@ -250,7 +253,7 @@
                       <div class="media-body">
                         <h6 class="mt-2 mb-0">
                           <a href="{% url 'show-profile' attendee.user.id %}" title="{{attendee.user}}'s profile">{{attendee.user}}</a>
-                          {% if attendee.user.user == request.user %}
+                          {% if attendee.user.user == request.user and not event.is_over %}
                               {% if attendee.status == attendee.YES %}
                                   <span class="badge badge-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">

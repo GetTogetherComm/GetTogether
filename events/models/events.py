@@ -78,6 +78,10 @@ class Event(models.Model):
     attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
 
     @property
+    def is_over(self):
+        return self.end_time <= timezone.now()
+
+    @property
     def tz(self):
         if self.place is not None:
             return self.place.tz
@@ -210,7 +214,8 @@ class Attendee(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
-    status = models.SmallIntegerField(_("Attending?"), choices=STATUSES, default=YES, db_index=True)
+    status = models.SmallIntegerField(_("Attending"), choices=STATUSES, default=YES, db_index=True)
+    actual = models.SmallIntegerField(_("Attended"), choices=STATUSES, default=MAYBE, db_index=True)
     joined_date = models.DateTimeField(default=timezone.now)
     last_reminded = models.DateTimeField(null=True, blank=True)
 
@@ -221,6 +226,10 @@ class Attendee(models.Model):
     @property
     def status_name(self):
         return Attendee.STATUSES[self.status+1][1]
+
+    @property
+    def actual_name(self):
+        return Attendee.STATUSES[self.actual+1][1]
 
     def __str__(self):
         return "%s at %s" % (self.user, self.event)

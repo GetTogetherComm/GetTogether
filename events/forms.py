@@ -265,6 +265,10 @@ class EventInviteMemberForm(forms.Form):
 class EventInviteEmailForm(forms.Form):
     emails = MultiEmailField(label=_(""), widget=forms.widgets.Textarea)
 
+class EventContactForm(forms.Form):
+    to = forms.ChoiceField(label=_(""))
+    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+
 class EventSeriesForm(forms.ModelForm):
     class Meta:
         model = EventSeries

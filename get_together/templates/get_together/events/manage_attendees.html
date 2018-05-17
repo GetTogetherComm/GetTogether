@@ -1,0 +1,130 @@
+{% extends "get_together/base.html" %}
+{% load static markup tz %}
+
+{% block add_to_title %} | {{team.name}}{% endblock %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+    <style>
+.gt-profile {
+    text-align: center;
+}
+.gt-profile .gt-profile-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2>{{attendees.count}} Attendees for <a href="{{event.get_absolute_url}}">{{ event.name }}</a>
+            </h2>
+            <p><a href="{% url 'invite-attendees' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> Invite Attendees</a></p>
+
+            <div class="container">
+                <div class="row">
+                    {% for attendee in attendees %}
+                       <div class="col-md-3 gt-profile">
+                          <div class="card mb-1 box-shadow">
+                            <div class="card-banner align-items-center">
+                                <a class="card-link" href="{% url 'show-profile' attendee.user.id %}">
+                                <img class="gt-profile-avatar rounded-circle mt-2" src="{{attendee.user.avatar_url}}" width="128px" height="128px">
+                                </a>
+                                  {% if event.is_over and attendee.actual != attendee.MAYBE %}
+                                      {% if attendee.actual == attendee.YES %}
+                                      <span id="attendee-badge-{{attendee.id}}" class="badge badge-success align-top gt-profile-badge" onClick="show_attended_form({{attendee.id}})">{{ attendee.actual_name }}</span>
+                                      {% elif attendee.actual == attendee.NO %}
+                                      <span id="attendee-badge-{{attendee.id}}" class="badge badge-danger align-top gt-profile-badge" onClick="show_attended_form({{attendee.id}})">{{ attendee.actual_name }}</span>
+                                      {% endif %}
+                                  {% else %}
+                                      {% if attendee.status == attendee.YES %}
+                                      <span id="attendee-badge-{{attendee.id}}" class="badge badge-success align-top gt-profile-badge" onClick="show_attended_form({{attendee.id}})">{{ attendee.status_name }}</span>
+                                      {% elif attendee.status == attendee.NO %}
+                                      <span id="attendee-badge-{{attendee.id}}" class="badge badge-danger align-top gt-profile-badge" onClick="show_attended_form({{attendee.id}})">{{ attendee.status_name }}</span>
+                                      {% elif attendee.status == attendee.MAYBE %}
+                                      <span id="attendee-badge-{{attendee.id}}" class="badge badge-default align-top gt-profile-badge" onClick="show_attended_form({{attendee.id}})">{{ attendee.status_name }}</span>
+                                      {% endif %}
+                                  {% endif %}
+                            </div>
+                            <div class="card-body">
+                              <div class="card-text">
+                                  <strong><a class="card-link" href="{% url 'show-profile' attendee.user.id %}">{{attendee.user}}</a></strong>
+                                  {% if attendee.user.user.account.is_email_confirmed %}
+                                    <a href="javascript:contact_attendee({{attendee.id}});" class="text-muted fa fa-envelope" title="Contact"></a>
+                                  {% endif %}
+                              </div>
+                                {% if event.is_over %}
+                              <div id="attendee-actual-form-{{attendee.id}}" class="align-items-center" style="display: {% if attendee.actual == attendee.MAYBE %}block{% else %}none{% endif %}">
+                                <small class="text-muted">Attended:</small><br/>
+                                <div class="btn-group">
+                                    <a class="btn btn-success" href="javascript:mark_attended({{attendee.id}}, 'yes');">Yes</a></span>
+                                    <a class="btn btn-danger" href="javascript:mark_attended({{attendee.id}}, 'no');">No</a></span>
+                                </div>
+                              </div>
+                                {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr/>
+
+        </div>
+
+        <div class="col-sm-3">
+            <div class="container">
+            <h4>Contact</h4><hr/>
+                <div class="row">
+                    <div class="col">
+                        <form action="{% url 'manage-attendees' event.id %}" method="POST">
+                            {% csrf_token %}
+                            {{ contact_form.as_p }}
+                            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#id_to").selectmenu();
+});
+
+function contact_attendee(attendee_id) {
+    $("#id_to").val(attendee_id);
+    $("#id_to").selectmenu("refresh");
+    $("#id_body").focus();
+}
+
+function mark_attended(attendee_id, value) {
+	$.getJSON("{% url 'attended-event' event.id %}?attendee="+attendee_id+"&response="+value, function(data, status) {
+	    console.log(data)
+	    if (data.status == "OK") {
+	        var badge = $("#attendee-badge-"+attendee_id)
+	        badge[0].innerText = data.actual
+	        if (data.actual == "Yes") {
+    	        badge.removeClass('badge-danger').removeClass('badge-default').addClass('badge-success')
+	        } else if (data.actual == "No") {
+    	        badge.removeClass('badge-success').removeClass('badge-default').addClass('badge-danger')
+	        }
+	        $("#attendee-actual-form-"+attendee_id).hide()
+	    }
+	});
+}
+
+function show_attended_form(attendee_id) {
+    $("#attendee-actual-form-"+attendee_id).show()
+}
+</script>
+{% endblock %}

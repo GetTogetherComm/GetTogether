@@ -1,0 +1,11 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== Message about {{event.name}} ==
+
+Sender: {{ sender }}
+
+{{ body|striptags }}
+
+Event page: {{event.get_full_url}}
+
+{% endblock %}
