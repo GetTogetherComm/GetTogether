@@ -29,17 +29,12 @@ admin.site.register(EmailConfirmation, ConfirmationAdmin)
 
 
 class EmailAdmin(admin.ModelAdmin):
-    list_display = ['when', 'recipient_display', 'subject', 'sender_display', 'ok',]
+    list_display = ['when', 'recipient_display', 'subject', 'sender', 'ok',]
     list_filter = ['ok', 'when', ('sender', admin.RelatedOnlyFieldListFilter)]
     readonly_fields = ['when', 'email', 'subject', 'body', 'ok']
     search_fields = ['subject', 'body', 'to']
 
-    def sender_display(self, record):
-        if record.sender is not None:
-            return record.sender
-        else:
-            return 'System'
-    sender_display.short_description = 'From'
+
 
     def recipient_display(self, record):
         if record.recipient is not None:
