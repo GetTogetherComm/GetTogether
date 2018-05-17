@@ -30,7 +30,7 @@ admin.site.register(EmailConfirmation, ConfirmationAdmin)
 
 class EmailAdmin(admin.ModelAdmin):
     list_display = ['when', 'recipient_display', 'subject', 'sender_display', 'ok',]
-    list_filter = ['ok', 'when', 'sender']
+    list_filter = ['ok', 'when', ('sender', admin.RelatedOnlyFieldListFilter)]
     readonly_fields = ['when', 'email', 'subject', 'body', 'ok']
     search_fields = ['subject', 'body', 'to']
 

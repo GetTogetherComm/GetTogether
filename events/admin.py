@@ -57,7 +57,7 @@ admin.site.register(Organization, OrgAdmin)
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')
     list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'is_premium', 'premium_expires')
-    list_filter = ('active', 'is_premium', 'organization', 'country',)
+    list_filter = ('active', 'is_premium', 'organization', ('country',admin.RelatedOnlyFieldListFilter))
     ordering = ('-created_date',)
     def member_count(self, team):
         return team.members.all().count()
