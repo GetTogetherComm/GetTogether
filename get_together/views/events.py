@@ -97,6 +97,8 @@ def show_series(request, series_id, series_slug):
 @login_required
 def create_event_team_select(request):
     teams = request.user.profile.moderating
+    if len(teams) == 0:
+        return redirect('create-team')
     if len(teams) == 1:
         return redirect('create-event', team_id=teams[0].id)
 
