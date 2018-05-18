@@ -3,6 +3,7 @@
 {% block content %}
 <h3>You proposed a talk for {{event.name|striptags}}</h3>
 
+<p>
 {% if proposal.status == proposal.ACCEPTED %}
 Congratulations! Your submitted talk, <b>{{proposal.talk.title}}</b>, has been accepted by the event hosts.
 {% elif proposal.status == proposal.DECLINED %}
@@ -10,7 +11,7 @@ Unfortunately your submitted talk, <b>{{proposal.talk.title}}</b>, was declined 
 {% else %}
 Your submitted talk, <b>{{proposal.talk.title}}</b>, is currently being reviewed by the event hosts.
 {% endif %}
+</p>
 
 <a href="{{event.get_full_url}}" title="Manage talks">View this event.</a>
-</p>
 {% endblock %}
