@@ -1,0 +1,15 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== Talk proposal for {{event.name|striptags}} ==
+
+By {{ proposal.talk.speaker.user }}, {{ proposal.talk.speaker.title }}
+
+=== {{ proposal.talk.title }} ===
+{{proposal.talk.abstract}}
+
+=== About {{ proposal.talk.speaker.user }} ===
+{{proposal.talk.speaker.bio}}
+
+Click here to review this proposal: https://{{site.domain}}{% url 'schedule-event-talks' event.id %}
+
+{% endblock %}

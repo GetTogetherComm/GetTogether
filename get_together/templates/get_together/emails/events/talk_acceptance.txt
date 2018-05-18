@@ -1,0 +1,15 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== You proposed a talk for {{event.name|striptags}} ==
+
+{% if proposal.status == proposal.ACCEPTED %}
+Congratulations! Your submitted talk, {{proposal.talk.title}}, has been accepted by the event hosts.
+{% elif proposal.status == proposal.DECLINED %}
+Unfortunately your submitted talk, {{proposal.talk.title}}, was declined by the event hosts.
+{% else %}
+Your submitted talk, {{proposal.talk.title}}, is currently being reviewed by the event hosts.
+{% endif %}
+
+Click here to view this event: {{event.get_full_url}}
+
+{% endblock %}

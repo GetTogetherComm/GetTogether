@@ -1,10 +1,12 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.contrib import messages
-from django.contrib.auth import logout as logout_user
+from django.contrib.sites.models import Site
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.template.loader import get_template, render_to_string
+from django.conf import settings
 
 from events.models.profiles import UserProfile
 from events.forms import (
@@ -15,6 +17,7 @@ from events.forms import (
     SchedulePresentationForm,
 )
 
+
 from events.models.events import Event
 from events.models.speakers import Speaker, Talk, Presentation, SpeakerRequest
 import datetime
@@ -22,6 +25,7 @@ import simplejson
 
 from .teams import *
 from .events import *
+
 
 @login_required
 def list_user_talks(request):
@@ -34,6 +38,7 @@ def list_user_talks(request):
     }
     return render(request, 'get_together/speakers/list_user_talks.html', context)
 
+
 def show_speaker(request, speaker_id):
     speaker = get_object_or_404(Speaker, id=speaker_id)
 
@@ -43,6 +48,7 @@ def show_speaker(request, speaker_id):
         'presentations': Presentation.objects.filter(talk__speaker=speaker, status=Presentation.ACCEPTED).order_by('-event__start_time'),
     }
     return render(request, 'get_together/speakers/show_speaker.html', context)
+
 
 def add_speaker(request):
     new_speaker = Speaker(user=request.user.profile)
@@ -66,6 +72,7 @@ def add_speaker(request):
             return render(request, 'get_together/speakers/create_speaker.html', context)
     return redirect('home')
 
+
 def edit_speaker(request, speaker_id):
     speaker = get_object_or_404(Speaker, id=speaker_id)
     if request.method == 'GET':
@@ -87,6 +94,7 @@ def edit_speaker(request, speaker_id):
             }
             return render(request, 'get_together/speakers/edit_speaker.html', context)
     return redirect('home')
+
 
 def delete_speaker(request, speaker_id):
     speaker = get_object_or_404(Speaker, id=speaker_id)
@@ -116,6 +124,7 @@ def delete_speaker(request, speaker_id):
     else:
      return redirect('home')
 
+
 def show_talk(request, talk_id):
     talk = get_object_or_404(Talk, id=talk_id)
     presentations = Presentation.objects.filter(talk=talk, status=Presentation.ACCEPTED).order_by('-event__start_time')
@@ -124,6 +133,7 @@ def show_talk(request, talk_id):
         'presentations': presentations,
     }
     return render(request, 'get_together/speakers/show_talk.html', context)
+
 
 def add_talk(request):
     if Speaker.objects.filter(user=request.user.profile).count() < 1:
@@ -164,6 +174,7 @@ def add_talk(request):
             return render(request, 'get_together/speakers/create_talk.html', context)
     return redirect('home')
 
+
 def edit_talk(request, talk_id):
     talk = get_object_or_404(Talk, id=talk_id)
     if not talk.speaker.user == request.user.profile:
@@ -192,6 +203,7 @@ def edit_talk(request, talk_id):
             return render(request, 'get_together/speakers/edit_talk.html', context)
     return redirect('home')
 
+
 def delete_talk(request, talk_id):
     talk = get_object_or_404(Talk, id=talk_id)
     if not talk.speaker.user == request.user.profile:
@@ -219,6 +231,7 @@ def delete_talk(request, talk_id):
             return render(request, 'get_together/speakers/delete_talk.html', context)
     else:
      return redirect('home')
+
 
 @login_required
 def propose_event_talk(request, event_id):
@@ -252,10 +265,43 @@ def propose_event_talk(request, event_id):
             start_time=event.local_start_time,
             created_by=request.user.profile,
         )
+        send_talk_proposed_emails(new_proposal)
         messages.add_message(request, messages.SUCCESS, message=_('Your talk has been submitted to the event organizer.'))
         return redirect(event.get_absolute_url())
     else:
         redirect('home')
+
+
+def send_talk_proposed_emails(proposal):
+    context = {
+        'proposal': proposal,
+        'event': proposal.event,
+        'talk': proposal.talk,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] Talk proposal for %s' % proposal.event.name
+    email_body_text = render_to_string('get_together/emails/events/talk_proposed.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/talk_proposed.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    for host in Attendee.objects.filter(event=proposal.event, role=Attendee.HOST, user__user__account__is_email_confirmed=True):
+        success = send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=[host.user.user.email],
+            subject=email_subject,
+            fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=proposal.talk.speaker.user.user,
+            recipient=host.user.user,
+            email=host.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
+
 
 def schedule_event_talks(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -275,6 +321,7 @@ def schedule_event_talks(request, event_id):
         elif request.POST.get('action') == 'propose':
             presentation.status = Presentation.PROPOSED
         presentation.save()
+        send_talk_acceptance_emails(presentation, request.user)
 
     context = {
         'event': event,
@@ -285,3 +332,33 @@ def schedule_event_talks(request, event_id):
     }
     return render(request, 'get_together/events/schedule_event_talks.html', context)
 
+
+def send_talk_acceptance_emails(proposal, reviewer):
+    context = {
+        'proposal': proposal,
+        'event': proposal.event,
+        'talk': proposal.talk,
+        'reviewer': reviewer,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = '[GetTogether] About your talk proposal %s' % proposal.event.name
+    email_body_text = render_to_string('get_together/emails/events/talk_acceptance.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/talk_acceptance.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    success = send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=[proposal.talk.speaker.user.user.email],
+        subject=email_subject,
+        fail_silently=True,
+    )
+    EmailRecord.objects.create(
+        sender=reviewer,
+        recipient=proposal.talk.speaker.user.user,
+        email=proposal.talk.speaker.user.user.email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
+    )

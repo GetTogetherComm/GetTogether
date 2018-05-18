@@ -1,0 +1,16 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Talk proposal for {{event.name|striptags}}</h3>
+
+<p><b>By:</b> <a href="https://{{site.domain}}{% url 'show-speaker' proposal.talk.speaker.id %}">{{ proposal.talk.speaker.user }}, {{ proposal.talk.speaker.title }}</a></p>
+
+<h4>{{ proposal.talk.title }}</h4>
+<p>{{proposal.talk.abstract}}</p>
+
+<h4>About {{ proposal.talk.speaker.user }}</h4>
+<p>{{proposal.talk.speaker.bio}}</p>
+
+<a href="https://{{site.domain}}{% url 'schedule-event-talks' event.id %}" title="Manage talks">Review this proposal.</a>
+</p>
+{% endblock %}
