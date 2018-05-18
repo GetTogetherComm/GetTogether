@@ -144,8 +144,8 @@ def user_send_confirmation_email(request):
         'confirmation_url': confirmation_url,
     }
     email_subject = '[GetTogether] Confirm email address'
-    email_body_text = render_to_string('get_together/emails/confirm_email.txt', context, request)
-    email_body_html = render_to_string('get_together/emails/confirm_email.html', context, request)
+    email_body_text = render_to_string('get_together/emails/users/confirm_email.txt', context, request)
+    email_body_html = render_to_string('get_together/emails/users/confirm_email.html', context, request)
     email_recipients = [request.user.email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
     success = send_mail(

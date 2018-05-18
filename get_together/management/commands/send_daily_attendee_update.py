@@ -46,8 +46,8 @@ def send_new_attendees(event, new_attendees):
     }
 
     email_subject = '[GetTogether] New event attendees'
-    email_body_text = render_to_string('get_together/emails/new_event_attendees.txt', context)
-    email_body_html = render_to_string('get_together/emails/new_event_attendees.html', context)
+    email_body_text = render_to_string('get_together/emails/events/new_event_attendees.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/new_event_attendees.html', context)
     email_recipients = [host.email for host in hosts]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 

@@ -30,8 +30,8 @@ def email_host_new_event(event):
         'site': Site.objects.get(id=1),
     }
     email_subject = '[GetTogether] New event: %s' % event.name
-    email_body_text = render_to_string('get_together/emails/event_from_series.txt', context)
-    email_body_html = render_to_string('get_together/emails/event_from_series.html', context)
+    email_body_text = render_to_string('get_together/emails/events/event_from_series.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/event_from_series.html', context)
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
     for attendee in Attendee.objects.filter(event=event, role=Attendee.HOST, user__user__account__is_email_confirmed=True):

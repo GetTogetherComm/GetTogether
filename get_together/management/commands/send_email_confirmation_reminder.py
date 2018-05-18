@@ -43,8 +43,8 @@ class Command(BaseCommand):
                 'confirmation_url': confirmation_url,
             }
             email_subject = '[GetTogether] Email confirmation reminder'
-            email_body_text = render_to_string('get_together/emails/confirm_email.txt', context)
-            email_body_html = render_to_string('get_together/emails/confirm_email.html', context)
+            email_body_text = render_to_string('get_together/emails/users/confirm_email.txt', context)
+            email_body_html = render_to_string('get_together/emails/users/confirm_email.html', context)
             email_recipients = [account.user.email]
             email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
             success = send_mail(

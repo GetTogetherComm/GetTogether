@@ -295,8 +295,8 @@ def invite_attendee(email, event, sender):
         email = recipient.email
 
     email_subject = '[GetTogether] Invite to attend %s' % event.name
-    email_body_text = render_to_string('get_together/emails/attendee_invite.txt', context)
-    email_body_html = render_to_string('get_together/emails/attendee_invite.html', context)
+    email_body_text = render_to_string('get_together/emails/events/attendee_invite.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/attendee_invite.html', context)
     email_recipients = [email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
@@ -326,8 +326,8 @@ def contact_attendee(attendee, body, sender):
         'site': Site.objects.get(id=1),
     }
     email_subject = '[GetTogether] Message about %s' % attendee.event.name
-    email_body_text = render_to_string('get_together/emails/attendee_contact.txt', context)
-    email_body_html = render_to_string('get_together/emails/attendee_contact.html', context)
+    email_body_text = render_to_string('get_together/emails/events/attendee_contact.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/attendee_contact.html', context)
     email_recipients = [attendee.user.user.email]
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
@@ -417,8 +417,8 @@ def send_comment_emails(comment):
         'site': Site.objects.get(id=1),
     }
     email_subject = '[GetTogether] Comment on %s' % comment.event.name
-    email_body_text = render_to_string('get_together/emails/event_comment.txt', context)
-    email_body_html = render_to_string('get_together/emails/event_comment.html', context)
+    email_body_text = render_to_string('get_together/emails/events/event_comment.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/event_comment.html', context)
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
 
     for attendee in comment.event.attendees.filter(user__account__is_email_confirmed=True):
