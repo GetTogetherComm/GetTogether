@@ -1,0 +1,116 @@
+{% extends "get_together/base.html" %}
+{% load static markup tz %}
+
+{% block add_to_title %} | {{event.name}}{% endblock %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+    <style>
+.card {
+    height: 300px !important;
+    width: 250px !important;
+    vertical-align: middle;
+}
+.card-banner {
+    height: 200px !important;
+    width: 250px !important;
+}
+.card-banner .card-img-top {
+    max-height: 200px !important;
+    max-width: 248px !important;
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2>Sponsors for <a href="{{event.get_absolute_url}}">{{ event.name }}</a>
+            </h2>
+                <hr/>
+            {% comment %}
+            <p>
+                <b>Lookup sponsors: </b><input type="text" id="id_search" name="search">
+                <hr/>
+            </p>
+            {% endcomment %}
+            <div class="container">
+                <div class="row">
+                    {% for sponsor in sponsors %}
+                       <div class="col-md-4">
+                          <div class="card mb-1 box-shadow">
+                            <div class="card-banner align-items-center">
+                                <a class="card-link" href="{{sponsor.web_url}}">
+                                <img class="card-img-top" src="{{sponsor.logo.url}}">
+                                </a>
+                            </div>
+                            <div class="card-body">
+                              <div class="card-text">
+                                <strong>{{sponsor.name}}</strong><br/>
+                                <div class="btn-group">
+                                    {% if sponsor in event.sponsors.all %}
+                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-danger" href="javascript:toggle_sponsor({{sponsor.id}});">Remove</a></span>
+                                    {% else %}
+                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-success" href="javascript:toggle_sponsor({{sponsor.id}});">Add</a></span>
+                                    {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr/>
+
+        </div>
+        <div class="col-md-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col"><h4>New Sponsor</h4><hr/></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form enctype="multipart/form-data" action="{% url 'manage-event-sponsors' event.id %}" method="POST">
+                            {% csrf_token %}
+                            {{sponsor_form.as_p}}
+                            <button class="btn btn-primary" type="submit">Add Sponsor</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+
+function toggle_sponsor(sponsor_id) {
+    var btn = $("#sponsor-button-"+sponsor_id)
+    var value = ''
+    if (btn[0].innerText == 'Add') {
+        value = 'add'
+    } else if (btn[0].innerText == 'Remove') {
+        value = 'remove'
+    }
+	$.getJSON("{% url 'sponsor-event' event.id %}?sponsor="+sponsor_id+"&action="+value, function(data, status) {
+	    console.log(data)
+	    if (data.status == "OK") {
+	        if (data.action == "Added") {
+    	        btn[0].innerText = "Remove"
+    	        btn.removeClass('btn-success').addClass('btn-danger')
+	        } else if (data.action == "Removed") {
+    	        btn[0].innerText = "Add"
+    	        btn.removeClass('btn-danger').addClass('btn-success')
+	        }
+	    }
+	});
+
+}
+
+</script>
+{% endblock %}

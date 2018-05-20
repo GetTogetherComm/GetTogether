@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
-from .models.profiles import Team, UserProfile
+from .models.profiles import Team, UserProfile, Sponsor
 from .models.events import (
     Event,
     EventComment,
@@ -290,6 +290,11 @@ class EventCommentForm(forms.ModelForm):
     class Meta:
         model = EventComment
         fields = ['body']
+
+class SponsorForm(forms.ModelForm):
+    class Meta:
+        model = Sponsor
+        fields = ['name', 'web_url', 'logo']
 
 class NewPlaceForm(forms.ModelForm):
     class Meta:

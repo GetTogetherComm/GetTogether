@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -6,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.sites.models import Site
 from django.utils import timezone
+from django.utils.datastructures import OrderedSet
 from django.core.mail import send_mail
 from django.template.loader import get_template, render_to_string
 from django.conf import settings
@@ -23,7 +25,7 @@ from events.models.events import (
     delete_event_searchable,
 )
 from events.models.speakers import Speaker, Talk, SpeakerRequest, Presentation
-from events.models.profiles import Team, Organization, UserProfile, Member
+from events.models.profiles import Team, Organization, UserProfile, Member, Sponsor
 from events.forms import (
     TeamEventForm,
     NewTeamEventForm,
@@ -37,6 +39,7 @@ from events.forms import (
     EventInviteEmailForm,
     EventInviteMemberForm,
     EventContactForm,
+    SponsorForm,
 )
 from events import location
 
@@ -73,6 +76,8 @@ def show_event(request, event_id, event_slug):
         'team': event.team,
         'event': event,
         'comment_form': comment_form,
+        'sponsor_count': event.sponsors.count(),
+        'sponsor_list': event.sponsors.all(),
         'is_attending': request.user.profile in event.attendees.all(),
         'attendee_list': Attendee.objects.filter(event=event).order_by('-status'),
         'attendee_count': Attendee.objects.filter(event=event, status=Attendee.YES).count(),
@@ -150,6 +155,66 @@ def create_event(request, team_id):
             return render(request, 'get_together/events/create_event.html', context)
     else:
      return redirect('home')
+
+
+@login_required
+def manage_event_sponsors(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not manage this event\'s sponsorss.'))
+        return redirect(event.get_absolute_url())
+    if not event.team.is_premium:
+        messages.add_message(request, messages.ERROR, message=mark_safe(_('Upgrade this team to a <a href="/about/premium">Premium</a> account to use this feature.')))
+        return redirect(event.get_absolute_url())
+
+    team_sponsors = list(event.team.sponsors.all())
+    events_sponsors = list(Sponsor.objects.filter(events__team=event.team))
+
+    if request.method == 'POST':
+        sponsor_form = SponsorForm(request.POST, request.FILES)
+        if sponsor_form.is_valid():
+            new_sponsor = sponsor_form.save()
+            event.sponsors.add(new_sponsor)
+            event.team.sponsors.add(new_sponsor)
+            messages.add_message(request, messages.SUCCESS, message=_('Your sponsor has been added to this event.'))
+            return redirect('manage-event-sponsors', event.id)
+
+    else:
+        sponsor_form = SponsorForm()
+    context = {
+        'event': event,
+        'sponsors': OrderedSet(events_sponsors + team_sponsors),
+        'sponsor_form': sponsor_form,
+        'can_edit_event': request.user.profile.can_edit_event(event),
+    }
+    return render(request, 'get_together/events/manage_event_sponsors.html', context)
+
+
+@login_required
+def sponsor_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    sponsor = get_object_or_404(Sponsor, id=request.GET.get('sponsor', None))
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'ERROR', 'message': _("You must be logged in manage event sponsors.")})
+
+    if not request.user.profile.can_edit_event(event):
+        return JsonResponse({'status': 'ERROR', 'message': _("You can not manage this event's sponsors.")})
+
+    action = 'none'
+    if request.GET.get('action', None) == 'add':
+        if sponsor in event.sponsors.all():
+            return JsonResponse({'status': 'ERROR', 'message': _("Already sponsoring this event.")})
+
+        event.sponsors.add(sponsor)
+        action = 'Added'
+    if request.GET.get('action', None) == 'remove':
+        if sponsor not in event.sponsors.all():
+            return JsonResponse({'status': 'ERROR', 'message': _("Not sponsoring this event.")})
+
+        event.sponsors.remove(sponsor)
+        action = 'Removed'
+
+    return JsonResponse({'status': 'OK', 'sponsor_id': sponsor.id, 'action': action})
 
 
 @login_required

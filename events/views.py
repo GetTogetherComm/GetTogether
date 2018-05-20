@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .models.search import Searchable, SearchableSerializer
 from .models.events import Event, EventComment, Place, PlaceSerializer, Attendee
 from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
-from .models.profiles import Team, UserProfile, Member
+from .models.profiles import Team, UserProfile, Member, Sponsor, SponsorSerializer
 from .forms import EventCommentForm
 
 import simplejson
@@ -78,7 +78,7 @@ def city_list(request, *args, **kwargs):
 @api_view(['GET'])
 def find_city(request):
     cities = City.objects.all()
-    if "city" in request.GET:
+    if "name" in request.GET:
         cities = cities.filter(name=request.GET.get("city"))
     if "spr" in request.GET:
         cities = cities.filter(spr__name=request.GET.get("spr"))
@@ -90,6 +90,19 @@ def find_city(request):
         return Response(serializer.data)
     except:
         return Response({})
+
+
+@api_view(['GET'])
+def sponsor_list(request):
+    if "q" in request.GET:
+        match = request.GET.get("q", "")
+        sponsors = Sponsor.objects.filter(name__icontains=match)
+    else:
+        sponsors = Sponsor.objects.all()
+
+    serializer = SponsorSerializer(sponsors[:50], many=True)
+    return Response(serializer.data)
+
 
 def join_team(request, team_id):
     if request.user.is_anonymous:

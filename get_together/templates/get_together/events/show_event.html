@@ -135,6 +135,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
                         <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
+                        <a href="{% url 'manage-event-sponsors' event.id %}" class="dropdown-item">Manage Sponsors</a>
                         <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Manage Talks</a>
                         <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">Manage Attendees</a>
                 </div>
@@ -244,6 +245,19 @@
 
         <div class="col-md-3">
             <div class="container">
+                {% if sponsor_count > 0 %}
+                <div class="row">
+                    <div class="col"><h4>Sponsors</h4><hr/></div>
+                </div>
+                {% for sponsor in sponsor_list %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <a href="{{sponsor.web_url}}" target="_blank"><img src="{{sponsor.logo.url}}" alt="{{sponsor.name}} Logo" title="{{sponsor.name}}"></a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="row mb-3"></div>
+                {% endif %}
                 <div class="row">
                     <div class="col"><h4>Attendees ({{attendee_count}})</h4><hr/></div>
                 </div>

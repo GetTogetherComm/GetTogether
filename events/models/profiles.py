@@ -6,7 +6,9 @@ from django.utils import timezone
 from django.conf import settings
 
 from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFill
+from imagekit.processors import ResizeToFill, ResizeToFit
+
+from rest_framework import serializers
 
 from .locale import *
 from .. import location
@@ -195,6 +197,29 @@ class Organization(models.Model):
     def __str__(self):
         return u'%s' % (self.name)
 
+class Sponsor(models.Model):
+    name = models.CharField(_("Sponsor Name"), max_length=256, null=False, blank=False)
+    description = models.TextField(blank=True, null=True)
+    web_url = models.URLField(_("Website"), null=True, blank=True)
+    logo = ProcessedImageField(verbose_name=_("Logo"), help_text=_("Will be scaled and cropped to max 250x200 px."),
+                                           upload_to='sponsors',
+                                           processors=[ResizeToFit(250, 200)],
+                                           format='PNG',
+                                           blank=True)
+    def __str__(self):
+        return self.name
+
+class SponsorSerializer(serializers.ModelSerializer):
+    display = serializers.CharField(source='__str__', read_only=True)
+    class Meta:
+        model = Sponsor
+        fields = (
+            'id',
+            'name',
+            'logo',
+            'web_url',
+        )
+
 class Team(models.Model):
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
     organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
@@ -223,6 +248,8 @@ class Team(models.Model):
 
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
+
+    sponsors = models.ManyToManyField('Sponsor', related_name='teams')
 
     is_premium = models.BooleanField(default=settings.EVENTS_TEAMS_DEFAULT_PREMIUM)
     premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, on_delete=models.SET_NULL)

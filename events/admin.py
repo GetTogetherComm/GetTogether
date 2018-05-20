@@ -10,6 +10,7 @@ from .models.profiles import (
     Member,
     Category,
     Topic,
+    Sponsor,
 )
 from .models.search import Searchable
 from .models.events import (
@@ -54,8 +55,12 @@ class OrgAdmin(admin.ModelAdmin):
     list_display = ('name', 'site')
 admin.site.register(Organization, OrgAdmin)
 
+class SponsorAdmin(admin.ModelAdmin):
+    list_display = ('name', 'web_url')
+admin.site.register(Sponsor, SponsorAdmin)
+
 class TeamAdmin(admin.ModelAdmin):
-    raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles')
+    raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles', 'sponsors')
     list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'is_premium', 'premium_expires')
     list_filter = ('active', 'is_premium', 'organization', ('country',admin.RelatedOnlyFieldListFilter))
     ordering = ('-created_date',)
@@ -78,7 +83,7 @@ class PlaceAdmin(admin.ModelAdmin):
 admin.site.register(Place, PlaceAdmin)
 
 class EventAdmin(admin.ModelAdmin):
-    raw_id_fields = ('place', 'created_by')
+    raw_id_fields = ('place', 'created_by', 'sponsors')
     list_display = ('__str__', 'attendee_count', 'start_time', 'created_by', 'created_time')
     ordering = ('-start_time',)
     def attendee_count(self, event):
