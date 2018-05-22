@@ -417,7 +417,7 @@ def contact_attendee(attendee, body, sender):
 
 
 def attend_event(request, event_id):
-    event = Event.objects.get(id=event_id)
+    event = get_object_or_404(Event, id=event_id)
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_("You must be logged in to say you're attending."))
         return redirect(event.get_absolute_url())
