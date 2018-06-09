@@ -15,6 +15,7 @@ from events.models.profiles import Organization, Team, UserProfile, Member
 from events.models.events import Event, CommonEvent, Place, Attendee
 from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm, TeamInviteForm
 from events import location
+from events.utils import slugify
 
 from accounts.models import EmailRecord
 
@@ -43,8 +44,18 @@ def teams_list_all(request, *args, **kwargs):
     }
     return render(request, 'get_together/teams/list_teams.html', context)
 
-def show_team(request, team_id, *args, **kwargs):
+
+def show_team_by_slug(request, team_slug):
+    team = get_object_or_404(Team, slug=team_slug)
+    return show_team(request, team)
+
+
+def show_team_by_id(request, team_id):
     team = get_object_or_404(Team, id=team_id)
+    return redirect('show-team-by-slug', team_slug=team.slug)
+
+
+def show_team(request, team):
     upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
     recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
     context = {
@@ -57,6 +68,7 @@ def show_team(request, team_id, *args, **kwargs):
         'can_edit_team': request.user.profile.can_edit_team(team),
     }
     return render(request, 'get_together/teams/show_team.html', context)
+
 
 @login_required
 def create_team(request, *args, **kwargs):
@@ -74,7 +86,7 @@ def create_team(request, *args, **kwargs):
             new_team.owner_profile = request.user.profile
             new_team.save()
             Member.objects.create(team=new_team, user=request.user.profile, role=Member.ADMIN)
-            return redirect('show-team', team_id=new_team.pk)
+            return redirect('show-team-by-slug', team_slug=new_team.slug)
         else:
             context = {
                 'team_form': form,
@@ -88,7 +100,7 @@ def edit_team(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
-        return redirect('show-team', team_id=team.pk)
+        return redirect('show-team-by-slug', team_slug=team.slug)
 
     if request.method == 'GET':
         form = TeamForm(instance=team)
@@ -104,7 +116,7 @@ def edit_team(request, team_id):
             new_team = form.save()
             new_team.owner_profile = request.user.profile
             new_team.save()
-            return redirect('show-team', team_id=new_team.pk)
+            return redirect('show-team-by-slug', team_slug=new_team.slug)
         else:
             context = {
                 'team': team,
@@ -119,7 +131,7 @@ def delete_team(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this team.'))
-        return redirect('show-team', team_id)
+        return redirect('show-team-by-slug', team.slug)
 
     if request.method == 'GET':
         form = DeleteTeamForm()
@@ -149,7 +161,7 @@ def manage_members(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_edit_team(team):
         messages.add_message(request, messages.WARNING, message=_('You can not manage this team\'s members.'))
-        return redirect('show-team', team_id)
+        return redirect('show-team-by-slug', team.slug)
 
     members = Member.objects.filter(team=team).order_by('user__realname')
     member_choices = [(member.id, member.user) for member in members if member.user.user.account.is_email_confirmed]
@@ -162,7 +174,7 @@ def manage_members(request, team_id):
             body = contact_form.cleaned_data['body']
             if to is not 'admins' and not request.user.profile.can_edit_team(team):
                 messages.add_message(request, messages.WARNING, message=_('You can not contact this team\'s members.'))
-                return redirect('show-team', team_id)
+                return redirect('show-team-by-slug', team.slug)
             if to == 'all':
                 count = 0
                 for member in Member.objects.filter(team=team):

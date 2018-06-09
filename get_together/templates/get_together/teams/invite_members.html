@@ -7,7 +7,7 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Invite people to <a href="{% url 'show-team' team.id %}">{{ team.name }}</a>
+            <h2>Invite people to <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
             </h2>
             <p>Add a list of emails, separated by commas</p>
             <form action="{% url 'invite-members' team.id %}" method="POST">

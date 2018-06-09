@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">
                         <div class="card-banner">
-                          <a href="{% url 'show-team' team.id %}">
+                          <a href="{% url 'show-team-by-slug' team.slug %}">
                           {% if team.category %}
                           <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
                           {% else %}
@@ -78,11 +78,11 @@
                           <p class="card-title">{{team.name}}</p>
                         </div>
                         <div class="card-body">
-                          <p class="card-text"><strong><a class="card-link" href="{% url 'show-team' team.id %}">{{team.city}}</a></strong></p>
+                          <p class="card-text"><strong><a class="card-link" href="{% url 'show-team-by-slug' team.slug %}">{{team.city}}</a></strong></p>
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">{{ team.members.count }} members</small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{% url 'show-team' team.id %}">View</a></span>
+                                <a class="btn btn-primary" href="{% url 'show-team-by-slug' team.slug %}">View</a></span>
                             </div>
                           </div>
                         </div>

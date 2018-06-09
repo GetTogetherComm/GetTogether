@@ -114,7 +114,7 @@ def create_event(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     if not request.user.profile.can_create_event(team):
         messages.add_message(request, messages.WARNING, message=_('You can not create events for this team.'))
-        return redirect('show-team', team_id=team.pk)
+        return redirect('show-team-by-slug', team_slug=team.slug)
 
     new_event = Event(team=team, created_by=request.user.profile)
 
@@ -669,10 +669,10 @@ def delete_event(request, event_id):
     elif request.method == 'POST':
         form = DeleteEventForm(request.POST)
         if form.is_valid() and form.cleaned_data['confirm']:
-            team_id = event.team_id
-            delete_event_searchable(event);
+            team_slug = event.team.slug
+            delete_event_searchable(event)
             event.delete()
-            return redirect('show-team', team_id)
+            return redirect('show-team-by-slug', team_slug)
         else:
             context = {
                 'team': event.team,
@@ -734,9 +734,9 @@ def delete_series(request, series_id):
     elif request.method == 'POST':
         form = DeleteEventSeriesForm(request.POST)
         if form.is_valid() and form.cleaned_data['confirm']:
-            team_id = series.team_id
+            team_slug = series.team.slug
             series.delete()
-            return redirect('show-team', team_id)
+            return redirect('show-team-by-slug', team_slug)
         else:
             context = {
                 'team': series.team,

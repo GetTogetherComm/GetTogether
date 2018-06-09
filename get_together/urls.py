@@ -64,7 +64,7 @@ urlpatterns = [
     path('events/all/', views.events_list_all, name='all-events'),
     path('teams/', views.teams_list, name='teams'),
     path('teams/all/', views.teams_list_all, name='all-teams'),
-    path('team/<int:team_id>/', views.show_team, name='show-team'),
+    path('team/<int:team_id>/', views.show_team_by_id, name='show-team'),
     path('team/<int:team_id>/+edit/', views.edit_team, name='edit-team'),
     path('team/<int:team_id>/+join/', event_views.join_team, name='join-team'),
     path('team/<int:team_id>/+leave/', event_views.leave_team, name='leave-team'),
@@ -109,6 +109,8 @@ urlpatterns = [
     path('about/', include('django.contrib.flatpages.urls')),
 
     path('oauth/', include('social_django.urls', namespace='social')),
+
+    path('<str:team_slug>/', views.show_team_by_slug, name='show-team-by-slug'),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

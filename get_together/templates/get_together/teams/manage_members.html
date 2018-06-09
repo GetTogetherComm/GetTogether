@@ -21,7 +21,7 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Members of <a href="{% url 'show-team' team.id %}">{{ team.name }}</a>
+            <h2>Members of <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
             </h2>
             <p><a href="{% url 'invite-members' team.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> Invite Members</a></p>
 

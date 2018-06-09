@@ -222,6 +222,7 @@ class SponsorSerializer(serializers.ModelSerializer):
 
 class Team(models.Model):
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
+    slug = models.CharField(max_length=256, null=False, blank=False, unique=True)
     organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
 
     description = models.TextField(blank=True, null=True)
@@ -282,6 +283,12 @@ class Team(models.Model):
         if self.city is not None:
             self.spr = self.city.spr
             self.country = self.spr.country
+        new_slug = slugify(self.name)
+        slug_matches = list(Team.objects.filter(slug=new_slug))
+        if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].id == self.id):
+            self.slug = new_slug
+        else:
+            self.slug = '%s-%s' % (new_slug, self.id)
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
 
