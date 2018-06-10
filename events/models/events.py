@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import reverse
 from django.utils import timezone
+from django.conf import settings
 
 from rest_framework import serializers
 from mptt.models import MPTTModel, TreeForeignKey
@@ -132,8 +133,13 @@ class Event(models.Model):
 
 def update_event_searchable(event):
     site = Site.objects.get(id=1)
-    event_url = "https://%s%s" % (site.domain, event.get_absolute_url())
-    origin_url = "https://%s%s" % (site.domain, reverse('searchables'))
+    if settings.DEBUG:
+        schema = 'http'
+    else:
+        schema = 'https'
+
+    event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
+    origin_url = "%s://%s%s" % (schema, site.domain, reverse('searchables'))
 
     md5 = hashlib.md5()
     federation_url = event_url.split('/')
@@ -152,10 +158,8 @@ def update_event_searchable(event):
 
     searchable.event_url = event_url
 
-    if event.team.category:
-        searchable.img_url = event.team.category.img_url
-    else:
-        searchable.img_url = "https://%s%s" % (site.domain, '/static/img/team_placeholder.png')
+    searchable.img_url = "%s://%s%s" % (schema, site.domain, event.team.card_img_url)
+
     searchable.event_title = event.name
     searchable.group_name = event.team.name
     searchable.start_time = event.start_time
@@ -179,8 +183,12 @@ def update_event_searchable(event):
 
 def delete_event_searchable(event):
     site = Site.objects.get(id=1)
-    event_url = "https://%s%s" % (site.domain, event.get_absolute_url())
-    origin_url = "https://%s%s" % (site.domain, reverse('searchables'))
+    if settings.DEBUG:
+        schema = 'http'
+    else:
+        schema = 'https'
+    event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
+    origin_url = "%s://%s%s" % (schema, site.domain, reverse('searchables'))
 
     md5 = hashlib.md5()
     federation_url = event_url.split('/')
@@ -295,7 +303,11 @@ class CommonEvent(models.Model):
 
     def get_full_url(self):
         site = self.organization.site
-        return "https://%s%s" % (site.domain, self.get_absolute_url())
+        if settings.DEBUG:
+            schema = 'http'
+        else:
+            schema = 'https'
+        return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
     @property
     def slug(self):
@@ -370,7 +382,11 @@ class EventSeries(models.Model):
 
     def get_full_url(self):
         site = Site.objects.get(id=1)
-        return "https://%s%s" % (site.domain, self.get_absolute_url())
+        if settings.DEBUG:
+            schema = 'http'
+        else:
+            schema = 'https'
+        return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
     @property
     def slug(self):

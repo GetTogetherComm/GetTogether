@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2>Get Together with friends</h2>
-<form action="{% url "create-team" %}" method="post" class="form">
+<form action="{% url "create-team" %}" enctype="multipart/form-data" method="post" class="form">
 {% csrf_token %}
 {% include "events/team_form.html" %}
 

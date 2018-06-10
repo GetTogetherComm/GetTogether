@@ -95,3 +95,18 @@ ul.errorlist li {
   border-color: #ebcccc;
   color: #a94442;
 }
+
+.team-banner {
+    position: relative;
+    margin-bottom: 3px;
+}
+
+.team-banner .team-title {
+    position: absolute;
+    bottom: 0px;
+    left: 6px;
+    color: #FFF;
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 2px 2px #444;
+}

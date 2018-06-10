@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.conf import settings
 
-from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFill, ResizeToFit
+from imagekit.models import ProcessedImageField, ImageSpecField
+from imagekit.processors import ResizeToFill, ResizeToFit, Adjust, ColorOverlay
 
 from rest_framework import serializers
 
@@ -225,6 +226,21 @@ class Team(models.Model):
     slug = models.CharField(max_length=256, null=False, blank=False, unique=True)
     organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
 
+    cover_img = models.ImageField(verbose_name=_('Cover Image'), upload_to='team_covers', null=True, blank=True)
+    tile_img = ImageSpecField(source='cover_img',
+                                processors=[
+                                    Adjust(contrast=0.8, color=1),
+                                    ResizeToFill(338, 200),
+                                ],
+                                format='PNG')
+
+    banner_img = ImageSpecField(source='cover_img',
+                                processors=[
+                                    Adjust(contrast=0.8, color=1),
+                                    ResizeToFill(825, 200),
+                                ],
+                                format='PNG')
+
     description = models.TextField(blank=True, null=True)
 
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -240,7 +256,6 @@ class Team(models.Model):
     admin_profiles = models.ManyToManyField(UserProfile, related_name='admins', blank=True)
     contact_profiles = models.ManyToManyField(UserProfile, related_name='contacts', blank=True)
 
-    cover_img = models.URLField(_("Team Photo"), null=True, blank=True)
     languages = models.ManyToManyField(Language, blank=True)
     active = models.BooleanField(_("Active Team"), default=True)
     tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=location.TimezoneChoices(), blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
@@ -256,6 +271,15 @@ class Team(models.Model):
     premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, on_delete=models.SET_NULL)
     premium_started = models.DateTimeField(blank=True, null=True)
     premium_expires = models.DateTimeField(blank=True, null=True)
+
+    @property
+    def card_img_url(self):
+        if self.tile_img is not None and self.tile_img.name is not None:
+            return self.tile_img.url
+        elif self.category is not None:
+            return self.category.img_url
+        else:
+            return static('img/team_placeholder.png')
 
     @property
     def location_name(self):

@@ -19,12 +19,10 @@
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
                 <div class="card-banner">
-                  {% if event.team.category %}
-                  <img class="card-img-top" src="{{event.team.category.img_url}}" alt="{{event.name}}">
-                  {% else %}
-                  <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{event.name}}">
-                  {% endif %}
+                  <a href="{{ event.get_absolute_url }}">
+                  <img class="card-img-top" src="{{event.team.card_img_url}}" alt="{{event.name}}">
                   <p class="card-title">{{event.team.name}}</p>
+                  </a>
                 </div>
                 <div class="card-body">
                   <p class="card-text"><strong><a class="card-link" href="{{event.get_absolute_url}}">{{event.name}}</a></strong></p>
