@@ -14,12 +14,8 @@
     <div class="col-md-4">
       <div class="card mb-4 box-shadow">
         <div class="card-banner">
-          <a href="{% url 'show-team-by-slug' team.slug %}">
-          {% if team.category %}
-          <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
-          {% else %}
-          <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
-          {% endif %}
+          <a href="{% url 'create-event' team.id %}">
+          <img class="card-img-top" src="{{team.card_img_url}}" alt="{{team.name}}">
           </a>
           <p class="card-title">{{team.name}}</p>
         </div>
