@@ -34,7 +34,7 @@ def get_geoip(request):
         else:
             raise Exception("Client is localhost")
 
-    g = geocoder.ip(client_ip)
+    g = geocoder.freegeoip(client_ip)
     return g
 
 def get_bounding_box(center, radius):
