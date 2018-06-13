@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'get_together',
     'events',
     'accounts',
+    'resume',
 ]
 
 LOGIN_URL = 'login'
@@ -82,6 +83,7 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'resume.middleware.ResumeMiddleware',
 ]
 
 ROOT_URLCONF = 'get_together.urls'

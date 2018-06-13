@@ -23,6 +23,8 @@ from events.models.speakers import Speaker, Talk, Presentation, SpeakerRequest
 import datetime
 import simplejson
 
+from resume import set_resume, resume_or_redirect
+
 from .teams import *
 from .events import *
 
@@ -63,7 +65,7 @@ def add_speaker(request):
         speaker_form = SpeakerBioForm(request.POST, request.FILES, instance=new_speaker)
         if speaker_form.is_valid():
             new_speaker = speaker_form.save()
-            return redirect('user-talks')
+            return resume_or_redirect(request, 'user-talks')
         else:
             context = {
                 'speaker': new_speaker,
@@ -138,6 +140,7 @@ def show_talk(request, talk_id):
 def add_talk(request):
     if Speaker.objects.filter(user=request.user.profile).count() < 1:
         messages.add_message(request, messages.WARNING, message=_('You must create a new Speaker profile before you can add a talk'))
+        set_resume(request)
         return redirect('add-speaker')
 
     new_talk = Talk()
