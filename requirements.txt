@@ -19,8 +19,10 @@ geocoder==1.36.0
 icalendar==4.0.1
 idna==2.6
 Markdown==2.6.11
+mock==2.0.0
 model-mommy==1.5.1
 oauthlib==2.0.6
+pbr==4.0.4
 pilkit==2.0
 Pillow==5.0.0
 PyJWT==1.5.3

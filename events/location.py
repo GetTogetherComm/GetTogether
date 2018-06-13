@@ -52,18 +52,24 @@ def distance(center1, center2):
     return dkm
 
 def city_distance_from(ll, city):
+    if ll is None:
+        return 0
     if city is not None and city.latitude is not None and city.longitude is not None:
         return distance((ll), (city.latitude, city.longitude))
     else:
         return 99999
 
 def team_distance_from(ll, team):
+    if ll is None:
+        return 0
     if team.city is not None:
         return city_distance_from(ll, team.city)
     else:
         return 99999
 
 def event_distance_from(ll, event):
+    if ll is None:
+        return 0
     if event.place is not None and event.place.latitude is not None and event.place.longitude is not None:
         return distance((ll), (event.place.latitude, event.place.longitude))
     if event.team is not None:
@@ -72,12 +78,16 @@ def event_distance_from(ll, event):
         return 99999
 
 def searchable_distance_from(ll, searchable):
+    if ll is None:
+        return 0
     if searchable.latitude is not None and searchable.longitude is not None:
         return distance((ll), (float(searchable.latitude), float(searchable.longitude)))
     else:
         return 99999
 
 def get_nearest_city(ll, max_distance=100):
+    if ll is None:
+        return None
     city = None
     city_distance = 1 #km
     while city is None and city_distance <= max_distance:
