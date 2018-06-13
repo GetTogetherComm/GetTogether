@@ -26,4 +26,4 @@ def resume_or_redirect(request, to, permanent=False, *args, **kwargs):
         resume_from = request._resume_points.pop()
         return redirect(resume_from)
     else:
-        return redirect(to, permanent, *args, **kwargs)
+        return redirect(to, permanent=permanent, *args, **kwargs)
