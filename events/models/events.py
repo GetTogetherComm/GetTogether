@@ -33,6 +33,9 @@ class Place(models.Model):
     place_url = models.URLField(help_text=_('URL for the Place Homepage'), verbose_name=_('URL of the Place'), max_length=200, blank=True, null=True)
     cover_img = models.URLField(_("Place photo"), null=True, blank=True)
 
+    def get_absolute_url(self):
+        return reverse('show-place', kwargs={'place_id': self.id})
+
     def __str__(self):
         return u'%s, %s' % (self.name, self.city.name)
 

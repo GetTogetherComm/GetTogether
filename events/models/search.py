@@ -36,7 +36,7 @@ class Searchable(models.Model):
     @property
     def local_start_time(self, val=None):
         if val is not None:
-            self.start_time = val.astimezone(python.utc)
+            self.start_time = val.astimezone(pytz.utc)
         else:
             if self.start_time is None:
                 return None
@@ -46,7 +46,7 @@ class Searchable(models.Model):
     @property
     def local_end_time(self, val=None):
         if val is not None:
-            self.end_time = val.astimezone(python.utc)
+            self.end_time = val.astimezone(pytz.utc)
         else:
             if self.end_time is None:
                 return None

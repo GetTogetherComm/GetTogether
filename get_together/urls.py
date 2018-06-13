@@ -110,6 +110,8 @@ urlpatterns = [
 
     path('oauth/', include('social_django.urls', namespace='social')),
 
+    path('activity_pub/', include('events.activity_pub.urls')),
+
     path('<str:team_slug>/', views.show_team_by_slug, name='show-team-by-slug'),
 ]
 if settings.DEBUG:

@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group, AnonymousUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.conf import settings
 
@@ -299,6 +300,9 @@ class Team(models.Model):
     @property
     def moderators(self):
         return [member.user for member in Member.objects.filter(team=self, role__in=(Member.ADMIN, Member.MODERATOR))]
+
+    def get_absolute_url(self):
+        return reverse('show-team', kwargs={'team_id': self.id})
 
     def __str__(self):
         return u'%s' % (self.name)
