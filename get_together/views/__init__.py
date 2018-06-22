@@ -47,8 +47,6 @@ def home(request, *args, **kwards):
 
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
-    if "distance" in request.GET and request.GET.get("distance"):
-        ga.add_event(request, 'homepage_search', category='search', label='distance', value=near_distance)
 
     city=None
     ll = None
