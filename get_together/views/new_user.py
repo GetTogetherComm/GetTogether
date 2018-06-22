@@ -17,6 +17,8 @@ from accounts.models import EmailRecord
 
 from .utils import get_nearby_teams
 
+import simple_ga as ga
+
 import datetime
 import simplejson
 
@@ -169,6 +171,8 @@ def user_send_confirmation_email(request):
 def user_confirm_email(request, confirmation_key):
     if request.user.account.confirm_email(confirmation_key):
         messages.add_message(request, messages.SUCCESS, message=_('Your email address has been confirmed.'))
+        ga.add_event(request, action='email_confirmed', category='activity', label='user', value=str(request.user.profile))
+
         return redirect('confirm-notifications')
     else:
         return render(request, 'get_together/new_user/bad_email_confirmation.html')
