@@ -11,7 +11,7 @@ class GAEvent:
 
     def gtag(self):
         return mark_safe(
-            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' }, 'event_value' : '%(value)s' });" % {
+            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'event_value' : '%(value)s' });" % {
                 'action': self.action,
                 'category': self.category,
                 'label': self.label,
