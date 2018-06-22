@@ -21,6 +21,11 @@
       gtag('js', new Date());
 
       gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}');
+
+       // GA Events
+      {% for event in ga_events %}
+      {{ event.gtag }}
+      {% endfor %}
       {% block extra_google_analytics %}{% endblock %}
     </script>
     {% endif %}

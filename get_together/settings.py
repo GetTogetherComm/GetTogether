@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'events',
     'accounts',
     'resume',
+    'simple_ga',
 ]
 
 LOGIN_URL = 'login'
@@ -84,6 +85,7 @@ MIDDLEWARE = [
 
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'resume.middleware.ResumeMiddleware',
+    'simple_ga.middleware.GAEventMiddleware',
 ]
 
 ROOT_URLCONF = 'get_together.urls'
@@ -102,6 +104,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'django_settings_export.settings_export',
+                'simple_ga.context_processors.events',
              ],
         },
     },

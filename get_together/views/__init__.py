@@ -15,6 +15,8 @@ from events import location
 from accounts.decorators import setup_wanted
 from django.conf import settings
 
+import simple_ga as ga
+
 import datetime
 import simplejson
 import geocoder
@@ -45,6 +47,8 @@ def home(request, *args, **kwards):
 
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
+    if "distance" in request.GET and request.GET.get("distance"):
+        ga.add_event(request, 'homepage_search', category='search', label='distance', value=near_distance)
 
     city=None
     ll = None
@@ -53,6 +57,7 @@ def home(request, *args, **kwards):
         city = City.objects.get(id=request.GET.get("city"))
         context['city'] = city
         ll = [city.latitude, city.longitude]
+        ga.add_event(request, 'homepage_search', category='search', label='city', value=city.short_name)
     else :
         context['city_search'] = False
         try:
