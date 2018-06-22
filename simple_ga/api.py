@@ -2,7 +2,7 @@
 class GAFailure(Exception):
     pass
 
-def add_event(request, action, category=None, label=None, value=None, fail_silently=False):
+def add_event(request, action, category=None, label=None, value=1, fail_silently=False):
     """
     Attempt to add a message to the request using the 'messages' app.
     """

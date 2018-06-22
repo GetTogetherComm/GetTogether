@@ -171,7 +171,7 @@ def user_send_confirmation_email(request):
 def user_confirm_email(request, confirmation_key):
     if request.user.account.confirm_email(confirmation_key):
         messages.add_message(request, messages.SUCCESS, message=_('Your email address has been confirmed.'))
-        ga.add_event(request, action='email_confirmed', category='activity', label='user', value=str(request.user.profile))
+        ga.add_event(request, action='email_confirmed', category='activity', label=str(request.user.profile))
 
         return redirect('confirm-notifications')
     else:

@@ -147,7 +147,7 @@ def create_event(request, team_id):
                 new_event.save()
 
             messages.add_message(request, messages.SUCCESS, message=_('Your event has been scheduled! Next, find a place for your event.'))
-            ga.add_event(request, action='new_event', category='activity', label='event', value=new_event.get_full_url())
+            ga.add_event(request, action='new_event', category='activity', label=new_event.get_full_url())
 
             return redirect('add-place', new_event.id)
         else:

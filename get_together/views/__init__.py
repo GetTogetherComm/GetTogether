@@ -55,7 +55,7 @@ def home(request, *args, **kwards):
         city = City.objects.get(id=request.GET.get("city"))
         context['city'] = city
         ll = [city.latitude, city.longitude]
-        ga.add_event(request, 'homepage_search', category='search', label='city', value=city.short_name)
+        ga.add_event(request, 'homepage_search', category='search', label=city.short_name)
     else :
         context['city_search'] = False
         try:

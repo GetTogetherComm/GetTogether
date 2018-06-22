@@ -3,7 +3,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils.safestring import SafeData, mark_safe
 
 class GAEvent:
-    def __init__(self, action, category=None, label=None, value=None):
+    def __init__(self, action, category=None, label=None, value=1):
         self.action = action
         self.category = category
         self.label = label
@@ -11,7 +11,7 @@ class GAEvent:
 
     def gtag(self):
         return mark_safe(
-            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'event_value' : '%(value)s' });" % {
+            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'value' : '%(value)s' });" % {
                 'action': self.action,
                 'category': self.category,
                 'label': self.label,

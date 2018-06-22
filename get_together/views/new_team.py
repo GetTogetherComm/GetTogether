@@ -37,7 +37,7 @@ def start_new_team(request, *args, **kwargs):
             new_team.owner_profile = request.user.profile
             new_team.save()
             Member.objects.create(team=new_team, user=request.user.profile, role=Member.ADMIN)
-            ga.add_event(request, action='new_team', category='growth', label='team', value=new_team.name)
+            ga.add_event(request, action='new_team', category='growth', label=new_team.name)
             return redirect('define-team', team_id=new_team.pk)
         else:
             context = {
