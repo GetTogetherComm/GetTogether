@@ -30,7 +30,4 @@ def get_events(request):
     """
     if not hasattr(request, '_ga_events'):
         return []
-    next_event = request._ga_events.pop()
-    while next_event is not None:
-        yield next_event
-        next_event = request._ga_events.pop();
+    return request._ga_events

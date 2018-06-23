@@ -10,13 +10,15 @@ class GAEvent:
         self.value = value
 
     def gtag(self):
-        return mark_safe(
-            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'value' : '%(value)s' });" % {
+        return mark_safe(self._to_gtag_js())
+
+    def _to_gtag_js(self):
+        return "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'value' : '%(value)s' });" % {
                 'action': self.action,
                 'category': self.category,
                 'label': self.label,
                 'value': self.value,
-            })
+            }
 
 class EventEncoder(json.JSONEncoder):
     """
@@ -46,7 +48,8 @@ class EventDecoder(json.JSONDecoder):
         if isinstance(obj, list) and obj:
             return [self.process_events(item) for item in obj]
         if isinstance(obj, dict):
-            if getattr(obj, 'type', None) == 'GAEvent':
+            if obj.get('type', None) == 'GAEvent':
+                del obj['type']
                 return GAEvent(**obj)
             return {key: self.process_events(value)
                     for key, value in obj.items()}
@@ -67,7 +70,10 @@ class EventStorage:
         return len(self._ga_events)
 
     def __iter__(self):
-        return iter(self._ga_events)
+        next_event = True
+        while next_event is not None:
+            next_event = self.pop();
+            yield next_event
 
     def __contains__(self, item):
         return item in self._ga_events
