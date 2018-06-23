@@ -282,7 +282,7 @@ def send_talk_proposed_emails(proposal):
         'talk': proposal.talk,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] Talk proposal for %s' % proposal.event.name
+    email_subject = 'Talk proposal for: %s' % proposal.event.name
     email_body_text = render_to_string('get_together/emails/events/talk_proposed.txt', context)
     email_body_html = render_to_string('get_together/emails/events/talk_proposed.html', context)
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
@@ -344,7 +344,7 @@ def send_talk_acceptance_emails(proposal, reviewer):
         'reviewer': reviewer,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] About your talk proposal %s' % proposal.event.name
+    email_subject = 'About your talk proposal: %s' % proposal.event.name
     email_body_text = render_to_string('get_together/emails/events/talk_acceptance.txt', context)
     email_body_html = render_to_string('get_together/emails/events/talk_acceptance.html', context)
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')

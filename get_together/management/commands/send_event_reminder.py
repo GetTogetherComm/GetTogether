@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 'event': attendee.event,
             }
 
-            email_subject = '[GetTogether] Upcoming event reminder'
+            email_subject = 'Upcoming event reminder'
             email_body_text = render_to_string('get_together/emails/events/reminder.txt', context)
             email_body_html = render_to_string('get_together/emails/events/reminder.html', context)
             email_recipients = [attendee.user.user.email]

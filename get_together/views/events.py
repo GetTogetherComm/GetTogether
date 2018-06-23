@@ -365,7 +365,7 @@ def invite_attendee(email, event, sender):
         recipient = email
         email = recipient.email
 
-    email_subject = '[GetTogether] Invite to attend %s' % event.name
+    email_subject = 'Invitation to attend: %s' % event.name
     email_body_text = render_to_string('get_together/emails/events/attendee_invite.txt', context)
     email_body_html = render_to_string('get_together/emails/events/attendee_invite.html', context)
     email_recipients = [email]
@@ -396,7 +396,7 @@ def contact_attendee(attendee, body, sender):
         'body': body,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] Message about %s' % attendee.event.name
+    email_subject = 'A message about: %s' % attendee.event.name
     email_body_text = render_to_string('get_together/emails/events/attendee_contact.txt', context)
     email_body_html = render_to_string('get_together/emails/events/attendee_contact.html', context)
     email_recipients = [attendee.user.user.email]
@@ -487,7 +487,7 @@ def send_comment_emails(comment):
         'comment': comment,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] Comment on %s' % comment.event.name
+    email_subject = 'New comment on: %s' % comment.event.name
     email_body_text = render_to_string('get_together/emails/events/event_comment.txt', context)
     email_body_html = render_to_string('get_together/emails/events/event_comment.html', context)
     email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')

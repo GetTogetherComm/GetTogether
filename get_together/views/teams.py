@@ -250,7 +250,7 @@ def invite_member(email, team, sender):
         'team': team,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] Invite to join %s' % team
+    email_subject = 'Invitation to join: %s' % team
     email_body_text = render_to_string('get_together/emails/teams/member_invite.txt', context)
     email_body_html = render_to_string('get_together/emails/teams/member_invite.html', context)
     email_recipients = [email]
@@ -282,7 +282,7 @@ def contact_member(member, body, sender):
         'body': body,
         'site': Site.objects.get(id=1),
     }
-    email_subject = '[GetTogether] Message from %s' % member.team
+    email_subject = 'A message from: %s' % member.team
     email_body_text = render_to_string('get_together/emails/teams/member_contact.txt', context)
     email_body_html = render_to_string('get_together/emails/teams/member_contact.html', context)
     email_recipients = [member.user.user.email]

@@ -45,7 +45,7 @@ def send_new_members(team, new_members):
         'site': Site.objects.get(id=1)
     }
 
-    email_subject = '[GetTogether] New team members'
+    email_subject = 'New team members'
     email_body_text = render_to_string('get_together/emails/teams/new_team_members.txt', context)
     email_body_html = render_to_string('get_together/emails/teams/new_team_members.html', context)
     email_recipients = [admin.email for admin in admins]

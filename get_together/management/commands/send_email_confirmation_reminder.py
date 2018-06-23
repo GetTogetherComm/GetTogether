@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 'confirmation': confirmation_request,
                 'confirmation_url': confirmation_url,
             }
-            email_subject = '[GetTogether] Email confirmation reminder'
+            email_subject = 'Email confirmation reminder'
             email_body_text = render_to_string('get_together/emails/users/confirm_email.txt', context)
             email_body_html = render_to_string('get_together/emails/users/confirm_email.html', context)
             email_recipients = [account.user.email]
