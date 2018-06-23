@@ -272,6 +272,10 @@ class NewTeamEventForm(forms.ModelForm):
 class DeleteEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete event", required=True)
 
+class CancelEventForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, cancel this event", required=True)
+    reason = forms.CharField(label=_("Reason for cancellation"), widget=forms.widgets.Textarea)
+
 class EventInviteMemberForm(forms.Form):
     member = forms.ChoiceField(label=_(""))
 

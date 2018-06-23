@@ -57,10 +57,20 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 
 class Event(models.Model):
+    CANCELED = -1
+    PLANNING = 0
+    CONFIRMED = 1
+
+    STATUSES = [
+        (CANCELED, _("Canceled")),
+        (PLANNING, _("Planning")),
+        (CONFIRMED, _("Confirmed")),
+    ]
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='participating_events', null=True, blank=True, on_delete=models.SET_NULL)
     series = models.ForeignKey('EventSeries',related_name='instances',  null=True, blank=True, on_delete=models.SET_NULL)
+    status = models.SmallIntegerField(choices=STATUSES, default=CONFIRMED, db_index=True)
 
     start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
     end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
@@ -132,7 +142,10 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save() method.
-        update_event_searchable(self)
+        if self.status > self.CANCELED:
+            update_event_searchable(self)
+        else:
+            delete_event_searchable(self)
 
 def update_event_searchable(event):
     site = Site.objects.get(id=1)

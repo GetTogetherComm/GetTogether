@@ -30,6 +30,7 @@ from events.forms import (
     TeamEventForm,
     NewTeamEventForm,
     DeleteEventForm,
+    CancelEventForm,
     EventSeriesForm,
     DeleteEventSeriesForm,
     EventCommentForm,
@@ -54,7 +55,7 @@ import simplejson
 def events_list(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect('all-events')
-    events = Event.objects.filter(attendees=request.user.profile, end_time__gt=timezone.now()).order_by('start_time')
+    events = Event.objects.filter(attendees=request.user.profile, end_time__gt=timezone.now(), status__gt=Event.CANCELED).order_by('start_time')
     geo_ip = location.get_geoip(request)
     context = {
         'active': 'my',
@@ -430,6 +431,10 @@ def attend_event(request, event_id):
         messages.add_message(request, messages.WARNING, message=_("You can not change your status on an event that has ended."))
         return redirect(event.get_absolute_url())
 
+    if event.status == event.CANCELED:
+        messages.add_message(request, messages.WARNING, message=_("This event has been canceled."))
+        return redirect(event.get_absolute_url())
+
     try:
         attendee = Attendee.objects.get(event=event, user=request.user.profile)
     except:
@@ -686,6 +691,80 @@ def delete_event(request, event_id):
             return render(request, 'get_together/events/delete_event.html', context)
     else:
      return redirect('home')
+
+@login_required
+def cancel_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'GET':
+        form = CancelEventForm()
+
+        context = {
+            'team': event.team,
+            'event': event,
+            'cancel_form': form,
+        }
+        return render(request, 'get_together/events/cancel_event.html', context)
+    elif request.method == 'POST':
+        form = CancelEventForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            event.status = Event.CANCELED
+            event.save()
+            send_cancellation_emails(event, form.cleaned_data['reason'], request.user)
+            return redirect(event.get_absolute_url())
+        else:
+            context = {
+                'team': event.team,
+                'event': event,
+                'cancel_form': form,
+            }
+            return render(request, 'get_together/events/cancel_event.html', context)
+    else:
+        return redirect('home')
+
+def send_cancellation_emails(event, reason, canceled_by):
+    context = {
+        'event': event,
+        'reason': reason,
+        'by': canceled_by.profile,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = 'Event canceled: %s' % event.name
+    email_body_text = render_to_string('get_together/emails/events/event_canceled.txt', context)
+    email_body_html = render_to_string('get_together/emails/events/event_canceled.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    for attendee in event.attendees.filter(user__account__is_email_confirmed=True):
+        success = send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=[attendee.user.email],
+            subject=email_subject,
+            fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=canceled_by,
+            recipient=attendee.user,
+            email=attendee.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
+
+@login_required
+def restore_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
+    event.status = Event.CONFIRMED
+    event.save()
+    return redirect(event.get_absolute_url())
 
 @login_required
 def edit_series(request, series_id):

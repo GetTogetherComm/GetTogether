@@ -102,12 +102,13 @@
             {% if team.banner_img %}
             <div class="team-banner">
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
-                <h2 class="team-title">{{ event.name }}</h2>
+                <h2 class="team-title">{{ event.name }}{% if event.status == event.CANCELED %} (Canceled){% endif %}</h2>
             </div>
             {% else %}
             <h2>{{ event.name }}</h2>
             {% endif %}
             <p class="text-muted">Hosted by <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            {% if event.status != event.CANCELED %}
             {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
                 <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
             {% endif %}
@@ -134,6 +135,7 @@
                     </div>
                 {% endif %}
             {% endif %}
+            {% endif %}
             {% if can_edit_event %}
             <div class="btn-group dropdown">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -146,6 +148,12 @@
                         <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">Manage Attendees</a>
                 </div>
             </div>
+            {% endif %}
+
+            {% if event.status == event.CANCELED %}
+            <p class="alerts">
+                <div class="alert alert-danger">This event has been canceled.</div>
+            </p>
             {% endif %}
 
             <p>{{ event.summary|markdown }}</p>

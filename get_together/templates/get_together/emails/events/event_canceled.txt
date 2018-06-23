@@ -1,0 +1,13 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== Event Canceled: {{event.name|striptags}} ==
+
+Date: {{event.local_start_time}}
+
+Canceled by: {{by}}
+
+Reason: {{reason}}
+
+Click here to view this event: {{event.get_full_url}}
+
+{% endblock %}

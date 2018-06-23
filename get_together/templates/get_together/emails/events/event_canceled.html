@@ -1,0 +1,14 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Event canceled: {{event.name|striptags}}</h3>
+
+<p><b>Date:</b> {{event.local_start_time}}</p>
+
+<p><b>Canceled by:</b> {{by}}</p>
+
+<p><b>Reason:</b> {{reason}}</p>
+
+<a href="{{event.get_full_url}}" title="{{ event.name|striptags }} page.">View this event.</a>
+</p>
+{% endblock %}

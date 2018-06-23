@@ -15,6 +15,11 @@
 	<br />
 <button type="submit" class="btn btn-primary">Save</button>
 </form>
+{% if event.status == event.CANCELED %}
+<a href="{% url 'restore-event' event.id %}" class="btn btn-success">Restore</a>
+{% else %}
+<a href="{% url 'cancel-event' event.id %}" class="btn btn-secondary">Cancel</a>
+{% endif %}
 <a href="{% url 'delete-event' event.id %}" class="btn btn-danger">Delete</a>
 {% endblock %}
 

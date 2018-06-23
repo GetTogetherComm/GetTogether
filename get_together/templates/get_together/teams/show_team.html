@@ -65,8 +65,8 @@
             </h4>
             <div class="container">
                 {% for event in upcoming_events %}
-                <div class="row">
-                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
+                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
                     <div class="col">{{ event.place }}</div>
                     <div class="col">{{ event.local_start_time }}</div>
                 </div>
