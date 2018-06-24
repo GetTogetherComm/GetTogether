@@ -2,30 +2,14 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.conf import settings
 
-import datetime
-import simplejson
-import geocoder
 import math
-import traceback
 
+from events.location import get_geoip, get_client_ip
 from .new_user import *
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator
 DEFAULT_NEAR_DISTANCE = 100 # kilometeres
-
-
-def get_geoip(request):
-    client_ip = get_client_ip(request)
-    if client_ip == '127.0.0.1' or client_ip == 'localhost':
-        if settings.DEBUG:
-            client_ip = '8.8.8.8' # Try Google's server
-            print("Client is localhost, using 8.8.8.8 for geoip instead")
-        else:
-            raise Exception("Client is localhost")
-
-    g = geocoder.ip(client_ip)
-    return g
 
 
 def get_nearby_teams(request, near_distance=DEFAULT_NEAR_DISTANCE):
@@ -45,14 +29,6 @@ def get_nearby_teams(request, near_distance=DEFAULT_NEAR_DISTANCE):
         print("Error looking for local teams: ", e)
         return Team.objects.none()
 
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
 
 
 

@@ -2,14 +2,15 @@ from django.utils import timezone
 from django.conf import settings
 
 from .models.locale import City
+from .ipstack import get_ipstack_geocoder
 
 import math
 import pytz
-import datetime
 import geocoder
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator
+DEFAULT_NEAR_DISTANCE = 100 # kilometeres
 
 class TimezoneChoices():
 
@@ -29,12 +30,12 @@ def get_geoip(request):
     client_ip = get_client_ip(request)
     if client_ip == '127.0.0.1' or client_ip == 'localhost':
         if settings.DEBUG:
-            client_ip = getattr(settings, 'DEBUG_IP', '8.8.8.8') # Try Google's server
+            client_ip = getattr(settings, 'DEBUG_IP', '8.8.8.8') # Try Debug ip
             print("Client is localhost, using %s for geoip instead" % client_ip)
         else:
             raise Exception("Client is localhost")
 
-    g = geocoder.freegeoip(client_ip)
+    g = get_ipstack_geocoder(client_ip)
     return g
 
 def get_bounding_box(center, radius):
@@ -101,3 +102,5 @@ def get_nearest_city(ll, max_distance=100):
         else:
             return sorted(nearby_cities, key=lambda city: city_distance_from(ll, city))[0]
     return city
+
+
