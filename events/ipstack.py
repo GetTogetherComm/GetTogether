@@ -103,7 +103,7 @@ def get_ipstack_geocoder(ip):
     if ipstack_key is None:
         raise Exception("You must define IPSTACK_ACCESS_KEY in your setting to use ipstack.py geocoding")
     call_url = IPSTACK_URL.format(ip, ipstack_key)
-    print("Calling ipstack: {0}".format(call_url))
+
     session = requests.Session()
     response = session.get(call_url)
     if response.status_code != 200:
