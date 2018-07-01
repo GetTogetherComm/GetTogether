@@ -49,11 +49,9 @@ def show_team_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
     return show_team(request, team)
 
-
 def show_team_by_id(request, team_id):
     team = get_object_or_404(Team, id=team_id)
     return redirect('show-team-by-slug', team_slug=team.slug)
-
 
 def show_team(request, team):
     upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
@@ -69,6 +67,22 @@ def show_team(request, team):
     }
     return render(request, 'get_together/teams/show_team.html', context)
 
+def show_team_about_by_slug(request, team_slug):
+    team = get_object_or_404(Team, slug=team_slug)
+    if team.about_page:
+        return show_team_about(request, team)
+    else:
+        return redirect('show-team-by-slug', team_slug=team.slug)
+
+def show_team_about(request, team):
+    context = {
+        'team': team,
+        'is_member': request.user.profile in team.members.all(),
+        'member_list': Member.objects.filter(team=team).order_by('-role', 'joined_date'),
+        'can_create_event': request.user.profile.can_create_event(team),
+        'can_edit_team': request.user.profile.can_edit_team(team),
+    }
+    return render(request, 'get_together/teams/about_team.html', context)
 
 @login_required
 def create_team(request, *args, **kwargs):

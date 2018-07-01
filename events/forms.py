@@ -158,6 +158,7 @@ class TeamForm(forms.ModelForm):
         fields = [
             'name',
             'description',
+            'about_page',
             'category',
             'city',
             'web_url',
@@ -192,7 +193,7 @@ class NewTeamForm(forms.ModelForm):
 class TeamDefinitionForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ['category', 'web_url', 'description']
+        fields = ['category', 'web_url', 'description', 'about_page']
 
 class DeleteTeamForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, delete team", required=True)

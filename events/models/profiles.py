@@ -244,6 +244,8 @@ class Team(models.Model):
 
     description = models.TextField(blank=True, null=True)
 
+    about_page = models.TextField(blank=True, null=True)
+
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.CASCADE)
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE)
@@ -318,6 +320,9 @@ class Team(models.Model):
         else:
             self.slug = '%s-%s' % (new_slug, self.id)
         super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def get_absolute_url(self):
+        return reverse('show-team-by-slug', kwargs={'team_slug': self.slug})
 
 
 class Member(models.Model):

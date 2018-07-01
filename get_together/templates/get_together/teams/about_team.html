@@ -27,7 +27,7 @@
                 <h2 class="team-title">Welcome to {{ team.name }}</h2>
             </div>
             {% else %}
-                <h2>Welcome to {{ team.name }}</h2>
+                <h2>About {{ team.name }}</h2>
             {% endif %}
 
             {% if can_edit_team %}
@@ -57,48 +57,15 @@
 	            <td width="120px"><b>Website:</b></td><td><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></td>
             </tr>
             {% endif %}
-            {% if team.about_page %}
             <tr>
-                <td width="120px"><b>About:</b></td><td><a href="{% url 'show-team-about-by-slug' team.slug %}">Learn More about {{ team.name }}</a></td>
+	            <td width="120px"><b>Events:</b></td><td><a href="{% url 'show-team-by-slug' team.slug %}">Return to Events</a></td>
             </tr>
-            {% endif %}
             </table>
             <hr/>
-
-            <h4>Upcoming Events
-                <small><a href="{% url 'team-event-ical' team.id %}" class="fa fa-calendar" title="iCal"></a></small>
-            </h4>
             <div class="container">
-                {% for event in upcoming_events %}
-                <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
-                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
-                    <div class="col">{{ event.place }}</div>
-                    <div class="col">{{ event.local_start_time }}</div>
-                </div>
-                {% endfor %}
-                {% if can_create_event %}
-                <div class="row">
-                    <div class="col">
-                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="fa fa-calendar-plus-o"></i>  Plan a Get Together</a>
-                    </div>
-                </div>
-                {% endif %}
+                {{ team.about_page|markdown }}
             </div>
             <br/>
-
-            {% if recent_events %}
-            <h4>Recent Events</h4>
-            <div class="container">
-                {% for event in recent_events %}
-                <div class="row">
-                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
-                    <div class="col">{{ event.place }}</div>
-                    <div class="col">{{ event.local_start_time }}</div>
-                </div>
-                {% endfor %}
-            </div>
-            <br/>
-            {% endif %}
         </div>
 
         <div class="col-sm-3">
