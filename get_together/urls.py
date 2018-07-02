@@ -115,6 +115,7 @@ urlpatterns = [
     path('activity_pub/', include('events.activity_pub.urls')),
 
     path('<str:team_slug>/', views.show_team_by_slug, name='show-team-by-slug'),
+    path('<str:team_slug>/about/', views.show_team_about_by_slug, name='show-team-about-by-slug'),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
