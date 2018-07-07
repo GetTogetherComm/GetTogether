@@ -43,6 +43,7 @@ from events.forms import (
     SponsorForm,
 )
 from events import location
+from events.utils import verify_csrf
 
 from accounts.models import EmailRecord
 
@@ -421,6 +422,7 @@ def contact_attendee(attendee, body, sender):
     )
 
 
+@verify_csrf(token_key='csrftoken')
 def attend_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.user.is_anonymous:

@@ -124,13 +124,13 @@
                 {% endif %}
                 {% if not is_attending %}
                     <div class="btn-group">
-                      <a href="{% url 'attend-event' event.id %}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
+                      <a href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
                       <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Attendance options</span>
                       </button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe">Maybe</a>
-                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no">No</a>
+                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
+                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
                       </div>
                     </div>
                 {% endif %}
@@ -287,20 +287,20 @@
                               {% if attendee.status == attendee.YES %}
                                   <span class="badge badge-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe">Maybe</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no">No</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
                                   </div>
                               {% elif attendee.status == attendee.MAYBE %}
                                   <span class="badge badge-default dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes">Yes</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no">No</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">Yes</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
                                   </div>
                               {% elif attendee.status == attendee.NO %}
                                   <span class="badge badge-danger dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes">Yes</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe">Maybe</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">Yes</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
                                   </div>
                               {% endif %}
                           {% else %}
