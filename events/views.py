@@ -11,6 +11,7 @@ from .models.events import Event, EventComment, Place, PlaceSerializer, Attendee
 from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
 from .models.profiles import Team, UserProfile, Member, Sponsor, SponsorSerializer
 from .forms import EventCommentForm
+from .utils import verify_csrf
 
 import simplejson
 
@@ -104,7 +105,9 @@ def sponsor_list(request):
     return Response(serializer.data)
 
 
+@verify_csrf(token_key='csrftoken')
 def join_team(request, team_id):
+
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_('You must be logged in to join a team.'))
         return redirect('show-team', team_id=team_id)
@@ -116,6 +119,8 @@ def join_team(request, team_id):
     messages.add_message(request, messages.SUCCESS, message=_('Welcome to the team!'))
     return redirect('show-team', team_id=team_id)
 
+
+@verify_csrf(token_key='csrftoken')
 def leave_team(request, team_id):
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_('You must be logged in to leave a team.'))
