@@ -94,7 +94,7 @@
                     <div class="col media gt-profile">
                       <div class="media-body">
                         <h6 class="mt-2 mb-0">
-                          {% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ instance.get_absolute_url }}">{{instance.local_start_time.date}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}
+                          {% if instance.status == event.CANCELED %}<del>{% endif %}<a href="{{ instance.get_absolute_url }}">{{instance.local_start_time.date}}</a>{% if instance.status == event.CANCELED %}</del> (Canceled){% endif %}
                           <br/><small class="text-muted">{{ instance.name }}</small>
                       </div>
                     </div>
