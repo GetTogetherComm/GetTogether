@@ -228,7 +228,7 @@
                                           <span class="gt-profile-badges">{% for badge in node.author.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
                                           <a href="{% url 'show-profile' node.author.id %}" title="{{node.author}}'s profile">{{node.author}}</a>
                                       </div>
-                                      <span>{{ node.created_time }}</span>
+                                      <span>{{ node.local_created_time }}</span>
                                   </div>
                               </div>
                               <div class="row">

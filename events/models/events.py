@@ -106,6 +106,13 @@ class Event(models.Model):
         else:
             return settings.TIME_ZONE
 
+    def localize_datetime(self, val):
+        if val is not None:
+            event_tz = pytz.timezone(self.tz)
+            return timezone.make_naive(val.astimezone(event_tz), event_tz)
+        else:
+            return None
+
     @property
     def local_start_time(self, val=None):
         if val is not None:
@@ -289,6 +296,10 @@ class EventComment(MPTTModel):
     created_time = models.DateTimeField(default=timezone.now, db_index=True)
     status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
+
+    @property
+    def local_created_time(self):
+        return self.event.localize_datetime(self.created_time)
 
     def __str__(self):
         return '%s at %s' % (self.author, self.created_time)
