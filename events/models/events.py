@@ -174,7 +174,10 @@ def update_event_searchable(event):
 
     searchable.event_url = event_url
 
-    searchable.img_url = "%s://%s%s" % (schema, site.domain, event.team.card_img_url)
+    if event.team.card_img_url.startswith('http:') or event.team.card_img_url.startswith('https:'):
+        searchable.img_url = event.team.card_img_url
+    else:
+        searchable.img_url = "%s://%s%s" % (schema, site.domain, event.team.card_img_url)
 
     searchable.event_title = event.name
     searchable.group_name = event.team.name
