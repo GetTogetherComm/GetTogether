@@ -1,5 +1,5 @@
 DEBUG = True
-DEBUG_IP = '8.8.8.8'# For geoip lookin when running on localhost
+DEBUG_IP = '8.8.8.8'# For geoip lookup when running on localhost
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.gettogether.community']
 
 STATIC_ROOT = './static'
