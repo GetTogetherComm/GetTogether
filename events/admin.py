@@ -41,6 +41,7 @@ admin.site.register(SPR, SPRAdmin)
 
 class CityAdmin(admin.ModelAdmin):
     raw_id_fields = ('spr',)
+    list_display = ('name', 'spr', 'latitude', 'longitude')
     list_filter =('spr__country',)
     search_fields = ('name', 'spr__name')
 admin.site.register(City, CityAdmin)
