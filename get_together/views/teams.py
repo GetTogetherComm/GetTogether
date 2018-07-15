@@ -55,7 +55,7 @@ def show_team_by_id(request, team_id):
 
 def show_team(request, team):
     upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
-    recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
+    recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:3]
     context = {
         'team': team,
         'upcoming_events': upcoming_events,

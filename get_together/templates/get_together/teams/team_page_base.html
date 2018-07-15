@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="fluid-container">
+<div class="fluid-container container-primary">
     <div class="row">
         <div class="col-md-9">
             {% if can_edit_team %}
@@ -57,8 +57,8 @@
             </div>
         </div>
 
-        <div class="col-sm-3">
-            <div class="container">
+        <div class="col-md-3">
+            <div class="container container-secondary">
             <h4>Members</h4><hr/>
                 {% for member in member_list %}
                 <div class="row mb-3">

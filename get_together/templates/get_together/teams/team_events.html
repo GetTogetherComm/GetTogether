@@ -12,10 +12,10 @@
                 </div>
             </div>
             {% endif %}
-            <h4>Upcoming Events
-                <small><a href="{% url 'team-event-ical' team.id %}" class="fa fa-calendar" title="iCal"></a></small>
-            </h4>
-            <div class="container">
+            <div class="container container-secondary">
+                <h4>Upcoming Events
+                    <small><a href="{% url 'team-event-ical' team.id %}" class="fa fa-calendar" title="iCal"></a></small>
+                </h4>
                 {% for event in upcoming_events %}
                 <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
                     <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
@@ -27,8 +27,8 @@
             <br/>
 
             {% if recent_events %}
-            <h4>Past Events</h4>
-            <div class="container">
+            <div class="container container-secondary">
+                <h4>Past Events</h4>
                 {% for event in recent_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
