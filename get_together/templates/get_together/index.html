@@ -15,7 +15,6 @@
 {% if geoip_lookup or city_search %}
         <div class="row">
             <div class="col-12">
-            {% if city %}Searching within {{distance}} km of {{ city }}<br/>{% endif %}
             <h3>Nearby Events</h3>
             </div>
         </div>
@@ -49,7 +48,7 @@
             {% else %}
                 <div class="col-12 mb-3">
                     <div class="alert alert-info">
-                        There are no events within {{ distance }}km of you.
+                        There are no events within {{ distance }}km of {% if city %}{{ city }}{% else %}you{% endif %}.
                         <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">Create one now</a>
                         or
                         <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">View all events</a>
@@ -115,7 +114,7 @@
             {% else %}
                 <div class="col-12">
                     <div class="alert alert-info">
-                        There are no teams within {{ distance }}km of you.
+                        There are no teams within {{ distance }}km of {% if city %}{{ city }}{% else %}you{% endif %}.
                         <a class="btn btn-success btn-sm" href="{% url 'create-team' %}">Create one now</a>
                         or
                         <a class="btn btn-primary btn-sm" href="{% url 'all-teams' %}">View all teams</a>
