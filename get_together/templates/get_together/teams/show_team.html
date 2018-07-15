@@ -20,7 +20,7 @@
 {% block content %}
 <div class="fluid-container">
     <div class="row">
-        <div class="col-sm-9">
+        <div class="col-md-9">
             {% if team.banner_img %}
             <div class="team-banner">
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
@@ -41,28 +41,28 @@
             {% endif %}
             <hr/>
 
-            <table >
+            <div class="container">
             {% if team.description %}
-            <tr>
-                <td colspan="2"><p>{{ team.description|markdown }}</p></td>
-            </tr>
+            <div class="row">
+                <div class="col-md-9"><p>{{ team.description|markdown }}</p></div>
+            </div>
             {% endif %}
             {% if team.organization %}
-            <tr>
-	            <td width="120px"><b>Organization:</b></td><td><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></td>
-            </tr>
+            <div class="row">
+	            <div class="col-md-3"><b>Organization:</b></div><div class="col-md-6"><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></div>
+            </div>
             {% endif %}
             {% if team.web_url %}
-            <tr>
-	            <td width="120px"><b>Website:</b></td><td><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></td>
-            </tr>
+            <div class="row">
+	            <div class="col-md-3"><b>Website:</b></div><div class="col-md-6"><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></div>
+            </div>
             {% endif %}
             {% if team.about_page %}
-            <tr>
-                <td width="120px"><b>About:</b></td><td><a href="{% url 'show-team-about-by-slug' team.slug %}">Learn More about {{ team.name }}</a></td>
-            </tr>
+            <div class="row">
+                <div class="col-md-3"><b>About:</b></div><div class="col-md-6"><a href="{% url 'show-team-about-by-slug' team.slug %}">Learn More about {{ team.name }}</a></div>
+            </div>
             {% endif %}
-            </table>
+            </div>
             <hr/>
 
             <h4>Upcoming Events

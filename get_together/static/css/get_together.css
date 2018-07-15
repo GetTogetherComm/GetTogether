@@ -99,6 +99,7 @@ ul.errorlist li {
 .team-banner {
     position: relative;
     margin-bottom: 3px;
+    overflow: scroll;
 }
 
 .team-banner .team-title {
