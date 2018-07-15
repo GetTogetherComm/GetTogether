@@ -111,3 +111,34 @@ ul.errorlist li {
     font-weight: bold;
     text-shadow: 2px 2px #444;
 }
+
+.btn-default {
+  color: #fff;
+  background-color: #848484;
+  border-color: #757575;
+}
+
+.btn-default:hover {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn-default:focus, .btn-default.focus {
+  -webkit-box-shadow: 0 0 0 2px rgba(204, 204, 204, 0.5);
+          box-shadow: 0 0 0 2px rgba(204, 204, 204, 0.5);
+}
+
+.btn-default.disabled, .btn-default:disabled {
+  color: #e6e6e6;
+  background-color: #b3b3b3;
+  border-color: #adadad;
+}
+
+.btn-secondary:active, .btn-secondary.active,
+.show > .btn-secondary.dropdown-toggle {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  background-image: none;
+  border-color: #adadad;
+}

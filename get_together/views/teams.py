@@ -67,6 +67,22 @@ def show_team(request, team):
     }
     return render(request, 'get_together/teams/show_team.html', context)
 
+def show_team_events_by_slug(request, team_slug):
+    team = get_object_or_404(Team, slug=team_slug)
+    upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')
+    context = {
+        'team': team,
+        'upcoming_events': upcoming_events,
+        'recent_events': recent_events,
+        'is_member': request.user.profile in team.members.all(),
+        'member_list': Member.objects.filter(team=team).order_by('-role', 'joined_date'),
+        'can_create_event': request.user.profile.can_create_event(team),
+        'can_edit_team': request.user.profile.can_edit_team(team),
+    }
+    return render(request, 'get_together/teams/team_events.html', context)
+
+
 def show_team_about_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
     if team.about_page:

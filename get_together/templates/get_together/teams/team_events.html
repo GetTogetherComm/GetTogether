@@ -1,27 +1,17 @@
 {% extends "get_together/teams/team_page_base.html" %}
 {% load static markup tz %}
 
-{% block summary-button %}btn-default{% endblock %}
+{% block events-button %}btn-default{% endblock %}
+
 
 {% block page_content %}
-            {% if team.description %}
-            <div class="row">
-                <div class="col-md-9"><p>{{ team.description|markdown }}</p></div>
+            {% if can_create_event %}
+            <div class="row mt-3 mb-3">
+                <div class="col">
+                    <a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="fa fa-calendar-plus-o"></i>  Host a Get Together</a>
+                </div>
             </div>
             {% endif %}
-            {% if team.organization %}
-            <div class="row">
-	            <div class="col-md-3"><b>Organization:</b></div><div class="col-md-6"><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></div>
-            </div>
-            {% endif %}
-            {% if team.web_url %}
-            <div class="row">
-	            <div class="col-md-3"><b>Website:</b></div><div class="col-md-6"><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></div>
-            </div>
-            {% endif %}
-
-            <hr/>
-
             <h4>Upcoming Events
                 <small><a href="{% url 'team-event-ical' team.id %}" class="fa fa-calendar" title="iCal"></a></small>
             </h4>
@@ -33,18 +23,11 @@
                     <div class="col">{{ event.local_start_time }}</div>
                 </div>
                 {% endfor %}
-                {% if can_create_event %}
-                <div class="row">
-                    <div class="col">
-                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="fa fa-calendar-plus-o"></i>  Host a Get Together</a>
-                    </div>
-                </div>
-                {% endif %}
             </div>
             <br/>
 
             {% if recent_events %}
-            <h4>Recent Events</h4>
+            <h4>Past Events</h4>
             <div class="container">
                 {% for event in recent_events %}
                 <div class="row">
@@ -57,4 +40,3 @@
             <br/>
             {% endif %}
 {% endblock %}
-

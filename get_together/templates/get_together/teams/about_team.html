@@ -1,91 +1,12 @@
-{% extends "get_together/base.html" %}
+{% extends "get_together/teams/team_page_base.html" %}
 {% load static markup tz %}
 
-{% block add_to_title %} | {{team.name}}{% endblock %}
+{% block about-button %}btn-default{% endblock %}
 
-{% block styles %}
-    <style>
-.gt-profile {
-    position: relative;
-}
-.gt-profile .gt-profile-badges {
-    position: absolute;
-    top: 16px;
-    left: 6px;
-
-}
-    </style>
-{% endblock %}
-
-{% block content %}
-<div class="fluid-container">
-    <div class="row">
-        <div class="col-sm-9">
-            {% if team.banner_img %}
-            <div class="team-banner">
-                <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
-                <h2 class="team-title">Welcome to {{ team.name }}</h2>
-            </div>
-            {% else %}
-                <h2>About {{ team.name }}</h2>
-            {% endif %}
-
-            {% if can_edit_team %}
-            <a href="{% url 'edit-team' team.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Team</a>
-                <a href="{% url 'manage-members' team.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-users"></i> Manage Members</a>
-            {% endif %}
-            {% if is_member %}
-            {% if not team.owner_profile == request.user.profile %}<a href="{% url 'leave-team' team.id %}" class="btn btn-danger btn-sm">Leave Team</a>{% endif %}
-            {% else %}
-            <a href="{% url 'join-team' team.id %}" class="btn btn-success btn-sm">Join Team</a>
-            {% endif %}
-            <hr/>
-
-            <table >
-            {% if team.description %}
-            <tr>
-                <td colspan="2"><p>{{ team.description|markdown }}</p></td>
-            </tr>
-            {% endif %}
-            {% if team.organization %}
-            <tr>
-	            <td width="120px"><b>Organization:</b></td><td><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></td>
-            </tr>
-            {% endif %}
-            {% if team.web_url %}
-            <tr>
-	            <td width="120px"><b>Website:</b></td><td><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></td>
-            </tr>
-            {% endif %}
-            <tr>
-	            <td width="120px"><b>Events:</b></td><td><a href="{% url 'show-team-by-slug' team.slug %}">Return to Events</a></td>
-            </tr>
-            </table>
-            <hr/>
+{% block page_content %}
             <div class="container">
                 {{ team.about_page|markdown }}
             </div>
             <br/>
-        </div>
-
-        <div class="col-sm-3">
-            <div class="container">
-            <h4>Members</h4><hr/>
-                {% for member in member_list %}
-                <div class="row mb-3">
-                    <div class="col media gt-profile">
-                      <img class="mr-1 gt-profile-avatar" src="{{member.user.avatar_url}}" width="32px" height="32px">
-                      <span class="gt-profile-badges">{% for badge in member.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
-                      <div class="media-body">
-                          <h6 class="mt-0 mb-0"><a href="{% url 'show-profile' member.user.id %}" title="{{member.user}}'s profile">{{member.user}}</a></h6>
-                        {% if member.role > 0 %}<small class="text-muted">{{ member.role_name }}</small>{% endif %}
-                      </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
