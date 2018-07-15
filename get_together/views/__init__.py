@@ -106,13 +106,17 @@ def home(request, *args, **kwards):
             near_events = Searchable.objects.filter(latitude__gte=minlat, latitude__lte=maxlat, longitude__gte=minlng, longitude__lte=maxlng, end_time__gte=datetime.datetime.now())
             context['near_events'] = sorted(near_events, key=lambda searchable: location.searchable_distance_from(ll, searchable))
 
+#            # If there aren't any teams in the user's geoip area, show them the closest ones
+            if context['geoip_lookup'] and len(near_events) < 1:
+                context['closest_events'] = sorted(Searchable.objects.filter(end_time__gte=datetime.datetime.now()),
+                                                  key=lambda searchable: location.searchable_distance_from(ll, searchable))[:3]
+
             near_teams = Team.objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
             context['near_teams'] = sorted(near_teams, key=lambda team: location.team_distance_from(ll, team))
 
-#            # If there aren't any teams in the user's geoip area, direct them to start one
-            if context['geoip_lookup'] and len(near_teams) < 1 and len(near_events) < 1:
-                messages.add_message(request, messages.INFO, message=_('There are no teams or events yet in your area, be the first to start one!'))
-                return redirect('create-team')
+#            # If there aren't any teams in the user's geoip area, show them the closest ones
+            if context['geoip_lookup'] and len(near_teams) < 1:
+                context['closest_teams'] = sorted(Team.objects.all(), key=lambda team: location.team_distance_from(ll, team))[:3]
         except Exception as err:
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()
