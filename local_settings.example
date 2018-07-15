@@ -5,6 +5,25 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.gettogether.community']
 STATIC_ROOT = './static'
 MEDIA_ROOT = './media'
 
+# DATABASES = {
+#     'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'xxxxx',
+#        'USER': 'xxxxx',
+#        'PASSWORD': 'xxxxx',
+#        'HOST': 'localhost',
+#        'PORT': ''
+#    }
+#}
+
+# Configure outgoing email. Use console output in development environments
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'you.smtp.host.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'xxxxx'
+# EMAIL_HOST_PASSWORD = 'xxxxx'
+
 # SOCIAL_AUTH_GITHUB_KEY = 'xxxxx'
 # SOCIAL_AUTH_GITHUB_SECRET = 'xxxxx'
 
@@ -25,8 +44,6 @@ MEDIA_ROOT = './media'
 
 # If set, will include Google Analytics javascript in pages
 # GOOGLE_ANALYTICS_ID='U-000000'
-
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Free Geoip lookup from ipstack.com still requires an access token
 # IPSTACK_ACCESS_KEY = 'xxxxx'
