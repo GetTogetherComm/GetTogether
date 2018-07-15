@@ -1,0 +1,32 @@
+DEBUG = True
+DEBUG_IP = '8.8.8.8'# For geoip lookin when running on localhost
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.gettogether.community']
+
+STATIC_ROOT = './static'
+MEDIA_ROOT = './media'
+
+# SOCIAL_AUTH_GITHUB_KEY = 'xxxxx'
+# SOCIAL_AUTH_GITHUB_SECRET = 'xxxxx'
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'xxxxx'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'xxxxx'
+
+# SOCIAL_AUTH_FACEBOOK_KEY = 'xxxxx'
+# SOCIAL_AUTH_FACEBOOK_SECRET = 'xxxxx'
+
+# SOCIAL_AUTH_TWITTER_KEY = 'xxxxx'
+# SOCIAL_AUTH_TWITTER_SECRET = 'xxxxx'
+
+# SOCIAL_AUTH_LINKEDIN_KEY = 'xxxxx'
+# SOCIAL_AUTH_LINKEDIN_SECRET = 'xxxxx'
+
+# Needed to embed Google maps for event location
+# GOOGLE_MAPS_API_KEY = 'xxxxx'
+
+# If set, will include Google Analytics javascript in pages
+# GOOGLE_ANALYTICS_ID='U-000000'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Free Geoip lookup from ipstack.com still requires an access token
+# IPSTACK_ACCESS_KEY = 'xxxxx'
