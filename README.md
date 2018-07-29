@@ -81,8 +81,7 @@ You can import live event data into your "Searchable" table with this command:
 ## Getting Involved
 
 To contibute to Get Together, you can file issues here on GitHub, work on
-features you want it to have, or contact @mhall119 on IRC (Freenode), Telegram
-or Twitter to learn more.
+features you want it to have, or contact us on [Gitter](https://gitter.im/GetTogetherComm/Lobby) to learn more.
 
 Currently the project needs:
  * Designers
