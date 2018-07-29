@@ -22,6 +22,7 @@ from accounts.models import EmailRecord
 import datetime
 import simplejson
 
+
 # Create your views here.
 def show_org(request, org_slug):
     org = get_object_or_404(Organization, slug=org_slug)
@@ -67,6 +68,7 @@ def edit_org(request, org_slug):
     else:
      return redirect('home')
 
+
 def show_common_event(request, event_id, event_slug):
     event = get_object_or_404(CommonEvent, id=event_id)
     context = {
@@ -76,6 +78,7 @@ def show_common_event(request, event_id, event_slug):
         'can_edit_event': False,
     }
     return render(request, 'get_together/orgs/show_common_event.html', context)
+
 
 @login_required
 def create_common_event(request, org_slug):
@@ -106,6 +109,7 @@ def create_common_event(request, org_slug):
             return render(request, 'get_together/orgs/create_common_event.html', context)
     else:
      return redirect('home')
+
 
 @login_required
 def create_common_event_team_select(request, event_id):

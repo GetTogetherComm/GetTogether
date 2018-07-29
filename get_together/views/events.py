@@ -124,9 +124,12 @@ def create_event(request, team_id):
 
 
     if request.method == 'GET':
+        initial = {}
         if 'common' in request.GET and request.GET['common'] != '':
             new_event.parent = CommonEvent.objects.get(id=request.GET['common'])
-        form = NewTeamEventForm(instance=new_event, initial={'name': new_event.parent.name, 'summary': new_event.parent.summary})
+            initial['name'] = new_event.parent.name
+            initial['summary'] = new_event.parent.summary
+        form = NewTeamEventForm(instance=new_event, initial=initial)
 
         context = {
             'event': new_event,

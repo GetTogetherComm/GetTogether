@@ -320,6 +320,8 @@ class Team(models.Model):
     def card_img_url(self):
         if self.tile_img is not None and self.tile_img.name is not None:
             return self.tile_img.url
+        elif self.organization and self.organization.tile_img and self.organization.tile_img.url is not None:
+            return self.organization.tile_img.url
         elif self.category is not None:
             return self.category.img_url
         else:

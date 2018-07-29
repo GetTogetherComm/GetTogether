@@ -32,6 +32,11 @@
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
                 <h2 class="team-title">Welcome to {{ team.name }}</h2>
             </div>
+            {% elif team.organization and team.organization.banner_img %}
+            <div class="team-banner">
+                <img class="card-img-top" src="{{ team.organization.banner_img.url }}" alt="{{team.organization.name}}'s cover image" height="200px" width="825px">
+                <h2 class="team-title">Welcome to {{ team.name }}</h2>
+            </div>
             {% else %}
                 <h2>Welcome to {{ team.name }}</h2>
             {% endif %}

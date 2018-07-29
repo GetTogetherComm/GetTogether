@@ -8,8 +8,9 @@
             <center>
                 <h3>Pick a name and location for your new team</h3>
 
-                <form action="{% url "create-team" %}" method="post" class="form">
+                <form action="{% url "create-team" %}" method="post" enctype="multipart/form-data" class="form">
                 {% csrf_token %}
+                {% if team.organization %}<input type="hidden" name="organization" value="{{team.organization.id}}" />{% endif %}
                 <p>{% include "events/new_team_form.html" %}</p>
                 <p><button type="submit" class="btn btn-primary">Continue</button></p>
                 </form>

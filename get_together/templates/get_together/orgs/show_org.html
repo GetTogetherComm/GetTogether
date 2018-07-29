@@ -86,10 +86,16 @@
                     <div class="col media gt-profile">
                       <div class="media-body">
                           <h6 class="mt-0 mb-0"><a href="{% url 'show-team-by-slug' member.slug %}" title="{{member.name}}">{{member.name}}</a></h6>
+                          <small class="text-muted">{{member.member_set.count}} Members, {{member.event_set.count}} Events</small>
                       </div>
                     </div>
                 </div>
                 {% endfor %}
+                <div class="row mb-3">
+                    <div class="col">
+                      <center><a class="btn btn-success btn-sm" href="{% url 'create-team' %}?organization={{org.id}}">Add Team</a></center>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
