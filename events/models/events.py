@@ -313,6 +313,7 @@ class CommonEvent(models.Model):
     end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
     summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
 
+    continent = models.ForeignKey(Continent, null=True, blank=True, on_delete=models.SET_NULL)
     country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.SET_NULL)
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.SET_NULL)
@@ -339,6 +340,17 @@ class CommonEvent(models.Model):
             schema = 'https'
         return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
+    def location(self):
+        if not self.continent:
+            return _('Global')
+        elif not self.country:
+            return self.continent
+        elif not self.spr:
+            return self.country
+        elif not self.city:
+            return self.spr
+        else:
+            return self.city
     @property
     def slug(self):
         return slugify(self.name)

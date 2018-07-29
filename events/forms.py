@@ -371,6 +371,15 @@ class SearchForm(forms.Form):
             'city': Lookup(source=City, label='name'),
         }
 
+class OrganizationForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = [
+            'name',
+            'description',
+            'cover_img',
+        ]
+
 class NewCommonEventForm(forms.ModelForm):
     class Meta:
         model = CommonEvent
@@ -380,6 +389,7 @@ class NewCommonEventForm(forms.ModelForm):
             'end_time',
             'summary',
 
+            'continent',
             'country',
             'spr',
             'city',
@@ -388,8 +398,6 @@ class NewCommonEventForm(forms.ModelForm):
             'web_url',
             'announce_url',
 
-            'category',
-            'tags',
         ]
         widgets ={
             'country': Lookup(source=Country, label='name'),

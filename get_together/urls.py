@@ -100,6 +100,7 @@ urlpatterns = [
     path('series/<int:series_id>/<str:series_slug>/', views.show_series, name='show-series'),
 
     path('org/<str:org_slug>/', views.show_org, name='show-org'),
+    path('org/<str:org_slug>/+edit/', views.edit_org, name='edit-org'),
     path('org/<str:org_slug>/+create-event/', views.create_common_event, name='create-common-event'),
     path('common/<int:event_id>/+create-event/', views.create_common_event_team_select, name='create-common-event-team-select'),
     path('common/<int:event_id>/<str:event_slug>/', views.show_common_event, name='show-common-event'),

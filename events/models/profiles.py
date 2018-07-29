@@ -132,6 +132,18 @@ class UserProfile(models.Model):
             return True
         return False
 
+    def can_edit_org(self, org):
+        try:
+            if self.user.is_superuser:
+                return True
+        except:
+            return False
+        if not self.user_id:
+            return False
+        if org.owner_profile == self:
+            return True
+        return False
+
     def can_create_common_event(self, org):
         try:
             if self.user.is_superuser:
@@ -195,6 +207,35 @@ class Organization(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
     owner_profile = models.ForeignKey(UserProfile, related_name='owned_orgs', blank=False, null=True, on_delete=models.SET_NULL)
+
+    cover_img = models.ImageField(verbose_name=_('Cover Image'), upload_to='org_covers', null=True, blank=True)
+    tile_img = ImageSpecField(source='cover_img',
+                                processors=[
+                                    Adjust(contrast=0.8, color=1),
+                                    ResizeToFill(338, 200),
+                                ],
+                                format='PNG')
+
+    banner_img = ImageSpecField(source='cover_img',
+                                processors=[
+                                    Adjust(contrast=0.8, color=1),
+                                    ResizeToFill(825, 200),
+                                ],
+                                format='PNG')
+
+    description = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        new_slug = slugify(self.name)
+        slug_matches = list(Organization.objects.filter(slug=new_slug))
+        if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].id == self.id):
+            self.slug = new_slug
+        else:
+            self.slug = '%s-%s' % (new_slug, self.id)
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+
+    def get_absolute_url(self):
+        return reverse('show-org', kwargs={'org_slug': self.slug})
 
     def __str__(self):
         return u'%s' % (self.name)

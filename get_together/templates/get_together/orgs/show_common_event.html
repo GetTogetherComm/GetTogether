@@ -78,29 +78,45 @@
 {% endif %}{% endblock %}
 
 {% block content %}
-<div class="fluid-container">
+<div class="fluid-container container-primary">
     <div class="row">
         <div class="col-md-9">
-            <h2>{{ common_event.name }}
-                {% if can_edit_event %}
-                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                {% endif %}
+            {% if can_edit_event %}
+            <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm">Edit</a>
+            {% endif %}
+            {% if common_event.organization.banner_img %}
+            <div class="team-banner mb-3">
+                <img class="card-img-top" src="{{ common_event.organization.banner_img.url }}" alt="{{common_event.organization.name}}'s cover image" height="200px" width="825px">
+                <h2 class="team-title">{{ common_event.name }}</h2>
+            </div>
+            {% else %}
+            <h2>{{ common_event.name }}</h2>
+            {% endif %}
+
+            <div class="mb-2">
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
                     <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
                 {% endif %}
                 {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
                     <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fa fa-facebook-official"></i> Share</a>
                 {% endif %}
-            </h2><p class="text-muted">Organized by <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p><hr/>
+            </div>
 
-            <p>{{ common_event.summary|markdown }}</p>
 
+            <div class="container container-secondary mb-3">
+            <p class="text-muted">Organized by <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p>
+            {% if common_event.summary %}
+                <p>{{ common_event.summary|markdown }}</p>
+            {% endif %}
+            </div>
+
+            <div class="container container-secondary mb-3">
             <table class="table">
             <tr>
-	            <td><b>Time:</b></td><td>{{ common_event.start_time }} - {{ common_event.end_time }}</td>
+	            <td><b>Date:</b></td><td>{{ common_event.start_time }} - {{ common_event.end_time }}</td>
             </tr>
             <tr>
-	            <td><b>Category:</b></td><td>{{ common_event.category.name }}</td>
+	            <td><b>Location:</b></td><td>{{ common_event.location }}</td>
             </tr>
             {% if common_event.place %}
             <tr>
@@ -120,13 +136,14 @@
             </tr>
             {% endif %}
             </table>
-            <br/>
-            <div class="container">
+            </div>
+
+            <div class="container container-secondary mb-3">
                 <div class="row">
-                    <div class="col"><h4>Participating Teams</h4><hr/></div>
+                    <div class="col"><h4>Participating Teams</h4></div>
                 </div>
                 <div class="row">
-                {% for event in common_event.participating_events.all %}
+                {% for event in participating_events %}
                     <div class="col-md-4">
                       <div class="card mb-4 box-shadow">
                         <div class="card-banner">
@@ -152,10 +169,9 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">Host an event</a>
+                        <a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">Host an event</a>
                     </div>
                 </div>
-                    <br />
             </div>
         </div>
 

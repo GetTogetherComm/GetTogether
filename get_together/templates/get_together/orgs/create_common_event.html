@@ -31,6 +31,8 @@ $(document).ready(function(){
 
     $("#id_end_time_0").datepicker();
 
+    $("#id_continent").selectmenu();
+
     $("#country_select").lookup({
         search: function(searchText, callback) {
         if (searchText.length < 3) return callback(searchText, []);

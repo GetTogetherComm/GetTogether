@@ -18,25 +18,45 @@
 {% endblock %}
 
 {% block content %}
-<div class="fluid-container">
+<div class="fluid-container container-primary">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Welcome to {{ org.name }}
-            </h2><hr/>
+            {% if can_edit_org %}
+            <div id="admin_buttons" class="mb-2">
+            <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
+                <a href="#" class="btn btn-secondary btn-sm disabled"><i class="fa fa-users"></i> Manage Members</a>
+            </div>
+            {% endif %}
+            {% if org.banner_img %}
+            <div class="team-banner mb-3">
+                <img class="card-img-top" src="{{ org.banner_img.url }}" alt="{{org.name}}'s cover image" height="200px" width="825px">
+                <h2 class="team-title">Welcome to {{ org.name }}</h2>
+            </div>
+            {% else %}
+                <h2>Welcome to {{ org.name }}</h2>
+            {% endif %}
 
+            {% if org.description %}
+            <div class="container container-secondary mb-3">
+            <div class="row">
+                <div class="col-md-9"><p>{{ org.description|markdown }}</p></div>
+            </div>
+            </div>
+            {% endif %}
+
+            <div class="container container-secondary mb-3">
             <h4>Upcoming Events</h4>
-            <div class="container">
                 {% for event in upcoming_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
-                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.location }}</div>
                     <div class="col">{{ event.start_time }}</div>
                 </div>
                 {% endfor %}
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary">Plan a Get Together</a>
+                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary"><i class="fa fa-calendar-plus-o"></i> Create an Event</a>
                     </div>
                 </div>
                 {% endif %}
@@ -44,12 +64,12 @@
             <br/>
 
             {% if recent_events %}
+            <div class="container container-secondary mb-3">
             <h4>Recent Events</h4>
-            <div class="container">
                 {% for event in recent_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
-                    <div class="col">{{ event.place }}</div>
+                    <div class="col">{{ event.location }}</div>
                     <div class="col">{{ event.start_time }}</div>
                 </div>
                 {% endfor %}
@@ -59,8 +79,8 @@
         </div>
 
         <div class="col-sm-3">
-            <div class="container">
-            <h4>Members</h4><hr/>
+            <div class="container container-secondary">
+            <h4>Member Teams</h4><hr/>
                 {% for member in member_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">

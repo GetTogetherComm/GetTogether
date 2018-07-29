@@ -24,6 +24,7 @@ import math
 import traceback
 
 from .teams import *
+from .orgs import *
 from .events import *
 from .places import *
 from .user import *
