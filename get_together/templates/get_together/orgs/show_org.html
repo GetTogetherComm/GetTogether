@@ -91,11 +91,13 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% if can_edit_org %}
                 <div class="row mb-3">
                     <div class="col">
                       <center><a class="btn btn-success btn-sm" href="{% url 'create-team' %}?organization={{org.id}}">Add Team</a></center>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

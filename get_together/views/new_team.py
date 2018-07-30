@@ -22,7 +22,9 @@ def start_new_team(request):
     new_team.owner_profile = request.user.profile
     if request.method == 'GET':
         if 'organization' in request.GET and request.GET['organization'] != '':
-            new_team.organization = Organization.objects.get(id=request.GET['organization'])
+            org = Organization.objects.get(id=request.GET['organization'])
+            if request.user.profile.can_edit_org(org):
+                new_team.organization = org
         form = NewTeamForm(instance=new_team)
         g = location.get_geoip(request)
         if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
@@ -37,7 +39,9 @@ def start_new_team(request):
         return render(request, 'get_together/new_team/start_new_team.html', context)
     elif request.method == 'POST':
         if 'organization' in request.POST and request.POST['organization'] != '':
-            new_team.organization = Organization.objects.get(id=request.POST['organization'])
+            org = Organization.objects.get(id=request.POST['organization'])
+            if request.user.profile.can_edit_org(org):
+                new_team.organization = org
         form = NewTeamForm(request.POST, request.FILES, instance=new_team)
         if form.is_valid():
             new_team = form.save()
