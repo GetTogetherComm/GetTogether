@@ -12,7 +12,7 @@
 
     {% block meta %}{% endblock %}
 
-    {% if settings.GOOGLE_ANALYTICS_ID %}
+    {% if settings.GOOGLE_ANALYTICS_ID and not request.user.profile.do_not_track %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{settings.GOOGLE_ANALYTICS_ID}}"></script>
     <script>
@@ -28,7 +28,12 @@
       {% endfor %}
       {% block extra_google_analytics %}{% endblock %}
     </script>
+    {% else %}
+      {% comment %}delete any analytics events recorded in this session" {% endcomment %}
+      {% for event in ga_events %}{% endfor %}
     {% endif %}
+
+    {% block scripts %}{% endblock %}
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
@@ -37,9 +42,7 @@
     <link href="{% static 'css/get_together.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- style overrides -->
-    {%block styles %}{% endblock %}
-    <style>
-</style>
+    {% block styles %}{% endblock %}
 
   </head>
   <body>

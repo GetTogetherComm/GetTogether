@@ -39,6 +39,7 @@ class UserProfile(models.Model):
     facebook = models.URLField(verbose_name=_('Facebook URL'), max_length=32, blank=True, null=True)
 
     send_notifications = models.BooleanField(verbose_name=_('Send notification emails'), default=True)
+    do_not_track = models.BooleanField(verbose_name=_("Do not track"), default=False)
 
     secret_key = models.UUIDField(default=uuid.uuid4, editable=True)
 

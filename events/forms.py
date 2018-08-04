@@ -333,9 +333,10 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['avatar', 'realname', 'city', 'tz', 'send_notifications']
+        fields = ['avatar', 'realname', 'city', 'tz', 'send_notifications', 'do_not_track']
         labels = {
             'send_notifications': _('Send me notification emails'),
+            'do_not_track': _('Do not track'),
         }
         widgets = {
             'city': Lookup(source=City),
