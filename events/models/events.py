@@ -91,7 +91,7 @@ class Event(models.Model):
 
     attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
 
-    sponsors = models.ManyToManyField('Sponsor', related_name='events')
+    sponsors = models.ManyToManyField('Sponsor', related_name='events', blank=True)
 
     @property
     def is_over(self):

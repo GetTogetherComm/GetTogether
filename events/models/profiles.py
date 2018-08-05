@@ -310,10 +310,10 @@ class Team(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
-    sponsors = models.ManyToManyField('Sponsor', related_name='teams')
+    sponsors = models.ManyToManyField('Sponsor', related_name='teams', blank=True)
 
     is_premium = models.BooleanField(default=settings.EVENTS_TEAMS_DEFAULT_PREMIUM)
-    premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, on_delete=models.SET_NULL)
+    premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, blank=True, on_delete=models.SET_NULL)
     premium_started = models.DateTimeField(blank=True, null=True)
     premium_expires = models.DateTimeField(blank=True, null=True)
 

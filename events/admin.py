@@ -48,12 +48,12 @@ admin.site.register(City, CityAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ('city',)
-    list_display = ('user', 'realname', 'city', 'web_url', 'send_notifications')
-    list_filter = ('send_notifications', 'user__last_login')
+    list_display = ('user', 'realname', 'city', 'web_url', 'send_notifications', 'do_not_track')
+    list_filter = ('send_notifications', 'do_not_track', 'user__last_login')
 admin.site.register(UserProfile, ProfileAdmin)
 
 class OrgAdmin(admin.ModelAdmin):
-    list_display = ('name', 'site')
+    list_display = ('name', 'slug', 'site')
 admin.site.register(Organization, OrgAdmin)
 
 class SponsorAdmin(admin.ModelAdmin):
@@ -86,6 +86,7 @@ admin.site.register(Place, PlaceAdmin)
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by', 'sponsors')
     list_display = ('__str__', 'attendee_count', 'start_time', 'created_by', 'created_time')
+    list_filter = ('created_time', ('created_by',admin.RelatedOnlyFieldListFilter), ('team',admin.RelatedOnlyFieldListFilter))
     ordering = ('-start_time',)
     def attendee_count(self, event):
         return event.attendees.all().count()
