@@ -11,9 +11,9 @@ from django.template.loader import get_template, render_to_string
 from django.conf import settings
 
 
-from events.models.profiles import Organization, Team, UserProfile, Member
+from events.models.profiles import Organization, Team, UserProfile, Member, OrgTeamRequest
 from events.models.events import Event, CommonEvent, Place, Attendee
-from events.forms import OrganizationForm, NewCommonEventForm
+from events.forms import OrganizationForm, NewCommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm
 from events import location
 from events.utils import slugify
 
@@ -65,6 +65,222 @@ def edit_org(request, org_slug):
                 'org_form': form,
             }
             return render(request, 'get_together/orgs/edit_org.html', context)
+    else:
+     return redirect('home')
+
+
+@login_required
+def request_to_join_org(request, org_slug):
+    org = get_object_or_404(Organization, slug=org_slug)
+    if not len(request.user.profile.administering) > 0:
+        messages.add_message(request, messages.WARNING, message=_('You are not the administrator for any teams.'))
+        return redirect('show-org', org_slug=org.slug)
+
+    req = OrgTeamRequest(organization=org, request_origin=OrgTeamRequest.TEAM, requested_by=request.user.profile)
+    if request.method == 'GET':
+        form = RequestToJoinOrgForm(instance=req)
+        form.fields['team'].queryset = Team.objects.filter(member__user=request.user.profile, member__role=Member.ADMIN).order_by('name')
+
+        context = {
+            'org': org,
+            'request_form': form,
+        }
+        return render(request, 'get_together/orgs/request_to_join.html', context)
+    elif request.method == 'POST':
+        form = RequestToJoinOrgForm(request.POST, instance=req)
+        form.fields['team'].queryset = Team.objects.filter(member__user=request.user.profile, member__role=Member.ADMIN).order_by('name')
+        if form.is_valid():
+            req = form.save()
+            send_org_request(req)
+            messages.add_message(request, messages.SUCCESS, message=_('Your request has been send to the organization administrators.'))
+            return redirect('show-org', org_slug=org.slug)
+        else:
+            context = {
+                'org': org,
+                'request_form': form,
+            }
+            return render(request, 'get_together/orgs/request_to_join.html', context)
+    else:
+     return redirect('home')
+
+
+def send_org_request(req):
+    context = {
+        'sender': req.requested_by,
+        'req': req,
+        'org': req.organization,
+        'team': req.team,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = 'Request to join: %s' % req.team.name
+    email_body_text = render_to_string('get_together/emails/orgs/request_to_org.txt', context)
+    email_body_html = render_to_string('get_together/emails/orgs/request_to_org.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    admin = req.organization.owner_profile
+    success = send_mail(
+        from_email=email_from,
+        html_message=email_body_html,
+        message=email_body_text,
+        recipient_list=[admin.user.email],
+        subject=email_subject,
+        fail_silently=True,
+    )
+    EmailRecord.objects.create(
+        sender=req.requested_by.user,
+        recipient=admin.user,
+        email=admin.user.email,
+        subject=email_subject,
+        body=email_body_text,
+        ok=success
+    )
+
+
+@login_required
+def invite_to_join_org(request, team_id):
+    team = get_object_or_404(Team, id=team_id)
+    if not request.user.profile.owned_orgs.count() > 0:
+        messages.add_message(request, messages.WARNING, message=_('You are not the administrator for any organizations.'))
+        return redirect('show-team', team_id=team_id)
+
+    invite = OrgTeamRequest(team=team, request_origin=OrgTeamRequest.ORG, requested_by=request.user.profile)
+    if request.method == 'GET':
+        form = InviteToJoinOrgForm(instance=invite)
+        form.fields['organization'].queryset = Organization.objects.filter(owner_profile=request.user.profile).order_by('name')
+
+        context = {
+            'team': team,
+            'invite_form': form,
+        }
+        return render(request, 'get_together/orgs/invite_to_join.html', context)
+    elif request.method == 'POST':
+        form = InviteToJoinOrgForm(request.POST, instance=invite)
+        if form.is_valid():
+            invite = form.save()
+            send_org_invite(invite)
+            messages.add_message(request, messages.SUCCESS, message=_('Your request has been send to the team administrators.'))
+            return redirect('show-team', team_id=team_id)
+        else:
+            context = {
+                'team': team,
+                'invite_form': form,
+            }
+            return render(request, 'get_together/orgs/invite_to_join.html', context)
+    else:
+     return redirect('home')
+
+
+def send_org_invite(req):
+    context = {
+        'sender': req.requested_by,
+        'req': req,
+        'org': req.organization,
+        'team': req.team,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = 'Invitation to join: %s' % req.organization.name
+    email_body_text = render_to_string('get_together/emails/orgs/invite_to_org.txt', context)
+    email_body_html = render_to_string('get_together/emails/orgs/invite_to_org.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    for admin in Member.objects.filter(team=req.team, role=Member.ADMIN, user__user__account__is_email_confirmed=True):
+        success = send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=[admin.user.user.email],
+            subject=email_subject,
+            fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=req.requested_by.user,
+            recipient=admin.user.user,
+            email=admin.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
+
+
+@login_required
+def confirm_request_to_join_org(request, request_key):
+    req = get_object_or_404(OrgTeamRequest, request_key=request_key)
+    if req.request_origin == req.ORG:
+        return accept_invite_to_join_org(request, req)
+    else:
+        return accept_request_to_join_org(request, req)
+
+@login_required
+def accept_request_to_join_org(request, req):
+    if not request.user.profile.can_edit_org(req.organization):
+        messages.add_message(request, messages.WARNING, message=_('You do not have permission to accept new teams to this organization.'))
+        return redirect('show-org', org_slug=req.organization.slug)
+
+    if request.method == 'GET':
+        form = AcceptRequestToJoinOrgForm()
+
+        context = {
+            'invite': req,
+            'org': req.organization,
+            'team': req.team,
+            'request_form': form,
+        }
+        return render(request, 'get_together/orgs/accept_request.html', context)
+    elif request.method == 'POST':
+        form = AcceptRequestToJoinOrgForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            req.accepted_by = request.user.profile
+            req.joined_date = datetime.datetime.now()
+            req.save()
+            req.team.organization = req.organization
+            req.team.save()
+            messages.add_message(request, messages.SUCCESS, message=_('%s has been added to your organization.' % req.team.name))
+            return redirect('show-org', org_slug=req.organization.slug)
+        else:
+            context = {
+                'invite': req,
+                'org': req.organization,
+                'team': req.team,
+                'request_form': form,
+            }
+            return render(request, 'get_together/orgs/accept_request.html', context)
+    else:
+     return redirect('home')
+
+@login_required
+def accept_invite_to_join_org(request, req):
+    if not request.user.profile.can_edit_team(req.team):
+        messages.add_message(request, messages.WARNING, message=_('You do not have permission to add this team to an orgnization.'))
+        return redirect('show-team-by-slug', team_slug=req.team.slug)
+
+    if request.method == 'GET':
+        form = AcceptInviteToJoinOrgForm()
+
+        context = {
+            'invite': req,
+            'org': req.organization,
+            'team': req.team,
+            'invite_form': form,
+        }
+        return render(request, 'get_together/orgs/accept_invite.html', context)
+    elif request.method == 'POST':
+        form = AcceptInviteToJoinOrgForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            req.accepted_by = request.user.profile
+            req.joined_date = datetime.datetime.now()
+            req.save()
+            req.team.organization = req.organization
+            req.team.save()
+            messages.add_message(request, messages.SUCCESS, message=_('You team has been added to %s.' % req.organization.name))
+            return redirect('show-team-by-slug', team_slug=req.team.slug)
+        else:
+            context = {
+                'invite': req,
+                'org': req.organization,
+                'team': req.team,
+                'invite_form': form,
+            }
+            return render(request, 'get_together/orgs/accept_invite.html', context)
     else:
      return redirect('home')
 

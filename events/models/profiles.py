@@ -83,13 +83,22 @@ class UserProfile(models.Model):
         local = self.timezone.localize(dt)
         return local.astimezone(pytz.utc)
 
+
+    @property
+    def is_a_team_admin(self):
+        return Member.objects.filter(user=self, role=Member.ADMIN).count() > 0
+
     @property
     def administering(self):
-        return [member.team for member in Member.objects.filter(user=self, role=Member.ADMIN)]
+        return [member.team for member in Member.objects.filter(user=self, role=Member.ADMIN).order_by('team__name')]
+
+    @property
+    def is_a_team_moderator(self):
+        return Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR)).count() > 0
 
     @property
     def moderating(self):
-        return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR))]
+        return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR)).order_by('team__name')]
 
     def can_create_event(self, team):
         try:
@@ -240,6 +249,32 @@ class Organization(models.Model):
 
     def __str__(self):
         return u'%s' % (self.name)
+
+class OrgTeamRequest(models.Model):
+    ORG=0
+    TEAM=1
+    ORIGINS = [
+        (ORG, _("Organization")),
+        (TEAM, _("Team")),
+    ]
+
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE)
+    request_origin = models.SmallIntegerField(_("Request from"), choices=ORIGINS, default=ORG, db_index=True)
+    request_key = models.UUIDField(default=uuid.uuid4, editable=True)
+
+    requested_by = models.ForeignKey(UserProfile, related_name='requested_org_memberships', on_delete=models.SET_NULL, null=True, blank=False)
+    requested_date = models.DateTimeField(default=datetime.datetime.now)
+    accepted_by = models.ForeignKey(UserProfile, related_name='accepted_org_memberships', on_delete=models.SET_NULL, null=True, blank=True)
+    joined_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def origin_name(self):
+        return OrgTeamRequest.ORIGINS[self.request_origin][1]
+
+    def __str__(self):
+        return '%s in %s' % (self.team, self.organization)
+
 
 class Sponsor(models.Model):
     name = models.CharField(_("Sponsor Name"), max_length=256, null=False, blank=False)

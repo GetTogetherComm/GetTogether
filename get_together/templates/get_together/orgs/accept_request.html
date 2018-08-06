@@ -1,0 +1,15 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+{% block content %}
+<h2><b>{{team.name}}</b> has asked to join <b>{{org.name}}</b></h2>
+<p>Would you like to add this team?</p>
+<form action="{% url "confirm-request-to-join-org" invite.request_key %}" method="post">
+{% csrf_token %}
+{% include "events/org_request_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Accept</button>
+<a class="btn btn-secondary" href="{% url 'show-org' org.slug %}">Decline</a>
+</form>
+{% endblock %}
+
+

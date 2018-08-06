@@ -1,0 +1,12 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>{{team.name|striptags}} has requested to join your organization.</h3>
+
+<p>{{ sender }} has requested to have their team, <b>{{team.name}}</b>, added to your Get Together organization: <b>{{org.name}}</b>.
+</p>
+
+<br>
+<a href="https://{{site.domain}}{% url 'confirm-request-to-join-org' req.request_key %}" title="{{ team.name|striptags }} request.">Click here to view and confirm this request.</a>
+</p>
+{% endblock %}

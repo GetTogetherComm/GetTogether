@@ -1,0 +1,9 @@
+{% extends 'get_together/emails/base.txt' %}
+{% block content %}
+== You've been invited to join {{org.name}} ==
+
+{{ sender }} has invited your team, {{team.name}}, to join their Get Together organization: {{org.name}}.
+
+Click here to view and confirm this invitation: https://{{site.domain}}{% url 'confirm-request-to-join-org' req.request_key %}
+
+{% endblock %}

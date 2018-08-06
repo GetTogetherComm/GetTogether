@@ -1,0 +1,14 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+{% block content %}
+<h2>Invite: {{team.name}}</h2>
+<p>Select which of your organizations you would like to invite this team to.</p>
+<form action="{% url "invite-to-join-org" team.id %}" enctype="multipart/form-data" method="post">
+{% csrf_token %}
+{% include "events/org_invite_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Invite</button>
+</form>
+{% endblock %}
+
+

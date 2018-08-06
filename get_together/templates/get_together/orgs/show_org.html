@@ -23,7 +23,7 @@
         <div class="col-sm-9">
             {% if can_edit_org %}
             <div id="admin_buttons" class="mb-2">
-            <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
+                <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
                 <a href="#" class="btn btn-secondary btn-sm disabled"><i class="fa fa-users"></i> Manage Members</a>
             </div>
             {% endif %}
@@ -35,6 +35,11 @@
             {% else %}
                 <h2>Welcome to {{ org.name }}</h2>
             {% endif %}
+            <div id="action_buttons" class="mb-2">
+                {% if request.user.profile.is_a_team_admin %}
+                <a href="{% url 'request-to-join-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-globe"></i> Join Organization</a>
+                {% endif %}
+            </div>
 
             {% if org.description %}
             <div class="container container-secondary mb-3">

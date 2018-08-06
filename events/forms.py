@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models.locale import Country, SPR, City
-from .models.profiles import Team, UserProfile, Sponsor
+from .models.profiles import Team, UserProfile, Sponsor, OrgTeamRequest
 from .models.events import (
     Event,
     EventComment,
@@ -380,6 +380,26 @@ class OrganizationForm(forms.ModelForm):
             'description',
             'cover_img',
         ]
+
+class RequestToJoinOrgForm(forms.ModelForm):
+    class Meta:
+        model = OrgTeamRequest
+        fields = [
+            'team'
+        ]
+
+class AcceptRequestToJoinOrgForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, add this team to my organization", required=True)
+
+class InviteToJoinOrgForm(forms.ModelForm):
+    class Meta:
+        model = OrgTeamRequest
+        fields = [
+            'organization'
+        ]
+
+class AcceptInviteToJoinOrgForm(forms.Form):
+    confirm = forms.BooleanField(label="Yes, add my team to this organization", required=True)
 
 class NewCommonEventForm(forms.ModelForm):
     class Meta:

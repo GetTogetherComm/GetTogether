@@ -6,6 +6,7 @@ from .models.locale import Language, Continent, Country, SPR, City
 from .models.profiles import (
     UserProfile,
     Organization,
+    OrgTeamRequest,
     Team,
     Member,
     Category,
@@ -55,6 +56,11 @@ admin.site.register(UserProfile, ProfileAdmin)
 class OrgAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'site')
 admin.site.register(Organization, OrgAdmin)
+
+class OrgRequestAdmin(admin.ModelAdmin):
+    list_display = ('organization', 'team', 'request_origin', 'requested_by', 'requested_date', 'accepted_by', 'joined_date')
+    list_filter = ('organization', 'request_origin')
+admin.site.register(OrgTeamRequest, OrgRequestAdmin)
 
 class SponsorAdmin(admin.ModelAdmin):
     list_display = ('name', 'web_url')

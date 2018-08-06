@@ -1,0 +1,12 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>You've been invited to join {{org.name|striptags}}</h3>
+
+<p>{{ sender }} has invited your team, <b>{{team.name}}</b>, to join their Get Together organization: <b>{{org.name}}</b>.
+</p>
+
+<br>
+<a href="https://{{site.domain}}{% url 'confirm-request-to-join-org' req.request_key %}" title="{{ org.name|striptags }} invitation.">Click here to view and confirm this invitation.</a>
+</p>
+{% endblock %}

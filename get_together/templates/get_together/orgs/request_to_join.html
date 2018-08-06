@@ -1,0 +1,14 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+{% block content %}
+<h2>Request to join: {{org.name}}</h2>
+<p>Select which of your teams you would like to add to this organization.</p>
+<form action="{% url "request-to-join-org" org.slug %}" enctype="multipart/form-data" method="post">
+{% csrf_token %}
+{% include "events/org_request_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Request</button>
+</form>
+{% endblock %}
+
+
