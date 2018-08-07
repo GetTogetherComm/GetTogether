@@ -341,16 +341,17 @@ class CommonEvent(models.Model):
         return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
     def location(self):
-        if not self.continent:
-            return _('Global')
-        elif not self.country:
-            return self.continent
-        elif not self.spr:
-            return self.country
-        elif not self.city:
-            return self.spr
-        else:
+        if self.city:
             return self.city
+        elif self.spr:
+            return self.spr
+        elif self.country:
+            return self.country
+        elif self.continent:
+            return self.continent
+        else:
+            return _('Global')
+
     @property
     def slug(self):
         return slugify(self.name)

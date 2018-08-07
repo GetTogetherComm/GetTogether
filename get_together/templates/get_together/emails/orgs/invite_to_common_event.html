@@ -1,0 +1,16 @@
+{% extends "get_together/emails/base.html" %}
+
+{% block content %}
+<h3>Your team has been invited to participate in an event</h3>
+
+<p><b>{{org.name}}</b> is organizing an event on {{event.start_time|date:"D d M Y"}} and they want <b>{{team.name}}</b> to join them.</b></p>
+
+<h4>{{event.name}}</h4>
+<p>{{event.summary}}</p>
+
+<br>
+<a href="https://{{site.domain}}{% url 'create-event' team.id %}?common={{event.id}}" title="Create your event.">Click here to host an event with your team.</a>
+<br>
+or you can <a href="{{event.get_full_url}}" title="View event.">click here to view the organization event.</a>
+</p>
+{% endblock %}

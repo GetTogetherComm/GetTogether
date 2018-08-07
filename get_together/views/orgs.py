@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core.mail import send_mail
 from django.template.loader import get_template, render_to_string
@@ -316,6 +316,7 @@ def create_common_event(request, org_slug):
         form = NewCommonEventForm(request.POST, instance=new_event)
         if form.is_valid:
             new_event = form.save()
+            send_common_event_invite(new_event)
             return redirect('show-common-event', new_event.id, new_event.slug)
         else:
             context = {
@@ -325,6 +326,46 @@ def create_common_event(request, org_slug):
             return render(request, 'get_together/orgs/create_common_event.html', context)
     else:
      return redirect('home')
+
+
+def send_common_event_invite(event):
+    context = {
+        'sender': event.created_by,
+        'org': event.organization,
+        'event': event,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = 'Participate in our event: %s' % event.name
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    teams = event.organization.teams.all()
+    if event.city:
+        teams = teams.filter(city=event.city)
+    elif event.spr:
+        teams = teams.filter(city__spr=event.spr)
+    elif event.country:
+        teams = teams.filter(city__spr__country=event.country)
+
+    for admin in Member.objects.filter(team__in=teams, role=Member.ADMIN, user__user__account__is_email_confirmed=True):
+        context['team'] = admin.team
+        email_body_text = render_to_string('get_together/emails/orgs/invite_to_common_event.txt', context)
+        email_body_html = render_to_string('get_together/emails/orgs/invite_to_common_event.html', context)
+        success = send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=[admin.user.user.email],
+            subject=email_subject,
+            fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=event.created_by.user,
+            recipient=admin.user.user,
+            email=admin.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
 
 
 @login_required

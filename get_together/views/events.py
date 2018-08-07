@@ -129,6 +129,8 @@ def create_event(request, team_id):
             new_event.parent = CommonEvent.objects.get(id=request.GET['common'])
             initial['name'] = new_event.parent.name
             initial['summary'] = new_event.parent.summary
+            initial['start_time'] = new_event.parent.start_time
+            initial['end_time'] = new_event.parent.end_time
         form = NewTeamEventForm(instance=new_event, initial=initial)
 
         context = {

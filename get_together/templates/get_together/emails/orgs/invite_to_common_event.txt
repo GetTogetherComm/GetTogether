@@ -1,0 +1,13 @@
+{% extends "get_together/emails/base.txt" %}
+{% block content %}
+== Your team has been invited to participate in an event ==
+
+{{org.name}} is organizing an event on {{event.start_time|date:"D d M Y"}} and they want {{team.name}} to join them.
+
+=== {{event.name}} ===
+{{event.summary}}
+
+Click here to host an event with your team: https://{{site.domain}}{% url 'create-event' team.id %}?common={{event.id}}
+or you can view the organization event: {{event.get_full_url}}
+
+{% endblock %}
