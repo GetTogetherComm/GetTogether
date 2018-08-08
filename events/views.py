@@ -79,7 +79,7 @@ def city_list(request, *args, **kwargs):
 @api_view(['GET'])
 def find_city(request):
     cities = City.objects.all()
-    if "name" in request.GET:
+    if "city" in request.GET:
         cities = cities.filter(name=request.GET.get("city"))
     if "spr" in request.GET:
         cities = cities.filter(spr__name=request.GET.get("spr"))
