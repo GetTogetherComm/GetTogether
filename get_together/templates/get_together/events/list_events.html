@@ -21,11 +21,11 @@
                 <div class="card-banner">
                   <a href="{{ event.get_absolute_url }}">
                   <img class="card-img-top" src="{{event.team.card_img_url}}" alt="{{event.name}}">
-                  <p class="card-title">{{event.team.name}}</p>
+                  <p class="card-title">{{event.name}}</p>
                   </a>
                 </div>
                 <div class="card-body">
-                  <p class="card-text"><strong><a class="card-link" href="{{event.get_absolute_url}}">{{event.name}}</a></strong></p>
+                  <p class="card-text"><strong>{{event.team.name}}</strong></p>
                   <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted">{{ event.local_start_time }}</small>
                     <div class="btn-group">
