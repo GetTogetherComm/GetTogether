@@ -48,6 +48,7 @@ def home(request, *args, **kwards):
 
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
+    context['geoip_lookup'] = False
 
     city=None
     ll = None
@@ -83,14 +84,14 @@ def home(request, *args, **kwards):
                         profile.city = city
                         profile.save()
                 except:
-                    pass # City lookup failed
-
+                    raise Exception('City lookup filed')
+            else:
+                raise Exception('Geocoder result has no latlng')
         except Exception as err:
             context['geoip_lookup'] = False
             print("Geocoder lookup failed for %s" % request.META.get('REMOTE_ADDR'), err)
-            traceback.print_exc()
 
-    #import pdb; pdb.set_trace()
+
     if ll is not None:
         context['latitude'] = ll[0]
         context['longitude'] = ll[1]
