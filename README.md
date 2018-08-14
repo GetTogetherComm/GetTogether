@@ -72,6 +72,15 @@ docker exec -it get_together python3 manage.py createsuperuser
 
 You can then connect to the container by going to localhost:8000
 
+### Using Vagrant for development
+You will need to have Vagrant installed, as well as the hostmanager plugin.  Install Vagrant in line with your platform's instructions, and run `vagrant plugin install vagrant-hostmanager`.
+
+If you already have created a superuser (in the above steps), you can `touch .userCreated` to skip automated user creation.
+
+Running `vagrant up` will provision a box (currently using Ubuntu 18.04) with necessary software as well as configuration of users, databases.
+
+After `vagrant up` has completed, you can go to `dev.gettogether.community:8000` in your browser to use the dev environment.  The default password, if you haven't already set up an environment, is `vagrant`/`vagrant_test`.
+
 ## Test Federation
 You can import live event data into your "Searchable" table with this command:
 

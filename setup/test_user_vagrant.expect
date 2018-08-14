@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 5
+spawn /vagrant/env/bin/python manage.py createsuperuser
+expect "Username"
+send -- "vagrant\r"
+expect "Email address"
+send -- "test@localhost\r"
+expect "Password"
+send -- "vagrant_test\r"
+expect "Password (again)"
+send -- "vagrant_test\r"
+expect eof
