@@ -1,0 +1,33 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Host a Get Together</h2>
+
+<form action="{% url "new-event-start" %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{% include "events/event_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Schedule event</button>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $.datepicker.setDefaults({
+        showOn: 'focus',
+        dateFormat: 'yy-mm-dd',
+    });
+
+    $("#id_start_time_0").datepicker({altField: "#id_end_time_0", altFormat: "yy-mm-dd"});
+
+    $("#id_end_time_0").datepicker();
+
+});
+
+</script>
+{% endblock %}

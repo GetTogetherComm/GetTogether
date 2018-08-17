@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.db.models import Q
 
 from events.models.locale import City
 from events.models.events import Event, Place, Attendee
@@ -30,6 +31,7 @@ from .places import *
 from .user import *
 from .new_user import *
 from .new_team import *
+from .new_event import *
 from .speakers import *
 from .utils import *
 
@@ -41,10 +43,6 @@ DEFAULT_NEAR_DISTANCE = 100 # kilometeres
 @setup_wanted
 def home(request, *args, **kwards):
     context = {}
-    if request.user.is_authenticated:
-        user_teams = Team.objects.filter(owner_profile=request.user.profile)
-        if len(user_teams) > 0:
-            context['user_teams'] = user_teams
 
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
@@ -105,7 +103,11 @@ def home(request, *args, **kwards):
             context['minlng'] = minlng
             context['maxlng'] = maxlng
 
-            near_events = Searchable.objects.filter(latitude__gte=minlat, latitude__lte=maxlat, longitude__gte=minlng, longitude__lte=maxlng, end_time__gte=datetime.datetime.now())
+            near_events = Searchable.objects.filter(latitude__gte=minlat,
+                                                    latitude__lte=maxlat,
+                                                    longitude__gte=minlng,
+                                                    longitude__lte=maxlng,
+                                                    end_time__gte=datetime.datetime.now())
             context['near_events'] = sorted(near_events, key=lambda searchable: location.searchable_distance_from(ll, searchable))
 
 #            # If there aren't any teams in the user's geoip area, show them the closest ones
@@ -113,12 +115,17 @@ def home(request, *args, **kwards):
                 context['closest_events'] = sorted(Searchable.objects.filter(end_time__gte=datetime.datetime.now()),
                                                   key=lambda searchable: location.searchable_distance_from(ll, searchable))[:3]
 
-            near_teams = Team.objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
+            near_teams = Team.public_objects.filter(city__latitude__gte=minlat,
+                                             city__latitude__lte=maxlat,
+                                             city__longitude__gte=minlng,
+                                             city__longitude__lte=maxlng
+                                             ).filter(Q(access=Team.PUBLIC) | Q(access=Team.PRIVATE,
+                                                                                owner_profile=request.user.profile))
             context['near_teams'] = sorted(near_teams, key=lambda team: location.team_distance_from(ll, team))
 
 #            # If there aren't any teams in the user's geoip area, show them the closest ones
             if context['geoip_lookup'] and len(near_teams) < 1:
-                context['closest_teams'] = sorted(Team.objects.all(), key=lambda team: location.team_distance_from(ll, team))[:3]
+                context['closest_teams'] = sorted(Team.public_objects.all(), key=lambda team: location.team_distance_from(ll, team))[:3]
         except Exception as err:
             print("Error looking up nearby teams and events", err)
             traceback.print_exc()

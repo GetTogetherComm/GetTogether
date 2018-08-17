@@ -36,7 +36,7 @@ def teams_list(request, *args, **kwargs):
     return render(request, 'get_together/teams/list_teams.html', context)
 
 def teams_list_all(request, *args, **kwargs):
-    teams = Team.objects.all()
+    teams = Team.public_objects.all()
     geo_ip = location.get_geoip(request)
     context = {
         'active': 'all',
@@ -47,6 +47,8 @@ def teams_list_all(request, *args, **kwargs):
 
 def show_team_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
+    if team.access == Team.PERSONAL:
+        return redirect('show-profile', team.owner_profile.id)
     return show_team(request, team)
 
 def show_team_by_id(request, team_id):

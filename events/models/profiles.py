@@ -57,6 +57,14 @@ class UserProfile(models.Model):
         except:
             return "Unknown Profile"
 
+    @property
+    def personal_team(self):
+        teams = Team.objects.filter(access=Team.PERSONAL, owner_profile=self)
+        if teams.count() > 0:
+            return teams[0]
+        else:
+            return Team.objects.create(name=str(self), access=Team.PERSONAL, owner_profile=self, city=self.city)
+
     def avatar_url(self):
         try:
             if self.avatar is None or self.avatar.name is None:
@@ -86,19 +94,19 @@ class UserProfile(models.Model):
 
     @property
     def is_a_team_admin(self):
-        return Member.objects.filter(user=self, role=Member.ADMIN).count() > 0
+        return Member.objects.filter(user=self, role=Member.ADMIN, team__access__in=(Team.PUBLIC, Team.PRIVATE)).count() > 0
 
     @property
     def administering(self):
-        return [member.team for member in Member.objects.filter(user=self, role=Member.ADMIN).order_by('team__name')]
+        return [member.team for member in Member.objects.filter(user=self, role=Member.ADMIN, team__access__in=(Team.PUBLIC, Team.PRIVATE)).order_by('team__name')]
 
     @property
     def is_a_team_moderator(self):
-        return Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR)).count() > 0
+        return Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR), team__access__in=(Team.PUBLIC, Team.PRIVATE)).count() > 0
 
     @property
     def moderating(self):
-        return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR)).order_by('team__name')]
+        return [member.team for member in Member.objects.filter(user=self, role__in=(Member.ADMIN, Member.MODERATOR), team__access__in=(Team.PUBLIC, Team.PRIVATE)).order_by('team__name')]
 
     def can_create_event(self, team):
         try:
@@ -299,10 +307,24 @@ class SponsorSerializer(serializers.ModelSerializer):
             'web_url',
         )
 
+
+class PublicTeamsManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(access=Team.PUBLIC)
+
 class Team(models.Model):
+    PUBLIC=0
+    PERSONAL=1
+    PRIVATE=2
+    TYPES = [
+        (PUBLIC, _("Public")),
+        (PERSONAL, _("Personal")),
+        (PRIVATE, _("Private")),
+    ]
     name = models.CharField(_("Team Name"), max_length=256, null=False, blank=False)
     slug = models.CharField(max_length=256, null=False, blank=False, unique=True)
     organization = models.ForeignKey(Organization, related_name='teams', null=True, blank=True, on_delete=models.CASCADE)
+    access = models.SmallIntegerField(verbose_name=_("Access"), choices=TYPES, default=PUBLIC)
 
     cover_img = models.ImageField(verbose_name=_('Cover Image'), upload_to='team_covers', null=True, blank=True)
     tile_img = ImageSpecField(source='cover_img',
@@ -351,6 +373,9 @@ class Team(models.Model):
     premium_by = models.ForeignKey(UserProfile, related_name='premium_teams', null=True, blank=True, on_delete=models.SET_NULL)
     premium_started = models.DateTimeField(blank=True, null=True)
     premium_expires = models.DateTimeField(blank=True, null=True)
+
+    objects = models.Manager()
+    public_objects = PublicTeamsManager()
 
     @property
     def card_img_url(self):

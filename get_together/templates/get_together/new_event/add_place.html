@@ -1,0 +1,231 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+
+            <h2>Choose your meeting place</h2>
+            <form action="{% url "new-event-add-place" event.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="id_id" name="id" value="" />
+            {% include "events/place_form.html" %}
+	            <div class="fluid-layout" id="place-map"></div>
+            <br />
+            <button type="submit" class="btn btn-primary">Add Place</button>
+            </form>
+            <a class="btn btn-secondary" href="{% url 'new-event-add-details' event.id %}">Skip</a>
+        </div>
+        <div id="map" class="col-md-6"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{settings.GOOGLE_MAPS_API_KEY}}&libraries=places"></script>
+<script type="text/javascript">
+/*
+ * jQuery Google Map Plugin 0.2.3
+ * https://wiki.ubuntu.com/ubuntu-django-foundations/map
+ * Requires jQuery 1.4.2
+ *
+ * Copyright 2011, Ronnie van den Crommenacker
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
+
+(function ($) {
+    $.fn.extend({
+        selectLocation: function (options) {
+            var defaults = {
+                html_lng: null,
+                html_lat: null,
+                html_tz: null,
+                html_country: null,
+                html_continent: null,
+                marker_icon: null,
+                markers: [],
+                html_addr: null,
+                mapOptions: {
+                    zoom: 12,
+                    center: {lat: {{event.team.city.latitude}}, lng: {{event.team.city.longitude}}},
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControl: false
+                }
+            };
+            options = $.extend(defaults, options);
+
+            function showPositionHTML(ll, map, google_place_id) {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': ll}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#id_address').val(results[0].formatted_address);
+                            var name, city, spr, country = "";
+                            $.each(results[0].address_components, function(){
+                                if(this.types[0]=="country") {
+                                    country = this.long_name
+                                } else if(this.types[0]=="administrative_area_level_1"){
+                                    spr = this.long_name
+                                } else if(this.types[0]=="locality"){
+                                    city = this.long_name
+                                }
+                            });
+                            if (google_place_id != null) {
+                                $("#id_name").val("")
+                                $("#id_name").attr("placeholder", "Searching...")
+                                var places = new google.maps.places.PlacesService(map);
+                                places.getDetails({'placeId': google_place_id},
+                                    function(result, status) {
+                                        $("#id_name").val(result.name);
+                                        $("#id_place_url").val(result.website);
+                                    }
+                                );
+                            }
+                            $.getJSON("/api/find_city/?country="+country+"&spr="+spr+"&city="+city,
+                                function(json) {
+                                    if (json.id) {
+                                        var selectField = $("#city_select");
+                                        selectField.empty();
+                                        selectField.append('<option value="'+ json.id +'" selected>'+ json.display + '</option>');
+                                        selectField.lookup("refresh");
+
+                                        $("#id_tz").val(json.tz);
+                                        $("#id_tz").selectmenu("refresh");
+                                    }
+                                }
+                            );
+                        }
+                    }
+                });
+
+                if (options.html_lng && options.html_lat) {
+                    if (ll.lat() != null && ll.lng() != null) {
+                        options.html_lat.val(ll.lat());
+                        options.html_lng.val(ll.lng());
+                        if (options.html_tz && options.html_country && options.html_continent) {
+                            $.getJSON("http://ws.geonames.org/timezoneJSON?lat=" + ll.lat() + "&lng=" + ll.lng(),
+                                function(json) {
+                                    $(options.html_tz).filter(function() {
+                                        return $(this).text() == json.timezoneId;
+                                    }).prop('selected', true);
+
+                                    $(options.html_country).filter(function() {
+                                        return $(this).text() == json.countryName;
+                                    }).prop('selected', true);
+
+                                    $.getJSON("http://ws.geonames.org/countryInfoJSON?country=" + json.countryCode,
+                                        function(json) {
+                                            if (typeof json.geonames[0].continentName !== "undefined") {
+                                                $(options.html_continent).filter(function() {
+                                                    return $(this).text() == json.geonames[0].continentName;
+                                                }).prop('selected', true);
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    }
+                }
+
+
+            }
+
+            function setMarker(map, ll, google_place_id) {
+                var marker = null;
+
+                if (options.markers.length) {
+                    marker = options.markers[0];
+                    marker.setPosition(ll);
+                    marker.setAnimation(google.maps.Animation.DROP);
+                } else {
+                    marker = new google.maps.Marker({
+                        map: map,
+                        position: ll,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP
+                    });
+                    if (options.marker_icon) {
+                        marker.icon = options.marker_icon;
+                    }
+                    options.markers.push(marker);
+                    google.maps.event.addListener(options.markers[0], 'mouseup', function () {
+                        showPositionHTML(marker.getPosition(), map, google_place_id);
+                    });
+                }
+
+                map.setCenter(ll);
+                showPositionHTML(marker.getPosition(), map, google_place_id);
+            }
+
+            return $(this).each(function (i, html_element) {
+                map = new google.maps.Map($(html_element)[0], options.mapOptions),
+                ll = null;
+
+                google.maps.event.addListener(map, 'click', function (event) {
+                    if (event.hasOwnProperty('placeId')) {
+                        setMarker(map, event.latLng, event.placeId);
+                    } else {
+                        setMarker(map, event.latLng);
+                    }
+                });
+
+                if (options.html_lat.val() && options.html_lng.val()) {
+                    ll = new google.maps.LatLng(options.html_lat.val(), options.html_lng.val());
+                    setMarker(map, ll);
+                }
+
+                $.getJSON("/api/places/", function(data) {
+                    for (let place of data) {
+                        var position = new google.maps.LatLng(place['latitude'], place['longitude'])
+                        var marker = new google.maps.Marker({
+                          position: position,
+                          label: place['name'],
+                          map: map,
+                        });
+                        google.maps.event.addListener(marker, 'click',function(event) {
+                          $("#id_id").val(place['id']);
+                          $("#id_name").val(place['name']);
+                          showPositionHTML(this.position, map);
+                        });
+                    }
+                    return;
+                });
+            });
+
+        }
+    });
+}(jQuery));
+$("#map").selectLocation({
+    html_lat: $("#id_latitude"),
+    html_lng: $("#id_longitude")
+});
+</script>
+
+<script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#city_select").lookup({
+        search: function(searchText, callback) {
+        if (searchText.length < 3) return callback(searchText, []);
+            $.getJSON("/api/cities/?q="+searchText, function(data) {
+                var m = this.url.match(/q=([^&]+)/);
+                var q = "";
+                if (m && m.length > 0) {
+                    q = this.url.match(/q=([^&]+)/)[1]
+                }
+
+                return callback(q, data);
+            });
+        },
+        select: function( event, ui ) {
+          $("#id_tz").val(ui.data.tz);
+          $("#id_tz").selectmenu("refresh");
+        }
+    })
+    $("#id_tz").selectmenu();
+});
+
+</script>
+{% endblock %}

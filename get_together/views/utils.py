@@ -23,7 +23,7 @@ def get_nearby_teams(request, near_distance=DEFAULT_NEAR_DISTANCE):
         minlng = g.latlng[1]-(near_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(g.latlng[0]))))
         maxlng = g.latlng[1]+(near_distance/(KM_PER_DEGREE_LNG*math.cos(math.radians(g.latlng[0]))))
 
-        near_teams = Team.objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
+        near_teams = Team.public_objects.filter(city__latitude__gte=minlat, city__latitude__lte=maxlat, city__longitude__gte=minlng, city__longitude__lte=maxlng)
         return near_teams
     except Exception as e:
         print("Error looking for local teams: ", e)

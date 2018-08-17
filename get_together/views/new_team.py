@@ -36,6 +36,8 @@ def start_new_team(request):
             'team': new_team,
             'team_form': form,
         }
+        if 'event' in request.GET and request.GET['event'] != '':
+            context['event'] = request.GET['event']
         return render(request, 'get_together/new_team/start_new_team.html', context)
     elif request.method == 'POST':
         if 'organization' in request.POST and request.POST['organization'] != '':
@@ -46,6 +48,14 @@ def start_new_team(request):
         if form.is_valid():
             new_team = form.save()
             new_team.save()
+            if 'event' in request.POST and request.POST['event'] != '':
+                try:
+                    event = Event.objects.get(id=request.POST['event'])
+                    event.team = new_team
+                    event.save()
+                except:
+                    pass
+
             Member.objects.create(team=new_team, user=request.user.profile, role=Member.ADMIN)
             ga.add_event(request, action='new_team', category='growth', label=new_team.name)
             return redirect('define-team', team_id=new_team.pk)
@@ -54,9 +64,11 @@ def start_new_team(request):
                 'team': new_team,
                 'team_form': form,
             }
+            if 'event' in request.POST and request.POST['event'] != '':
+                context['event'] = request.POST['event']
             return render(request, 'get_together/new_team/start_new_team.html', context)
     else:
-     return redirect('home')
+        return redirect('home')
 
 def define_new_team(request, team_id):
     team = get_object_or_404(Team, id=team_id)

@@ -77,6 +77,12 @@ urlpatterns = [
     path('team/<int:team_id>/+define/', views.define_new_team, name='define-team'),
     path('team/+create-event/', views.create_event_team_select, name='create-event-team-select'),
     path('team/<int:team_id>/+create-event/', views.create_event, name='create-event'),
+
+    path('+new-event/', views.new_event_start, name='new-event-start'),
+    path('events/<int:event_id>/+new-event-place/', views.new_event_add_place, name='new-event-add-place'),
+    path('events/<int:event_id>/+new-event-details/', views.new_event_add_details, name='new-event-add-details'),
+    path('events/<int:event_id>/+new-event-team/', views.new_event_add_team, name='new-event-add-team'),
+
     path('events/<int:event_id>/+edit/', views.edit_event, name='edit-event'),
     path('events/<int:event_id>/+attend/', views.attend_event, name='attend-event'),
     path('events/<int:event_id>/+attended/', views.attended_event, name='attended-event'),

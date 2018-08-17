@@ -1,0 +1,64 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if teams %}
+    <div class="row">
+        <div class="col-12">
+            <center>
+                <h3>Which team is hosting this event?</h3>
+            </center>
+        </div>
+    </div>
+    <form action="{% url 'new-event-add-team' event.id %}" method="POST">
+        {% csrf_token %}
+    <div class="row">
+    {% for team in teams %}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <div class="card-banner">
+              {% if team.category %}
+              <img class="card-img-top" src="{{team.category.img_url}}" alt="{{team.name}}">
+              {% else %}
+              <img class="card-img-top" src="{% static 'img/team_placeholder.png' %}" alt="{{team.name}}">
+              {% endif %}
+              <p class="card-title">{{team.name}}</p>
+            </div>
+            <div class="card-body">
+              <p class="card-text"><strong>{{team.city}}</strong></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-primary" name="team_id" value="{{team.id}}" type="submit">Host</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    </div>
+    </form>
+    {% else %}
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <center>
+                <h3>You don't have any teams that can host this event, would you like to start one now?</h3>
+            </center>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    {% endif %}
+    <div class="row pb-5">
+        <div class="col-12">
+            <center>
+                <a class="btn btn-success" href="{% url 'create-team' %}?event={{event.id}}">Create a new Team</a>
+                <a class="btn btn-secondary" href="{{event.get_absolute_url}}">Skip</a>
+            </center>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

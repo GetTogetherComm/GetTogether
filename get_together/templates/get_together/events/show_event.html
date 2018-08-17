@@ -115,7 +115,11 @@
             {% else %}
             <h2>{{ event.name }}</h2>
             {% endif %}
+            {% if team.access == team.PERSONAL %}
+            <p class="text-muted">Hosted by <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
+            {% else %}
             <p class="text-muted">Hosted by <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            {% endif %}
             {% if event.status != event.CANCELED and not request.user.profile.do_not_track %}
             {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
                 <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
