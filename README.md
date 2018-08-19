@@ -63,11 +63,10 @@ file):
 
 `./env/bin/python manage.py load_cities cities15000.txt`
 
-### Using the docker container
+### Using docker-compose
 ```
-docker build -t get_together .
-docker run -d --name get_together -p 8000:8000 get_together
-docker exec -it get_together python3 manage.py createsuperuser
+docker-compose up -d
+docker-compose exec get_together python3 manage.py createsuperuser
 ```
 
 You can then connect to the container by going to localhost:8000
