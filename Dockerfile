@@ -20,6 +20,8 @@ COPY --from=builder /home/python /home/python
 COPY --from=builder /lib /lib
 COPY --from=builder /usr/lib /usr/lib
 
+STOPSIGNAL SIGINT
 ENTRYPOINT ["venv/bin/python"]
 ENV DJANGO_SETTINGS_MODULE=get_together.environ_settings
 CMD ["manage.py", "runserver", "0.0.0.0:8000"]
+
