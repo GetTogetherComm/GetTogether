@@ -60,7 +60,7 @@ def home(request, *args, **kwards):
         context['city_search'] = False
         try:
             g = location.get_geoip(request)
-            if g.latlng is not None and g.latlng[0] is not None and g.latlng[1] is not None:
+            if g.latlng is not None and len(g.latlng) >= 2 and g.latlng[0] is not None and g.latlng[1] is not None:
                 ll = g.latlng
                 context['geoip_lookup'] = True
 
