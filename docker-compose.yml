@@ -1,0 +1,14 @@
+version: '3'
+services:
+  get_together:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG_MODE=True
+      - SECRET_KEY=xxxxx
+      - ALLOWED_HOSTS=localhost,127.0.0.1
