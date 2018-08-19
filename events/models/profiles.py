@@ -345,7 +345,7 @@ class Team(models.Model):
 
     about_page = models.TextField(blank=True, null=True)
 
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.CASCADE)
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.CASCADE)
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE)
 
