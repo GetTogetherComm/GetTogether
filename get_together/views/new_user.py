@@ -47,6 +47,14 @@ def setup_1_confirm_profile(request):
                 # Call the view to trigger sending a confirmation email, but ignore it's response
                 user_send_confirmation_email(request)
             return redirect('setup-2-pick-categories')
+        else:
+            context = {
+                'user': user,
+                'profile': profile,
+                'user_form': user_form,
+                'profile_form': profile_form,
+            }
+            return render(request, 'get_together/new_user/setup_1_confirm_profile.html', context)
     else:
         return redirect('home')
 
