@@ -56,6 +56,16 @@
 {% endif %}
         </div>
         <div class="col-md-3">
+            {% if badges %}
+                <h4>Badges</h4>
+                <div class="mb-3">
+                {% for badge in badges %}
+		            <div class="ml-3 mb-1">
+			            <img class="mr-2 gt-profile-badge" src="{{badge.img_url}}" width="24px" height="24px" align="baseline">{{badge.name}}
+		            </div>
+                {% endfor %}
+                </div>
+            {% endif %}
             {% if teams %}
                 <h4>Teams</h4>
                 <ul>

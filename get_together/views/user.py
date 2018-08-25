@@ -65,10 +65,12 @@ def show_profile(request, user_id):
 
     teams = user.memberships.all()
     talks = Talk.objects.filter(speaker__user=user)
+    badges = user.user.account.badges.all()
     context = {
             'user': user,
             'teams': teams,
             'talks': talks,
+            'badges': badges,
     }
 
     return render(request, 'get_together/users/show_profile.html', context)
