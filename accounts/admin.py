@@ -21,6 +21,7 @@ admin.site.register(Badge, BadgeAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
     list_display = ('badge', 'account', 'expires', 'granted_by')
+    list_filter = ('badge', ('granted_by', admin.RelatedOnlyFieldListFilter))
 admin.site.register(BadgeGrant, GrantAdmin)
 
 class ConfirmationAdmin(admin.ModelAdmin):
