@@ -93,6 +93,11 @@ class Event(models.Model):
 
     sponsors = models.ManyToManyField('Sponsor', related_name='events', blank=True)
 
+    enable_comments = models.BooleanField(verbose_name=_('Comments'), default=True)
+    enable_photos = models.BooleanField(verbose_name=_('Photos'), default=True)
+    enable_presentations = models.BooleanField(verbose_name=_('Presentations'), default=False)
+
+
     @property
     def is_over(self):
         return self.end_time <= timezone.now()

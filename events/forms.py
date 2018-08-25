@@ -225,7 +225,7 @@ class TeamEventForm(forms.ModelForm):
     recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
     class Meta:
         model = Event
-        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary', 'web_url', 'announce_url', 'tags']
+        fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary', 'web_url', 'announce_url', 'enable_comments', 'enable_photos', 'enable_presentations']
         widgets = {
             'place': Lookup(source=Place),
             'start_time': DateTimeWidget,
@@ -302,7 +302,13 @@ class NewEventDetailsForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['summary', 'recurrences', 'web_url', 'announce_url']
+        fields = ['summary', 'recurrences', 'web_url', 'announce_url', 'enable_comments', 'enable_photos', 'enable_presentations']
+
+
+class EventSettingsForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['enable_comments', 'enable_photos', 'enable_presentations']
 
 
 class DeleteEventForm(forms.Form):

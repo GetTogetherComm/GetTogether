@@ -476,6 +476,10 @@ def attended_event(request, event_id):
 
 def comment_event(request, event_id):
     event = Event.objects.get(id=event_id)
+    if not event.enable_comments:
+        messages.add_message(request, messages.WARNING, message=_('This event does not allow comments.'))
+        return redirect(event.get_absolute_url())
+
     if request.user.is_anonymous:
         messages.add_message(request, messages.WARNING, message=_("You must be logged in to comment."))
         return redirect(event.get_absolute_url())
@@ -524,6 +528,10 @@ def add_event_photo(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+        return redirect(event.get_absolute_url())
+
+    if not event.enable_photos:
+        messages.add_message(request, messages.WARNING, message=_('This event does not allow uploading photos.'))
         return redirect(event.get_absolute_url())
 
     if request.method == 'GET':
