@@ -68,8 +68,8 @@ admin.site.register(Sponsor, SponsorAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles', 'sponsors')
-    list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'access', 'is_premium')
-    list_filter = ('active', 'access', 'is_premium', 'organization', ('country',admin.RelatedOnlyFieldListFilter))
+    list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'access')
+    list_filter = ('active', 'access', 'organization', ('country',admin.RelatedOnlyFieldListFilter))
     ordering = ('-created_date',)
 
     def member_count(self, team):

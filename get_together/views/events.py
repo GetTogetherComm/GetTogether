@@ -174,9 +174,6 @@ def manage_event_sponsors(request, event_id):
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.WARNING, message=_('You can not manage this event\'s sponsorss.'))
         return redirect(event.get_absolute_url())
-    if not event.team.is_premium:
-        messages.add_message(request, messages.ERROR, message=mark_safe(_('Upgrade this team to a <a href="/about/premium">Premium</a> account to use this feature.')))
-        return redirect(event.get_absolute_url())
 
     team_sponsors = list(event.team.sponsors.all())
     events_sponsors = list(Sponsor.objects.filter(events__team=event.team))

@@ -239,9 +239,6 @@ def delete_talk(request, talk_id):
 @login_required
 def propose_event_talk(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    if not event.team.is_premium:
-        messages.add_message(request, messages.ERROR, message=_("You can not manage talks for this event."))
-        return redirect(event.get_absolute_url())
 
     if request.method == 'GET':
         profile = request.user.profile
@@ -310,9 +307,6 @@ def schedule_event_talks(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if not request.user.profile.can_edit_event(event):
         messages.add_message(request, messages.ERROR, message=mark_safe(_('You can not manage talks for this event.')))
-        return redirect(event.get_absolute_url())
-    if not event.team.is_premium:
-        messages.add_message(request, messages.ERROR, message=mark_safe(_('Upgrade this team to a <a href="/about/premium">Premium</a> account to use this feature.')))
         return redirect(event.get_absolute_url())
 
     if request.method == 'POST':
