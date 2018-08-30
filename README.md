@@ -67,7 +67,7 @@ file):
 ```
 docker build -t get_together .
 docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1" -d --name get_together -p 8000:8000 get_together
-docker exec -it get_together python3 manage.py createsuperuser
+docker-compose exec get_together /home/python/venv/bin/python manage.py createsuperuser
 ```
 
 ### Using docker-compose
