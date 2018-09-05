@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin import SimpleListFilter
 
 # Register your models here.
 from .models.locale import Language, Continent, Country, SPR, City
@@ -33,6 +35,57 @@ from .models.speakers import (
 admin.site.register(Language)
 admin.site.register(Continent)
 admin.site.register(Country)
+
+from django.db.models import Count
+class NumberOfEventsFilter(SimpleListFilter):
+    title = _('Event Count')
+    parameter_name = 'event_count'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('0', '0'),
+            ('1', '1 - 9'),
+            ('10', '10 - 99'),
+            ('100', '100+'),
+            ('>0', '> 0')
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            return queryset.annotate(num_events=Count('event')).filter(num_events=0)
+        if self.value() == '>0':
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gt=0)
+        if self.value() == '1':
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=1, num_events__lte=9)
+        if self.value() == '10':
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=10, num_events__lte=99)
+        if self.value() == '100':
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=100)
+
+class NumberOfMembersFilter(SimpleListFilter):
+    title = _('Member Count')
+    parameter_name = 'member_count'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('0', '0'),
+            ('1', '1 - 9'),
+            ('10', '10 - 99'),
+            ('100', '100+'),
+            ('>0', '> 0')
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            return queryset.annotate(num_events=Count('member')).filter(num_events=0)
+        if self.value() == '>0':
+            return queryset.annotate(num_events=Count('member')).filter(num_events__gt=0)
+        if self.value() == '1':
+            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=1, num_events__lte=9)
+        if self.value() == '10':
+            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=10, num_events__lte=99)
+        if self.value() == '100':
+            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=100)
 
 class SPRAdmin(admin.ModelAdmin):
     raw_id_fields = ('country',)
@@ -69,7 +122,7 @@ admin.site.register(Sponsor, SponsorAdmin)
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles', 'sponsors')
     list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'access')
-    list_filter = ('active', 'access', 'organization', ('country',admin.RelatedOnlyFieldListFilter))
+    list_filter = ('access', 'organization', NumberOfMembersFilter, NumberOfEventsFilter, ('country',admin.RelatedOnlyFieldListFilter), 'active')
     ordering = ('-created_date',)
 
     def member_count(self, team):
