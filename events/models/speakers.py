@@ -34,6 +34,13 @@ class Speaker(models.Model):
         else:
             return self.user.avatar
 
+    def headshot_url(self):
+        if self.avatar is not None and self.avatar.name is not None and self.avatar.name != '':
+            return self.avatar.url
+        else:
+            return self.user.avatar_url()
+
+
     def __str__(self):
         if self.title:
             return self.title

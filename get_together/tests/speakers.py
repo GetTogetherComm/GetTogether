@@ -42,3 +42,11 @@ class TalkCreationTests(TestCase):
         assert(response.status_code == 302)
         assert(response.url == resolve_url('user-talks'))
 
+    def test_show_speaker_without_avatar(self):
+        user = User.objects.create(username='testuser', password='12345', is_active=True)
+        speaker = Speaker.objects.create(user=user.profile)
+
+        c = Client()
+        response = c.get(resolve_url('show-speaker', speaker.id))
+        assert(response.status_code == 200)
+        self.assertContains(response, 'avatar_placeholder.png')

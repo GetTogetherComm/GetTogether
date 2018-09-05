@@ -67,7 +67,7 @@ class UserProfile(models.Model):
 
     def avatar_url(self):
         try:
-            if self.avatar is None or self.avatar.name is None:
+            if self.avatar is None or self.avatar.name is None or self.avatar.name == '':
                 return settings.STATIC_URL + 'img/avatar_placeholder.png'
             elif self.avatar.name.startswith('http'):
                 return self.avatar.name
