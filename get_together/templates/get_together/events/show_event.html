@@ -8,11 +8,7 @@
   <meta property="og:type"          content="website" />
   <meta property="og:title"         content="{{event.name}}" />
   <meta property="og:description"   content="{{event.summary}}" />
-  {% if event.team.category %}
-  <meta property="og:image"         content="{{event.team.category.img_url}}" />
-  {% else %}
-  <meta property="og:image"         content="https://gettogether.community{% static 'img/team_placeholder.png' %}" />
-  {% endif %}
+  <meta property="og:image"         content="{{event.team.full_img_url}}" />
 {% endblock %}
 
 {% block styles %}

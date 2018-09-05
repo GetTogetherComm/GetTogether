@@ -384,6 +384,14 @@ class Team(models.Model):
             return static('img/team_placeholder.png')
 
     @property
+    def full_img_url(self):
+        if self.card_img_url.startswith('http'):
+            return self.card_img_url
+        else:
+            site = Site.objects.get(id=1)
+            return "https://%s%s" % (site.domain, self.card_img_url)
+
+    @property
     def location_name(self):
         if self.city:
             return str(self.city)
