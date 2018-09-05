@@ -77,11 +77,12 @@ def home(request, *args, **kwards):
                         else:
                             city = sorted(nearby_cities, key=lambda city: location.city_distance_from(ll, city))[0]
 
-                    if request.user.profile.city is None:
+                    if request.user.is_authenticated and request.user.profile.city is None:
                         profile = request.user.profile
                         profile.city = city
                         profile.save()
-                except:
+                except Exception as err:
+                    print("City lookup failed", err)
                     raise Exception('City lookup filed')
             else:
                 raise Exception('Geocoder result has no latlng')
