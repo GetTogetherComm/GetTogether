@@ -37,7 +37,7 @@
             {% endif %}
             <div id="action_buttons" class="mb-2">
                 {% if request.user.profile.is_a_team_admin %}
-                <a href="{% url 'request-to-join-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-globe"></i> Join Organization</a>
+                <a href="{% url 'request-to-join-org' org.slug %}" class="btn btn-success btn-sm"><i class="fa fa-globe"></i> Join Organization</a>
                 {% endif %}
             </div>
 
