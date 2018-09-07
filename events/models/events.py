@@ -345,6 +345,21 @@ class CommonEvent(models.Model):
             schema = 'https'
         return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
+    @property
+    def full_img_url(self):
+        if self.organization.tile_img is not None and self.organization.tile_img .name is not None:
+            if self.organization.tile_img .url.startswith('http'):
+                return self.organization.tile_img .url
+            else:
+                site = self.organization.site
+                if settings.DEBUG:
+                    schema = 'http'
+                else:
+                    schema = 'https'
+                return "%s://%s%s" % (schema, site.domain, self.organization.tile_img .url)
+        else:
+            return self.category.img_url
+
     def location(self):
         if self.city:
             return self.city
