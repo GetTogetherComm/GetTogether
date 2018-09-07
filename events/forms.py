@@ -469,7 +469,7 @@ class InviteToJoinOrgForm(forms.ModelForm):
 class AcceptInviteToJoinOrgForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, add my team to this organization", required=True)
 
-class NewCommonEventForm(forms.ModelForm):
+class CommonEventForm(forms.ModelForm):
     class Meta:
         model = CommonEvent
         fields = [

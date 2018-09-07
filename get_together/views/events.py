@@ -36,7 +36,6 @@ from events.forms import (
     EventCommentForm,
     NewPlaceForm,
     UploadEventPhotoForm,
-    NewCommonEventForm,
     EventInviteEmailForm,
     EventInviteMemberForm,
     EventContactForm,

@@ -13,7 +13,7 @@ from django.conf import settings
 
 from events.models.profiles import Organization, Team, UserProfile, Member, OrgTeamRequest
 from events.models.events import Event, CommonEvent, Place, Attendee
-from events.forms import OrganizationForm, NewCommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm
+from events.forms import OrganizationForm, CommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm
 from events import location
 from events.utils import slugify
 
@@ -296,7 +296,7 @@ def show_common_event(request, event_id, event_slug):
         'org': event.organization,
         'common_event': event,
         'participating_events': event.participating_events.all().order_by('start_time'),
-        'can_edit_event': False,
+        'can_edit_event': request.user.profile.can_create_common_event(event.organization),
     }
     return render(request, 'get_together/orgs/show_common_event.html', context)
 
@@ -310,7 +310,7 @@ def create_common_event(request, org_slug):
 
     new_event = CommonEvent(organization=org, created_by=request.user.profile)
     if request.method == 'GET':
-        form = NewCommonEventForm(instance=new_event)
+        form = CommonEventForm(instance=new_event)
 
         context = {
             'org': org,
@@ -318,7 +318,7 @@ def create_common_event(request, org_slug):
         }
         return render(request, 'get_together/orgs/create_common_event.html', context)
     elif request.method == 'POST':
-        form = NewCommonEventForm(request.POST, instance=new_event)
+        form = CommonEventForm(request.POST, instance=new_event)
         if form.is_valid:
             new_event = form.save()
             send_common_event_invite(new_event)
@@ -383,4 +383,38 @@ def create_common_event_team_select(request, event_id):
         'teams': teams
     }
     return render(request, 'get_together/orgs/create_common_event_team_select.html', context)
+
+
+@login_required
+def edit_common_event(request, event_id):
+    event = get_object_or_404(CommonEvent, id=event_id)
+    org = event.organization
+    if not request.user.profile.can_create_common_event(org):
+        messages.add_message(request, messages.WARNING, message=_('You can not edit events for this org.'))
+        return redirect('show-org', org_id=org.pk)
+
+    if request.method == 'GET':
+        form = CommonEventForm(instance=event)
+
+        context = {
+            'org': org,
+            'event': event,
+            'event_form': form,
+        }
+        return render(request, 'get_together/orgs/edit_common_event.html', context)
+    elif request.method == 'POST':
+        form = CommonEventForm(request.POST, instance=event)
+        if form.is_valid():
+            new_event = form.save()
+            return redirect('show-common-event', new_event.id, new_event.slug)
+        else:
+            context = {
+                'org': org,
+                'event': event,
+                'event_form': form,
+            }
+            return render(request, 'get_together/orgs/edit_common_event.html', context)
+    else:
+     return redirect('home')
+
 

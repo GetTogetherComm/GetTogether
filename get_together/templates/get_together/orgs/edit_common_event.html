@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2>Plan a <strong>{{org.name}}</strong> event</h2>
-<form action="{% url "create-common-event" org.slug%}" method="post">
+<form action="{% url 'edit-common-event' event.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {% include "events/event_form.html" %}

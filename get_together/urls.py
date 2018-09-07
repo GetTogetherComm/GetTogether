@@ -112,6 +112,7 @@ urlpatterns = [
     path('org/+confirm_request/<str:request_key>/', views.confirm_request_to_join_org, name='confirm-request-to-join-org'),
     path('org/<str:org_slug>/+create-event/', views.create_common_event, name='create-common-event'),
     path('common/<int:event_id>/+create-event/', views.create_common_event_team_select, name='create-common-event-team-select'),
+    path('common/<int:event_id>/+edit/', views.edit_common_event, name='edit-common-event'),
     path('common/<int:event_id>/<str:event_slug>/', views.show_common_event, name='show-common-event'),
 
     path('places/', views.places_list, name='places'),
