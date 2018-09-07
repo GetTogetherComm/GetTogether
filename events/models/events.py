@@ -72,15 +72,15 @@ class Event(models.Model):
     series = models.ForeignKey('EventSeries',related_name='instances',  null=True, blank=True, on_delete=models.SET_NULL)
     status = models.SmallIntegerField(choices=STATUSES, default=CONFIRMED, db_index=True)
 
-    start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
-    end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
+    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
+    end_time = models.DateTimeField(verbose_name=_('End Time'), db_index=True)
 
-    summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
+    summary = models.TextField(help_text=_('Markdown formatting supported'), blank=True, null=True)
 
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.CASCADE)
 
-    web_url = models.URLField(verbose_name=_('Website'), help_text=_('URL for the event'), max_length=200, blank=True, null=True)
-    announce_url = models.URLField(verbose_name=_('Announcement'), help_text=_('URL for the announcement'), max_length=200, blank=True, null=True)
+    web_url = models.URLField(verbose_name=_('Website URL'), max_length=200, blank=True, null=True)
+    announce_url = models.URLField(verbose_name=_('Announcement URL'), max_length=200, blank=True, null=True)
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
@@ -297,7 +297,7 @@ class EventComment(MPTTModel):
     ]
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, related_name='comments', on_delete=models.CASCADE)
-    body = models.TextField()
+    body = models.TextField(help_text=_('Markdown formatting supported'))
     created_time = models.DateTimeField(default=timezone.now, db_index=True)
     status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
@@ -314,9 +314,9 @@ class CommonEvent(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('CommonEvent', related_name='sub_events', null=True, blank=True, on_delete=models.SET_NULL)
 
-    start_time = models.DateTimeField(help_text=_('Date and time that the event starts'), verbose_name=_('Start Time'), db_index=True)
-    end_time = models.DateTimeField(help_text=_('Date and time that the event ends'), verbose_name=_('End Time'), db_index=True)
-    summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
+    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
+    end_time = models.DateTimeField(verbose_name=_('End Time'), db_index=True)
+    summary = models.TextField(help_text=_('Markdown formatting supported'), blank=True, null=True)
 
     continent = models.ForeignKey(Continent, null=True, blank=True, on_delete=models.SET_NULL)
     country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
@@ -324,8 +324,8 @@ class CommonEvent(models.Model):
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.SET_NULL)
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.SET_NULL)
 
-    web_url = models.URLField(verbose_name=_('Website'), help_text=_('URL for the event'), max_length=200, blank=True, null=True)
-    announce_url = models.URLField(verbose_name=_('Announcement'), help_text=_('URL for the announcement'), max_length=200, blank=True, null=True)
+    web_url = models.URLField(verbose_name=_('Website URL'), max_length=200, blank=True, null=True)
+    announce_url = models.URLField(verbose_name=_('Announcement URL'), max_length=200, blank=True, null=True)
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)

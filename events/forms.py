@@ -74,6 +74,33 @@ class DateWidget(forms.DateInput):
         super(DateWidget, self).__init__(attrs=attrs)
 
 
+class SimpleTimeWidget(forms.Select):
+    """A single dropdown time widget
+    """
+    def __init__(self, attrs=None):
+        self.time_class = 'timepicker'
+        if not attrs:
+            attrs = {}
+        if 'time_class' in attrs:
+            self.time_class = attrs.pop('time_class')
+        if 'class' not in attrs:
+            attrs['class'] = 'time'
+
+        choices = []
+        for m in ('AM', 'PM'):
+            for hour in range(0, 12):
+                if hour == 0:
+                    hour = 12
+                for minute in range(00, 60, 30):
+                    choices.append(('%02d:%02d %s' % (hour, minute, m), ('%02d:%02d %s' % (hour, minute, m))))
+
+        super(SimpleTimeWidget, self).__init__(attrs, choices)
+
+    def value_from_datadict(self, data, files, name):
+        value = super(SimpleTimeWidget, self).value_from_datadict(data, files, name)
+        t = strptime(value, "%I:%M %p")
+        return strftime("%H:%M:%S", t)
+
 class TimeWidget(forms.MultiWidget):
     """A more-friendly time widget.
     """
@@ -134,7 +161,7 @@ class DateTimeWidget(forms.SplitDateTimeWidget):
         super(DateTimeWidget, self).__init__(attrs, date_format, time_format)
         self.widgets = (
             DateWidget(attrs=attrs),
-            TimeWidget(attrs=attrs),
+            SimpleTimeWidget(attrs=attrs),
         )
 
     def decompress(self, value):
