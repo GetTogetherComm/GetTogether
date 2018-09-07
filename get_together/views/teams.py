@@ -15,6 +15,7 @@ from events.models.profiles import Organization, Team, UserProfile, Member
 from events.models.events import Event, CommonEvent, Place, Attendee
 from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm, TeamInviteForm
 from events import location
+from events.utils import verify_csrf
 from events.utils import slugify
 
 from accounts.models import EmailRecord
@@ -195,7 +196,7 @@ def manage_members(request, team_id):
         messages.add_message(request, messages.WARNING, message=_('You can not manage this team\'s members.'))
         return redirect('show-team-by-slug', team.slug)
 
-    members = Member.objects.filter(team=team).order_by('user__realname')
+    members = Member.objects.filter(team=team).order_by('-role', 'user__realname')
     member_choices = [(member.id, member.user) for member in members if member.user.user.account.is_email_confirmed]
     default_choices = [('all', 'All Members (%s)' % len(member_choices)), ('admins', 'Only Administrators')]
     if request.method == 'POST':
@@ -337,3 +338,21 @@ def contact_member(member, body, sender):
         ok=success
     )
 
+
+@verify_csrf(token_key='csrftoken')
+def change_member_role(request, team_id, profile_id):
+    membership = get_object_or_404(Member, team__id=team_id, user__id=profile_id)
+
+    if not request.user.profile.can_edit_team(membership.team):
+        messages.add_message(request, messages.WARNING, message=_("You can not change member roles for this team."))
+        return redirect(event.get_absolute_url())
+
+    if request.GET.get('role', None) == 'admin':
+        membership.role = Member.ADMIN
+    elif request.GET.get('role', None) == 'moderator':
+        membership.role = Member.MODERATOR
+    elif request.GET.get('role', None) == 'normal':
+        membership.role = Member.NORMAL
+    membership.save()
+
+    return redirect('manage-members', team_id=membership.team.id)

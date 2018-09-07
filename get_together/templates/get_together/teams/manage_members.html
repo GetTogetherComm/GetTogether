@@ -41,7 +41,29 @@
                     <a href="javascript:contact_member({{member.id}});" class="fa fa-envelope" title="Contact"></a>
                     {% endif %}
                 </td>
-                <td>{{member.role_name}}</td>
+                <td>
+                    <div style="position: relative">
+                {% if member.role == member.ADMIN %}
+                  <span class="btn btn-sm btn-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">Moderator</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">Normal</a>
+                  </div>
+                {% elif member.role == member.MODERATOR %}
+                  <span class="btn btn-sm btn-default dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">Administrator</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">Normal</a>
+                  </div>
+                {% elif member.role == member.NORMAL %}
+                  <span class="btn btn-sm btn-secondary dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">Administrator</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">Moderator</a>
+                  </div>
+                {% endif %}
+                    </div>
+                </td>
                 <td>{{member.joined_date}}</td>
             </tr>
             {% endfor %}

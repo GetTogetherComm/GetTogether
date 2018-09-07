@@ -70,6 +70,7 @@ urlpatterns = [
     path('team/<int:team_id>/+leave/', event_views.leave_team, name='leave-team'),
     path('team/<int:team_id>/+delete/', views.delete_team, name='delete-team'),
     path('team/<int:team_id>/+members/', views.manage_members, name='manage-members'),
+    path('team/<int:team_id>/+change_role/<int:profile_id>/', views.change_member_role, name='change-member-role'),
     path('team/<int:team_id>/+invite/', views.invite_members, name='invite-members'),
     path('team/<int:team_id>/events.ics', feeds.TeamEventsCalendar(), name='team-event-ical'),
 

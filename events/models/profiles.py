@@ -182,9 +182,10 @@ class UserProfile(models.Model):
             return False
         if team.owner_profile == self:
             return True
-        if self in team.moderators:
+        if self in team.administrators:
             return True
         return False
+
 
 def get_user_timezone(username):
     # TODO: find a smarter way to get timezone
