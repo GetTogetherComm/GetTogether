@@ -22,6 +22,10 @@
     top: 16px;
     left: -42px;
 }
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+}
 
     </style>
 {% endblock %}
@@ -102,7 +106,7 @@
 {% block content %}
 <div class="fluid-container container-primary">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 mb-3">
             {% if team.banner_img %}
             <div class="team-banner">
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
@@ -232,7 +236,7 @@
                 </div>
                 <div class="row">
                     {% load mptt_tags %}
-                    <ul class="col list-group">
+                    <ul class="col-md-10 list-group">
                         {% recursetree event.comments.all %}
                             <div id="comment-{{node.id}}" class="list-group-item flex-container">
                               <div class="row w-100 ml-0">
