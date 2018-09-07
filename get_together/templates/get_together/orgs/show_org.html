@@ -24,7 +24,7 @@
             {% if can_edit_org %}
             <div id="admin_buttons" class="mb-2">
                 <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
-                <a href="#" class="btn btn-secondary btn-sm disabled"><i class="fa fa-users"></i> Manage Members</a>
+                <a href="#" class="btn btn-secondary btn-sm disabled"><i class="fa fa-users"></i> Manage Teams</a>
             </div>
             {% endif %}
             {% if org.banner_img %}
@@ -85,7 +85,9 @@
 
         <div class="col-sm-3">
             <div class="container container-secondary">
-            <h4>Member Teams</h4><hr/>
+            <h4>Teams</h4>
+                <small class="text-muted">{{member_count}} Members, {{event_count}} Events</small>
+                <hr/>
                 {% for member in member_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">

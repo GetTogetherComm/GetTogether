@@ -28,6 +28,9 @@ def show_org(request, org_slug):
     org = get_object_or_404(Organization, slug=org_slug)
     upcoming_events = CommonEvent.objects.filter(organization=org, end_time__gt=datetime.datetime.now()).order_by('start_time')
     recent_events = CommonEvent.objects.filter(organization=org, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:5]
+    total_members = UserProfile.objects.filter(member__team__organization=org).distinct().count()
+    total_events= Event.objects.filter(team__organization=org).distinct().count()
+
     context = {
         'org': org,
         'upcoming_events': upcoming_events,
@@ -35,6 +38,8 @@ def show_org(request, org_slug):
         'member_list': Team.objects.filter(organization=org).order_by('name'),
         'can_create_event': request.user.profile.can_create_common_event(org),
         'can_edit_org': request.user.profile.can_edit_org(org),
+        'member_count': total_members,
+        'event_count': total_events,
     }
     return render(request, 'get_together/orgs/show_org.html', context)
 
