@@ -40,7 +40,15 @@ form {
     width: 16px;
     height: 16px;
 }
+.gt-profile {
+    position: relative;
+}
+.gt-profile .gt-profile-badges {
+    position: absolute;
+    top: 24px;
+    left: 6px;
 
+}
 .btn-googleplus {
     color: #FFFFFF;
     background-color: #DB4437;

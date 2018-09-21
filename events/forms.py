@@ -345,6 +345,13 @@ class CancelEventForm(forms.Form):
     confirm = forms.BooleanField(label="Yes, cancel this event", required=True)
     reason = forms.CharField(label=_("Reason for cancellation"), widget=forms.widgets.Textarea)
 
+class ChangeEventHostForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = [
+            'team'
+        ]
+
 class EventInviteMemberForm(forms.Form):
     member = forms.ChoiceField(label=_(""))
 

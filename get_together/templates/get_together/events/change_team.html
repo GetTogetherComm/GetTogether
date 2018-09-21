@@ -1,0 +1,24 @@
+{% extends "get_together/base.html" %}
+{% load static %}
+{% block content %}
+<h2>Change host for: {{event.name}}</h2>
+<p>Select which of your teams you would like to host this event.</p>
+<form action="{% url "change-team" event.id %}" enctype="multipart/form-data" method="post">
+{% csrf_token %}
+{% include "events/change_team_form.html" %}
+	<br />
+<button type="submit" class="btn btn-primary">Change</button>
+<a class="btn btn-secondary" href="{{event.get_absolute_url}}">Cancel</a>
+</form>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $("#id_team").selectmenu();
+});
+
+</script>
+{% endblock %}

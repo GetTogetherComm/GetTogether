@@ -14,19 +14,10 @@
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
     <style>
-.gt-profile {
-    position: relative;
-}
-.gt-profile .gt-profile-badges {
-    position: relative;
-    top: 16px;
-    left: -42px;
-}
 textarea {
     box-sizing: border-box;
     width: 100%;
 }
-
     </style>
 {% endblock %}
 
@@ -155,6 +146,7 @@ textarea {
                 </button>
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
                         <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
+                        <a href="{% url 'change-team' event.id %}" class="dropdown-item">Change Host</a>
                         <a href="{% url 'manage-event-sponsors' event.id %}" class="dropdown-item">Manage Sponsors</a>
                         <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Manage Talks</a>
                         <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">Manage Attendees</a>
@@ -298,9 +290,9 @@ textarea {
                 {% for attendee in attendee_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">
-                      <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar_url}}" width="32px" height="32px">
-                      <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
-                      <div class="media-body">
+                        <img class="mr-1 gt-profile-avatar" src="{{attendee.user.avatar_url}}" width="32px" height="32px">
+                        <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
+                        <div class="media-body">
                         <h6 class="mt-2 mb-0">
                           <a href="{% url 'show-profile' attendee.user.id %}" title="{{attendee.user}}'s profile">{{attendee.user}}</a>
                           {% if attendee.user.user == request.user and not event.is_over %}

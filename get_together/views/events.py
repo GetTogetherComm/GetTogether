@@ -40,6 +40,7 @@ from events.forms import (
     EventInviteMemberForm,
     EventContactForm,
     SponsorForm,
+    ChangeEventHostForm,
 )
 from events import location
 from events.utils import verify_csrf
@@ -667,6 +668,38 @@ def edit_event(request, event_id):
                 'event_form': form,
             }
             return render(request, 'get_together/events/edit_event.html', context)
+    else:
+     return redirect('home')
+
+@login_required
+def change_event_host(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not request.user.profile.can_edit_event(event):
+        messages.add_message(request, messages.WARNING, message=_('You can not change this event\'s host'))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'GET':
+        form = ChangeEventHostForm(instance=event)
+        form.fields['team'].queryset = Team.objects.filter(member__user=request.user.profile, member__role__gte=Member.MODERATOR).order_by('name')
+
+        context = {
+            'event': event,
+            'change_form': form,
+        }
+        return render(request, 'get_together/events/change_team.html', context)
+    elif request.method == 'POST':
+        form = ChangeEventHostForm(request.POST, instance=event)
+        form.fields['team'].queryset = Team.objects.filter(member__user=request.user.profile, member__role__gte=Member.MODERATOR).order_by('name')
+        if form.is_valid():
+            new_event = form.save()
+            messages.add_message(request, messages.SUCCESS, message=_('Your event host has been changed.'))
+            return redirect(new_event.get_absolute_url())
+        else:
+            context = {
+                'event': event,
+                'change_form': form,
+            }
+            return render(request, 'get_together/orgs/request_to_join.html', context)
     else:
      return redirect('home')
 
