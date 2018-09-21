@@ -1,3 +1,8 @@
 *.sqlite*
 *.pyc
 *local_settings.*
+/env/
+/.idea/
+/static/
+/media/
+gettogether.code-workspace
