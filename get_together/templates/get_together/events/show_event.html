@@ -207,7 +207,7 @@ textarea {
 	            <div class="col-3" width="120px"><b>Presentations:</b></div>
                 <div class="col-9">
                     {% for presentation in presentation_list %}
-                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker.user}}, {{presentation.talk.speaker.title}}</a></div>
+                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker}}</a></div>
                     {% endfor %}
                     {% if not event.is_over %}
                     <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>

@@ -42,9 +42,10 @@ class Speaker(models.Model):
 
 
     def __str__(self):
-        if self.title:
-            return self.title
-        return self.user.__str__()
+        if self.title is not None and self.title != '':
+            return '%s, %s' % (self.user, self.title)
+        else:
+            return str(self.user)
 
 class Talk(models.Model):
     PRESENTATION=0
@@ -79,7 +80,8 @@ class Talk(models.Model):
         return self.presentations.filter(status=1, event__start_time__lte=timezone.now())
 
     def __str__(self):
-        return self.title
+        self.title
+
 
 class SpeakerRequest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

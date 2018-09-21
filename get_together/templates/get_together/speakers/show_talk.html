@@ -12,7 +12,7 @@
             </h2>
             <table class="table">
             <tr>
-	            <td><b>Speaker:</b></td><td><a href="{% url 'show-speaker' talk.speaker.id %}">{{ talk.speaker.user }}, {{ talk.speaker.title }}</a></td>
+	            <td><b>Speaker:</b></td><td><a href="{% url 'show-speaker' talk.speaker.id %}">{{ talk.speaker }}</a></td>
             </tr>
             <tr>
 	            <td><b>Category:</b></td><td>{{ talk.category }}</td>

@@ -10,9 +10,13 @@
 <div class="container">
     <div class="row">
         <div class="col-md-9">
-            <img src="{{speaker.headshot_url}}"/><hr/>
+            <img src="{{speaker.headshot_url}}"/>                
+            {% if speaker.user == request.user.profile %}
+            <a href="{% url 'edit-speaker' speaker.id %}" class="btn btn-secondary btn-sm">Edit Bio</a>
+            {% endif %}
+            <hr/>
             <h3>{{ speaker.user }}</h3>
-            <h5 class="text-muted">{{ speaker.title }}</h5>
+            {% if speaker.title %}<h5 class="text-muted">{{ speaker.title }}</h5>{% endif %}
             <p>
                 {{ speaker.bio|markdown }}
             </p>
