@@ -66,11 +66,16 @@ def show_profile(request, user_id):
     teams = user.memberships.all()
     talks = Talk.objects.filter(speaker__user=user)
     badges = user.user.account.badges.all()
+    upcoming_events = Event.objects.filter(team=user.personal_team, end_time__gt=datetime.datetime.now()).order_by('start_time')
+    recent_events = None#Event.objects.filter(team=user.personal_team, end_time__lte=datetime.datetime.now()).order_by('-start_time')[:3]
+
     context = {
             'user': user,
             'teams': teams,
             'talks': talks,
             'badges': badges,
+            'upcoming_events': upcoming_events,
+            'recent_events': recent_events,
     }
 
     return render(request, 'get_together/users/show_profile.html', context)

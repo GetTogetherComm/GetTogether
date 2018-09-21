@@ -9,12 +9,12 @@
 {% block content %}
 
 {% if user %}
-<div class="container">
+<div class="container container-primary">
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-7">
             <div class="h2">
-                <img class="align-bottom" border="1" src="{{user.avatar_url}}" height="128px"/> {{user.user}}
+                <img class="align-bottom mr-3" border="1" src="{{user.avatar_url}}" height="128px"/>{{ user.realname}}
                 {% if user.user.id == request.user.id %}
                 <div class="btn-group dropdown">
                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,33 +30,63 @@
 
             </div>
 
-            <p>Full name: <strong>{{user.realname}}</strong></p>
-
-            {% if user.weburl %}
-            <p>Homepage: {{user.weburl}}</p>
-            {% endif %}
-{% if talks %}
-            <h3>Talks</h3>
-            <div class="container">
-            <div class="row">
-            {% for talk in talks %}
-                <div class="mr-3 mb-3 col-md-5">
-                  <div class="card box-shadow" >
-                    <div class="card-body">
-                      <p class="card-title"><strong><a href="{% url 'show-talk' talk.id %}">{{talk.title}}</a></strong></p>
-                      <div class="card-text">
-                        <small class="text-muted mb-1">{{ talk.speaker }}</small>
-                      </div>
-                    </div>
-                  </div>
+            <div class="container container-secondary mb-3">
+                {% if user.web_url %}
+                <div class="row">
+                    <div class="col-md-3">Homepage:</div><div class="col-md-3"><a href="{{user.web_url}}" target="_blank">{{user.web_url}}</a></div>
                 </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-3">Timezone:</div><div class="col-md-3">{{user.tz}}</div>
+                </div>
+            </div>
+
+
+        {% if upcoming_events %}
+            <div class="container container-secondary mb-3">
+                <h4>Upcoming Events</h4>
+                {% for event in upcoming_events %}
+                <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
+                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
+                    <div class="col"><small>{{ event.place }}</small></div>
+                    <div class="col"><small>{{ event.local_start_time }}</small></div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if recent_events %}
+            <div class="container container-secondary mb-3">
+                <h4>Past Events</h4>
+                {% for event in recent_events %}
+                <div class="row">
+                    <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
+                    <div class="col"><small>{{ event.place }}</small></div>
+                    <div class="col"><small>{{ event.local_start_time }}</small></div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if talks %}
+            <h3>Talks</h3>
+            <div class="container container-secondary mb-3">
+            {% for talk in talks %}
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{% url 'show-talk' talk.id %}">{{talk.title}}</a>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted mb-1">{{ talk.speaker }}</small>
+                </div>
+            </div>
             {% endfor %}
             </div>
-            </div>
-{% endif %}
+        {% endif %}
         </div>
         <div class="col-md-3">
             {% if badges %}
+                <div class="container container-secondary mb-3">
                 <h4>Badges</h4>
                 <div class="mb-3">
                 {% for badge in badges %}
@@ -65,8 +95,10 @@
 		            </div>
                 {% endfor %}
                 </div>
+                </div>
             {% endif %}
             {% if teams %}
+                <div class="container container-secondary mb-3">
                 <h4>Teams</h4>
                 <ul>
                 {% for t in teams %}
@@ -75,7 +107,9 @@
 		            </li>
                 {% endfor %}
                 </ul>
+                </div>
             {% endif %}
+            <div class="container container-secondary mb-3">
             <h4>Categories</h4>
             <ul>
             {% for c in user.categories.all %}
@@ -84,6 +118,7 @@
 	            </li>
             {% endfor %}
             </ul>
+            </div>
         </div>
     </div>
 </div>
