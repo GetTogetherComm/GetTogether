@@ -1,4 +1,4 @@
-{% load static %}
+{% load static markup %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -90,7 +90,13 @@
 
     <main role="main" class="container">
 
-    {% if messages %}
+      {% if tip %}
+      <div class="alerts">
+          <div class="alert {{ tip.tags }}"><strong>Tip: </strong>{{ tip.text|safe }}</div>
+      </div>
+      {% endif %}
+
+      {% if messages %}
     <div class="alerts">
         {% for message in messages %}
         <div class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</div>

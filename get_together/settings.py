@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'accounts',
     'resume',
     'simple_ga',
+    'totd',
 ]
 
 LOGIN_URL = 'login'
@@ -105,6 +106,7 @@ TEMPLATES = [
                 'social_django.context_processors.login_redirect',
                 'django_settings_export.settings_export',
                 'simple_ga.context_processors.events',
+                'totd.context_processors.tips',
              ],
         },
     },
@@ -204,6 +206,7 @@ SETTINGS_EXPORT = [
 # Make django messages framework use Bootstrap's alert style classes
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-debug',
     messages.INFO: 'alert-info',
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',

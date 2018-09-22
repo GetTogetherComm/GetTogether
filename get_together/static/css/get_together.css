@@ -121,6 +121,12 @@ ul.errorlist li {
     text-shadow: 2px 2px #444;
 }
 
+.alert-debug {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+  }
+  
 .btn-default {
   color: #fff;
   background-color: #848484;
