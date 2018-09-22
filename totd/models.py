@@ -20,3 +20,6 @@ class Tip(models.Model):
 
     def tags(self):
         return settings.MESSAGE_TAGS[self.level]
+
+    def __str__(self):
+        return self.name

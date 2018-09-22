@@ -22,11 +22,13 @@ class TipForm(forms.ModelForm):
         self.fields['view'].widget = forms.Select(choices=url_choices())
 
 class TipAdmin(admin.ModelAdmin):
-    #raw_id_fields = ('seen_by',)
     list_filter =('level', 'view')
-    list_display = ('name', 'level', 'view', 'run_start', 'run_end')
+    list_display = ('name', 'level', 'view', 'run_start', 'run_end', 'seen_count')
     search_fields = ('name', 'view')
     form = TipForm
 
+    def seen_count(self, tip):
+        return tip.seen_by.count()
+    seen_count.short_description = 'Seen by'
 
 admin.site.register(Tip, TipAdmin)
