@@ -24,7 +24,7 @@
             {% if can_edit_org %}
             <div id="admin_buttons" class="mb-2">
                 <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
-                <a href="#" class="btn btn-secondary btn-sm disabled"><i class="fa fa-users"></i> Manage Teams</a>
+                <a href="{% url 'manage-teams' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-users"></i> Manage Teams</a>
             </div>
             {% endif %}
             {% if org.banner_img %}

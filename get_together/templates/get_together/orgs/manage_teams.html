@@ -1,0 +1,133 @@
+{% extends "get_together/base.html" %}
+{% load markup tz %}
+
+{% block add_to_title %} | {{org.name}}{% endblock %}
+
+
+{% block content %}
+
+{% if requests %}
+    <div class="alerts">
+        <div class="alert alert-success">You have <a href="#requests">{{ requests.count }} request{{requests.count|pluralize}}</a> to join your Org!</div>
+    </div>
+{% endif %}
+
+<div class="fluid-container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2><a href="{% url 'show-org' org.slug %}">{{ org.name }}</a> Teams</h2>
+
+            <table class="table">
+            <tr>
+                <th colspan="2">Team</th>
+                <th>Contact</th>
+                <th>Location</th>
+                <th>Members</th>
+            </tr>
+            {% for team in teams %}
+            <tr>
+                <td><img class="rounded" src="{{team.card_img_url}}" height="64px"></td>
+                <td><a href="{% url 'show-team-by-slug' team.slug %}">{{team.name}}</a></td>
+                <td>
+                    <a href="javascript:contact_team({{team.id}});" class="fa fa-envelope" title="Contact"></a>
+                </td>
+                <td>
+                    {{team.city.short_name}}
+                </td>
+                <td>
+                        {{team.members.count}}
+                </td>
+            </tr>
+            {% endfor %}
+            </table>
+
+            {% if requests %}
+            <h3 id="requests">Requests to join</h3>
+            <table class="table">
+            <tr>
+                <th colspan="2">Team</th>
+                <th>Location</th>
+                <th>Owner</th>
+                <th>Requested</th>
+                <th></th>
+            </tr>
+            {% for req in requests %}
+            <tr>
+                <td><img class="rounded" src="{{req.team.card_img_url}}" height="64px"></td>
+                <td><a href="{% url 'show-team-by-slug' req.team.slug %}">{{req.team.name}}</a></td>
+                <td>
+                    {{req.team.city.short_name}}
+                </td>
+                <td>
+                        <a href="{% url 'show-profile' req.team.owner_profile.id %}">{{req.team.owner_profile}}</a>
+                </td>
+                <td>
+                    {{req.requested_date|date}}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-success" href="{% url 'confirm-request-to-join-org' req.request_key %}">Confirm</a>
+                </td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+
+            {% if invites %}
+            <h3>Pending invitations</h3>
+            <table class="table">
+            <tr>
+                <th colspan="2">Team</th>
+                <th>Location</th>
+                <th>Owner</th>
+                <th>Invited</th>
+            </tr>
+            {% for req in invites %}
+            <tr>
+                <td><img class="rounded" src="{{req.team.card_img_url}}" height="64px"></td>
+                <td><a href="{% url 'show-team-by-slug' req.team.slug %}">{{req.team.name}}</a></td>
+                <td>
+                    {{req.team.city.short_name}}
+                </td>
+                <td>
+                        <a href="{% url 'show-profile' req.team.owner_profile.id %}">{{req.team.owner_profile}}</a>
+                </td>
+                <td>
+                    {{req.requested_date|date}}
+                </td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-3">
+            <div class="container">
+            <h4>Contact</h4><hr/>
+                <div class="row">
+                    <div class="col">
+                        <form action="{% url 'manage-teams' org.slug %}" method="POST">
+                            {% csrf_token %}
+                            {{ contact_form.as_p }}
+                            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#id_to").selectmenu();
+});
+
+function contact_team(team_id) {
+    $("#id_to").val(team_id);
+    $("#id_to").selectmenu("refresh");
+    $("#id_body").focus();
+}
+</script>
+{% endblock %}

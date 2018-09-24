@@ -13,7 +13,7 @@ from django.conf import settings
 
 from events.models.profiles import Organization, Team, UserProfile, Member, OrgTeamRequest
 from events.models.events import Event, CommonEvent, Place, Attendee
-from events.forms import OrganizationForm, CommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm
+from events.forms import OrganizationForm, CommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm, OrgContactForm
 from events import location
 from events.utils import slugify
 
@@ -289,6 +289,87 @@ def accept_invite_to_join_org(request, req):
     else:
      return redirect('home')
 
+
+@login_required
+def manage_org_teams(request, org_slug):
+    org = get_object_or_404(Organization, slug=org_slug)
+    if not request.user.profile.can_edit_org(org):
+        messages.add_message(request, messages.WARNING, message=_('You can not manage this organization\'s members.'))
+        return redirect('show-org', org.slug)
+
+    teams = Team.objects.filter(organization=org)
+    team_choices = [(team.id, team.name) for team in teams]
+    default_choices = [('all', 'All Teams (%s)' % len(team_choices))]
+    if request.method == 'POST':
+        contact_form = OrgContactForm(request.POST)
+        contact_form.fields['to'].choices = default_choices + team_choices
+        if contact_form.is_valid():
+            to = contact_form.cleaned_data['to']
+            body = contact_form.cleaned_data['body']
+            if to == 'all':
+                count = 0
+                for team in teams:
+                    contact_team(team, org, body, request.user.profile)
+                    count += 1
+                messages.add_message(request, messages.SUCCESS, message=_('Emailed %s teams' % count))
+            else:
+                try:
+                    team = Team.objects.get(id=to)
+                    contact_team(team, org, body, request.user.profile)
+                    messages.add_message(request, messages.SUCCESS, message=_('Emailed %s' % team.name))
+                except Team.DoesNotExist:
+                    messages.add_message(request, messages.ERROR, message=_('Error sending message: Unknown team (%s)'%to))
+                    pass
+            return redirect('manage-teams', org.slug)
+        else:
+            messages.add_message(request, messages.ERROR, message=_('Error sending message: %s' % contact_form.errors))
+    else:
+        contact_form = OrgContactForm()
+        contact_form.fields['to'].choices = default_choices + team_choices
+
+    pending = OrgTeamRequest.objects.filter(organization=org, joined_date__isnull=True).exclude(team__in=teams)
+    context = {
+        'org': org,
+        'teams': teams,
+        'requests': pending.filter(request_origin=OrgTeamRequest.TEAM),
+        'invites': pending.filter(request_origin=OrgTeamRequest.ORG),
+        'contact_form': contact_form,
+        'can_edit_org': request.user.profile.can_edit_org(org),
+    }
+    return render(request, 'get_together/orgs/manage_teams.html', context)
+
+
+def contact_team(team, org, body, sender):
+    context = {
+        'sender': sender,
+        'team': team,
+        'org': org,
+        'body': body,
+        'site': Site.objects.get(id=1),
+    }
+    email_subject = 'A message from: %s' % org.name
+    email_body_text = render_to_string('get_together/emails/orgs/team_contact.txt', context)
+    email_body_html = render_to_string('get_together/emails/orgs/team_contact.html', context)
+    email_from = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gettogether.community')
+
+    for member in Member.objects.filter(team=team, role=Member.ADMIN):
+        email_recipients = [member.user.user.email]
+        success = send_mail(
+            from_email=email_from,
+            html_message=email_body_html,
+            message=email_body_text,
+            recipient_list=email_recipients,
+            subject=email_subject,
+            fail_silently=True,
+        )
+        EmailRecord.objects.create(
+            sender=sender.user,
+            recipient=member.user.user,
+            email=member.user.user.email,
+            subject=email_subject,
+            body=email_body_text,
+            ok=success
+        )
 
 def show_common_event(request, event_id, event_slug):
     event = get_object_or_404(CommonEvent, id=event_id)

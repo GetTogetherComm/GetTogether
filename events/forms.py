@@ -456,6 +456,10 @@ class OrganizationForm(forms.ModelForm):
             'cover_img',
         ]
 
+class OrgContactForm(forms.Form):
+    to = forms.ChoiceField(label=_(""))
+    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+
 class RequestToJoinOrgForm(forms.ModelForm):
     class Meta:
         model = OrgTeamRequest
