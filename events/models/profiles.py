@@ -293,7 +293,7 @@ class Sponsor(models.Model):
                                            upload_to='sponsors',
                                            processors=[ResizeToFit(250, 200)],
                                            format='PNG',
-                                           blank=True)
+                                           blank=False)
     def __str__(self):
         return self.name
 

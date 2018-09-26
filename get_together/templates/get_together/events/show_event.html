@@ -277,7 +277,11 @@ textarea {
                 {% for sponsor in sponsor_list %}
                 <div class="row mb-3">
                     <div class="col">
-                        <a href="{{sponsor.web_url}}" target="_blank"><img src="{{sponsor.logo.url}}" alt="{{sponsor.name}} Logo" title="{{sponsor.name}}"></a>
+                        {% if sponsor.logo %}
+                            <a href="{{sponsor.web_url}}" target="_blank"><img src="{{sponsor.logo.url}}" alt="{{sponsor.name}} Logo" title="{{sponsor.name}}"></a>
+                        {% else %}
+                            <a href="{{sponsor.web_url}}" target="_blank">{{sponsor.name}}</a>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}

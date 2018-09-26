@@ -42,7 +42,11 @@
                           <div class="card mb-1 box-shadow">
                             <div class="card-banner align-items-center">
                                 <a class="card-link" href="{{sponsor.web_url}}">
+                                {% if sponsor.logo %}
                                 <img class="card-img-top" src="{{sponsor.logo.url}}">
+                                {% else %}
+                                {{sponsor.name}}
+                                {% endif %}
                                 </a>
                             </div>
                             <div class="card-body">
