@@ -107,7 +107,10 @@ class ProfileAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile, ProfileAdmin)
 
 class OrgAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'site')
+    list_display = ('name', 'slug', 'team_count', 'owner_profile', 'site')
+    def team_count(self, org):
+        return org.teams.all().count()
+    team_count.short_description = 'Teams'
 admin.site.register(Organization, OrgAdmin)
 
 class OrgRequestAdmin(admin.ModelAdmin):
