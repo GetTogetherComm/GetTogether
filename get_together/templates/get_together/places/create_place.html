@@ -220,6 +220,8 @@ $(document).ready(function(){
             });
         },
         select: function( event, ui ) {
+          $("#id_latitude").val(ui.data.latitude);
+          $("#id_longitude").val(ui.data.longitude);
           $("#id_tz").val(ui.data.tz);
           $("#id_tz").selectmenu("refresh");
         }

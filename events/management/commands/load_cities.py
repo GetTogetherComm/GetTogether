@@ -52,7 +52,7 @@ class Command(BaseCommand):
                                     City.objects.update_or_create(
                                         name=city[NAME],
                                         spr=spr,
-                                        defaults={'tz': city[TIMEZONE], 'longitude': city[LONGITUDE], 'latitude': city[LATITUDE]})
+                                        defaults={'tz': city[TIMEZONE], 'population': city[POPULATION], 'longitude': city[LONGITUDE], 'latitude': city[LATITUDE]})
                                 except Exception as e:
                                     print("Warning: Failed to load city %s for %s (%s)" % (city[NAME], spr, e))
                     else:

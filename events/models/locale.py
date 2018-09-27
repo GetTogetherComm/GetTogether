@@ -96,6 +96,7 @@ class City(models.Model):
     tz = models.CharField(max_length=32, verbose_name=_('Default Timezone'), default='UTC', choices=[(tz, tz) for tz in pytz.all_timezones], blank=False, null=False, help_text=_('The most commonly used timezone for this Team.'))
     longitude = models.FloatField(help_text=_('Longitude in Degrees East'), null=True, blank=True)
     latitude = models.FloatField(help_text=_('Latitude in Degrees North'), null=True, blank=True)
+    population = models.IntegerField(help_text=_('Population'), null=False, blank=False, default=0)
 
     @property
     def short_name(self):
@@ -125,6 +126,8 @@ class CitySerializer(serializers.ModelSerializer):
             'short_name',
             'spr',
             'tz',
+            'latitude',
+            'longitude',
             'slug',
             'display'
         )

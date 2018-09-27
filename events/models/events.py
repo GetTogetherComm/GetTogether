@@ -201,8 +201,12 @@ def update_event_searchable(event):
     if (event.place is not None):
         searchable.location_name = str(event.place.city)
         searchable.venue_name = event.place.name
-        searchable.longitude = event.place.longitude or None
-        searchable.latitude = event.place.latitude or None
+        if event.place.longitude is not None and event.place.latitude is not None:
+            searchable.longitude = event.place.longitude
+            searchable.latitude = event.place.latitude
+        elif event.place.city is not None:
+            searchable.longitude = event.place.city.longitude
+            searchable.latitude = event.place.city.latitude
     else:
         searchable.location_name = event.team.location_name
 

@@ -66,7 +66,7 @@ def spr_list(request, *args, **kwargs):
 def city_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        cities = City.objects.filter(name__icontains=match)
+        cities = City.objects.filter(name__icontains=match).order_by('-population')
     else:
         cities = City.objects.all()
 
