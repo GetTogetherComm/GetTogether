@@ -13,7 +13,7 @@
         <div >
         <center>
                 {% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<a class="btn btn-googleplus mb-1 col-8" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-google-plus-official"></i> Google</a></br>{% endif %}
-                {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<a class="btn btn-facebook mb-1 col-8" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-facebook-official"></i> Faceboook</a></br>{% endif %}
+                {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<a class="btn btn-facebook mb-1 col-8" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-facebook-official"></i> Facebook</a></br>{% endif %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}<a class="btn btn-twitter mb-1 col-8" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-twitter"></i> Twitter</a></br>{% endif %}
                 {% comment %}{% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}<a class="btn btn-linkedin mb-1 col-8" href="{% url 'social:begin' 'linkedin' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-linkedin"></i> LinkedIn</a></br>{% endif %}{% endcomment %}
                 {% if settings.SOCIAL_AUTH_GITHUB_KEY %}<a class="btn btn-github mb-1 col-8" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fa fa-github"></i> GitHub</a></br>{% endif %}
