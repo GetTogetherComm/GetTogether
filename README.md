@@ -1,5 +1,7 @@
 # Get Together
 
+[![Build Status](https://travis-ci.org/GetTogetherComm/GetTogether.svg?branch=master)](https://travis-ci.org/GetTogetherComm/GetTogether)
+
 Get Together is an open source event manager for local communities.
 
 Get Together is version *0.8.0*.
