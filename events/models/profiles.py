@@ -208,7 +208,7 @@ def _getUserProfile(self):
         if self.email:
             h = hashlib.md5()
             h.update(bytearray(profile.user.email, 'utf8'))
-            profile.avatar = 'http://www.gravatar.com/avatar/%s.jpg?d=mm' % h.hexdigest()
+            profile.avatar = 'https://www.gravatar.com/avatar/%s.jpg?d=mm' % h.hexdigest()
 
         profile.save()
 
