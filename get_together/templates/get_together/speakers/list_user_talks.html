@@ -12,7 +12,7 @@
 {% for speaker in speaker_bios %}
             <div class="col-md-4">
               <div class="card mb-4 box-shadow" style="width: 18rem;">
-                <div class="card-img-top mt-1" style="text-align: center"><img src="{{speaker.headshot.url}}"/></div>
+                <div class="card-img-top mt-1" style="text-align: center"><img src="{{speaker.headshot_url}}"/></div>
                 <div class="card-body">
                   <p class="card-title" style="height: 2rem;">
                       <strong><a href="{% url 'edit-speaker' speaker.id %}">{{speaker.title}}</a></strong>

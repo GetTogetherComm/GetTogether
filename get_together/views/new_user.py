@@ -198,4 +198,5 @@ def user_confirm_notifications(request):
         if form.is_valid():
             form.save()
             return redirect('home')
+    return redirect('home')
 
