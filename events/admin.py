@@ -44,7 +44,8 @@ class NumberOfEventsFilter(SimpleListFilter):
     def lookups(self, request, model_admin):
         return (
             ('0', '0'),
-            ('1', '1 - 9'),
+            ('1', '1'),
+            ('2', '2 - 9'),
             ('10', '10 - 99'),
             ('100', '100+'),
             ('>0', '> 0')
@@ -54,8 +55,10 @@ class NumberOfEventsFilter(SimpleListFilter):
         if self.value() == '0':
             return queryset.annotate(num_events=Count('event')).filter(num_events=0)
         if self.value() == '>0':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gt=0)
+            return queryset.annotate(num_events=Count('event')).filter(num_events=1)
         if self.value() == '1':
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=2, num_events__lte=9)
+        if self.value() == '2':
             return queryset.annotate(num_events=Count('event')).filter(num_events__gte=1, num_events__lte=9)
         if self.value() == '10':
             return queryset.annotate(num_events=Count('event')).filter(num_events__gte=10, num_events__lte=99)
@@ -69,7 +72,8 @@ class NumberOfMembersFilter(SimpleListFilter):
     def lookups(self, request, model_admin):
         return (
             ('0', '0'),
-            ('1', '1 - 9'),
+            ('1', '1'),
+            ('2', '2 - 9'),
             ('10', '10 - 99'),
             ('100', '100+'),
             ('>0', '> 0')
@@ -81,11 +85,41 @@ class NumberOfMembersFilter(SimpleListFilter):
         if self.value() == '>0':
             return queryset.annotate(num_events=Count('member')).filter(num_events__gt=0)
         if self.value() == '1':
-            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=1, num_events__lte=9)
+            return queryset.annotate(num_events=Count('member')).filter(num_events=1)
+        if self.value() == '2':
+            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=2, num_events__lte=9)
         if self.value() == '10':
             return queryset.annotate(num_events=Count('member')).filter(num_events__gte=10, num_events__lte=99)
         if self.value() == '100':
             return queryset.annotate(num_events=Count('member')).filter(num_events__gte=100)
+
+class NumberOfAttendeesFilter(SimpleListFilter):
+    title = _('Attendee Count')
+    parameter_name = 'attendee_count'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('0', '0'),
+            ('1', '1'),
+            ('2', '2 - 9'),
+            ('10', '10 - 99'),
+            ('100', '100+'),
+            ('>0', '> 0')
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events=0)
+        if self.value() == '>0':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gt=0)
+        if self.value() == '1':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events=1)
+        if self.value() == '2':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=2, num_events__lte=9)
+        if self.value() == '10':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=10, num_events__lte=99)
+        if self.value() == '100':
+            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=100)
 
 class SPRAdmin(admin.ModelAdmin):
     raw_id_fields = ('country',)
@@ -149,7 +183,7 @@ admin.site.register(Place, PlaceAdmin)
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by', 'sponsors')
     list_display = ('__str__', 'attendee_count', 'start_time', 'created_by', 'created_time')
-    list_filter = ('created_time', ('created_by',admin.RelatedOnlyFieldListFilter), ('team',admin.RelatedOnlyFieldListFilter))
+    list_filter = ('created_time', 'start_time', NumberOfAttendeesFilter, ('team__country',admin.RelatedOnlyFieldListFilter))
     ordering = ('-start_time',)
     def attendee_count(self, event):
         return event.attendees.all().count()
