@@ -40,7 +40,7 @@
     <link href="{% static 'js/tether/css/tether.min.css' %}" rel="stylesheet">
     <link href="{% static 'js/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/get_together.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/fontawesome/all.css' %}">
     <!-- style overrides -->
     {% block styles %}{% endblock %}
 
@@ -56,10 +56,10 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item{% if request.resolver_match.url_name == "events" or request.resolver_match.url_name == "all-events" %} active{% endif %}">
-            <a class="nav-link" href="{% url 'events' %}"><i class="fa fa-calendar"></i> Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% url 'events' %}"><i class="far fa-calendar-alt"></i> Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if request.resolver_match.url_name == "teams" or request.resolver_match.url_name == "all-teams" %} active{% endif %}">
-            <a class="nav-link" href="{% url 'teams' %}"><i class="fa fa-group"></i>  Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% url 'teams' %}"><i class="fa fa-users"></i>  Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% comment %}
           <li class="nav-item{% if request.resolver_match.url_name == "places" %} active{% endif %}">
@@ -69,7 +69,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="fa fa fa-calendar-plus-o"></i> Host a Get Together</a>
+            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="far fa-calendar-plus"></i> Host a Get Together</a>
           </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
@@ -78,7 +78,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
                   <a class="dropdown-item" href="{% url 'show-profile' request.user.profile.id %}"><i class="fa fa-user"></i>  Profile</a>
-                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i>  Logout</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i>  Logout</a>
                 </div>
             </li>
             {% else %}

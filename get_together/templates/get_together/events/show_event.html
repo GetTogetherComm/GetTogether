@@ -113,13 +113,13 @@ textarea {
             {% endif %}
             {% if event.status != event.CANCELED and not request.user.profile.do_not_track %}
             {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
-                <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
+                <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> Tweet</a>
             {% endif %}
             {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
-                <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fa fa-facebook-official"></i> Share</a>
+                <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> Share</a>
             {% endif %}
             {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
-                <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fa fa-linkedin"></i> Share</a>
+                <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fab fa-linkedin"></i> Share</a>
             {% endif %}
             {% if not event.is_over %}
                 {% if can_edit_team or is_email_confirmed %}
@@ -142,7 +142,7 @@ textarea {
             {% if can_edit_event %}
             <div class="btn-group dropdown">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Edit
+                  <a class="fa fa-edit">&nbsp;</a>Edit
                 </button>
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
                         <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
@@ -188,7 +188,7 @@ textarea {
 	            <div class="col-3" width="120px"><b>Place:</b></div><div class="col-9">
                       {% if event.place %}
                           <a class="" href="{% url 'show-place' event.place.id %}">{{ event.place.name }}</a>
-                          {% if can_edit_event %}<a href="{% url 'add-place' event.id %}" class="btn btn-secondary btn-sm">Change</a>{% endif %}
+                          {% if can_edit_event %}<a href="{% url 'add-place' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-globe-americas">&nbsp;</i>Change</a>{% endif %}
                       {% elif can_edit_event %}
                           <a class="" href="{% url 'add-place' event.id %}">No place selected yet.</a>
                       {% else %}

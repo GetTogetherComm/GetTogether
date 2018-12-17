@@ -100,13 +100,9 @@
             {% if teams %}
                 <div class="container container-secondary mb-3">
                 <h4>Teams</h4>
-                <ul>
                 {% for t in teams %}
-		            <li>
-			            <a href="{% url 'show-team-by-slug' t.slug %}" title="Team page for {{t.name}}">{{t.name}}</a>
-		            </li>
+		            <a href="{% url 'show-team-by-slug' t.slug %}" title="Team page for {{t.name}}"><i class="fa fa-users">&nbsp;</i>{{t.name}}</a><br/>
                 {% endfor %}
-                </ul>
                 </div>
             {% endif %}
             <div class="container container-secondary mb-3">

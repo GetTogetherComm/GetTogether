@@ -23,7 +23,7 @@
         <div class="col-sm-9">
             {% if can_edit_org %}
             <div id="admin_buttons" class="mb-2">
-                <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Org</a>
+                <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit Org</a>
                 <a href="{% url 'manage-teams' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-users"></i> Manage Teams</a>
             </div>
             {% endif %}
@@ -61,7 +61,7 @@
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary"><i class="fa fa-calendar-plus-o"></i> Create an Event</a>
+                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i> Create an Event</a>
                     </div>
                 </div>
                 {% endif %}
@@ -92,7 +92,7 @@
                 <div class="row mb-3">
                     <div class="col media gt-profile">
                       <div class="media-body">
-                          <h6 class="mt-0 mb-0"><a href="{% url 'show-team-by-slug' member.slug %}" title="{{member.name}}">{{member.name}}</a></h6>
+                          <h6 class="mt-0 mb-0"><a href="{% url 'show-team-by-slug' member.slug %}" title="{{member.name}}"><i class="fa fa-users">&nbsp;</i>{{member.name}}</a></h6>
                           <small class="text-muted">{{member.member_set.count}} Members, {{member.event_set.count}} Events</small>
                       </div>
                     </div>

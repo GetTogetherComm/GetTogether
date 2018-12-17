@@ -91,7 +91,7 @@
         <div class="col-md-9">
             {% if can_edit_event %}
             <div id="admin_buttons" class="mb-2">
-                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil"></i> Edit Event</a>
+                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit Event</a>
             </div>
             {% endif %}
             {% if common_event.organization.banner_img %}
@@ -106,10 +106,10 @@
             <div class="mb-2">
                 {% if not request.user.profile.do_not_track %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
-                    <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fa fa-twitter"></i> Tweet</a>
+                    <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> Tweet</a>
                 {% endif %}
                 {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
-                    <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fa fa-facebook-official"></i> Share</a>
+                    <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> Share</a>
                 {% endif %}
                 {% endif %}
             </div>

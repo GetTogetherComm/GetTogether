@@ -25,7 +25,7 @@
 
             <div class="container container-secondary mb-3">
                 <h4>Upcoming Events
-                    <small><a href="{% url 'team-event-ical' team.id %}" class="fa fa-calendar" title="iCal"></a></small>
+                    <small><a href="{% url 'team-event-ical' team.id %}" class="far fa-calendar-alt" title="iCal"></a></small>
                 </h4>
                 {% for event in upcoming_events %}
                 <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
@@ -37,7 +37,7 @@
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-primary"><i class="fa fa-calendar-plus-o"></i>  Host a Get Together</a>
+                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i>  Host a Get Together</a>
                     </div>
                 </div>
                 {% endif %}
