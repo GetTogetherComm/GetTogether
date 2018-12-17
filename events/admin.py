@@ -55,11 +55,11 @@ class NumberOfEventsFilter(SimpleListFilter):
         if self.value() == '0':
             return queryset.annotate(num_events=Count('event')).filter(num_events=0)
         if self.value() == '>0':
-            return queryset.annotate(num_events=Count('event')).filter(num_events=1)
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=0)
         if self.value() == '1':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=2, num_events__lte=9)
+            return queryset.annotate(num_events=Count('event')).filter(num_events=1)
         if self.value() == '2':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=1, num_events__lte=9)
+            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=2, num_events__lte=9)
         if self.value() == '10':
             return queryset.annotate(num_events=Count('event')).filter(num_events__gte=10, num_events__lte=99)
         if self.value() == '100':
