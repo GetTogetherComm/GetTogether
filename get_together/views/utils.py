@@ -5,7 +5,7 @@ from django.conf import settings
 import math
 
 from events.location import get_geoip, get_client_ip
-from .new_user import *
+from events.models import Team
 
 KM_PER_DEGREE_LAT = 110.574
 KM_PER_DEGREE_LNG = 111.320 # At the equator

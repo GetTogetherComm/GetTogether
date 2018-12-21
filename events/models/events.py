@@ -361,8 +361,10 @@ class CommonEvent(models.Model):
                 else:
                     schema = 'https'
                 return "%s://%s%s" % (schema, site.domain, self.organization.tile_img .url)
-        else:
+        elif self.category and self.category.img_url:
             return self.category.img_url
+        else:
+            return static('img/team_placeholder.png')
 
     def location(self):
         if self.city:

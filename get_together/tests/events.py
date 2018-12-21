@@ -7,13 +7,15 @@ import mock
 import datetime
 
 from django.contrib.auth.models import User
-from events.ipstack import get_ipstack_geocoder
+from events.ipstack import IPStackResult
 from events.models import Event, Place, Attendee, UserProfile
+
+from django.conf import settings
 # Create your tests here.
 
 def mock_get_geoip(latitude=0.0, longitude=0.0):
     def get_geoip(request):
-        g = get_ipstack_geocoder('8.8.8.8')
+        g = IPStackResult({})
         g.raw['latitude'] =  latitude
         g.raw['longitude'] = longitude
         return g
@@ -23,6 +25,8 @@ class EventDisplayTests(TestCase):
 
     def setUp(self):
         super().setUp()
+        settings.USE_TZ = False
+
 
     def tearDown(self):
         super().tearDown()

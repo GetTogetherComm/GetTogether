@@ -25,6 +25,10 @@ class IPStackResult(OneResult):
         return None
 
     @property
+    def ok(self):
+        return bool(self.lng is not None and self.lat is not None)
+
+    @property
     def address(self):
         if self.city:
             return u'{0}, {1} {2}'.format(self.city, self.state, self.country)

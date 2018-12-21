@@ -263,12 +263,10 @@ class TeamEventForm(forms.ModelForm):
         event_tz = pytz.timezone(self.instance.tz)
         if self.instance.local_start_time: self.initial['start_time'] = self.instance.local_start_time
         if self.instance.local_end_time: self.initial['end_time'] = self.instance.local_end_time
-        print("Initial: %s" % self.initial)
 
     def clean(self):
         cleaned_data = super().clean()
         event_tz = pytz.timezone(self.instance.tz)
-        print("Clean: %s" % cleaned_data)
         cleaned_data['start_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['start_time']))))
         cleaned_data['end_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['end_time']))))
         return cleaned_data
@@ -287,12 +285,10 @@ class NewTeamEventForm(forms.ModelForm):
         event_tz = pytz.timezone(self.instance.tz)
         if self.instance.local_start_time: self.initial['start_time'] = self.instance.local_start_time
         if self.instance.local_end_time: self.initial['end_time'] = self.instance.local_end_time
-        print("Initial: %s" % self.initial)
 
     def clean(self):
         cleaned_data = super().clean()
         event_tz = pytz.timezone(self.instance.tz)
-        print("Clean: %s" % cleaned_data)
         cleaned_data['start_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['start_time']))))
         cleaned_data['end_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['end_time']))))
         return cleaned_data
@@ -313,12 +309,10 @@ class NewEventForm(forms.ModelForm):
         event_tz = pytz.timezone(self.instance.tz)
         if self.instance.local_start_time: self.initial['start_time'] = self.instance.local_start_time
         if self.instance.local_end_time: self.initial['end_time'] = self.instance.local_end_time
-        print("Initial: %s" % self.initial)
 
     def clean(self):
         cleaned_data = super().clean()
         event_tz = pytz.timezone(self.instance.tz)
-        print("Clean: %s" % cleaned_data)
         cleaned_data['start_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['start_time']))))
         cleaned_data['end_time'] = pytz.utc.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(cleaned_data['end_time']))))
         return cleaned_data

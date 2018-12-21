@@ -120,7 +120,7 @@ urlpatterns = [
 
     path('places/', views.places_list, name='places'),
     path('places/<int:place_id>/', views.show_place, name='show-place'),
-    path('+create-place/', views.create_place, name='create-place'),
+    #path('+create-place/', views.create_place, name='create-place'),
 
     path('about/', include('django.contrib.flatpages.urls')),
 

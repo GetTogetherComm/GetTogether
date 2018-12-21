@@ -29,7 +29,7 @@ def verify_csrf(token_key='csrftoken'):
         def check_csrf_token(request, *args, **kwargs):
             csrf_token = _sanitize_token(request.GET.get(token_key, ''))
             match = _compare_salted_tokens(csrf_token, request.COOKIES.get(settings.CSRF_COOKIE_NAME, ''))
-            if not match:
+            if not match and getattr(settings, 'CSRF_VERIFY_TOKEN', True):
                 raise PermissionDenied
             else:
                 return view_func(request, *args, **kwargs)
