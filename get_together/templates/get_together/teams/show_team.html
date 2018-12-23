@@ -1,5 +1,5 @@
 {% extends "get_together/teams/team_page_base.html" %}
-{% load static markup tz %}
+{% load static markup tz i18n %}
 
 {% block summary-button %}btn-default{% endblock %}
 
@@ -12,24 +12,29 @@
             {% endif %}
             {% if team.organization %}
             <div class="row">
-	            <div class="col-md-3"><b>Organization:</b></div><div class="col-md-6"><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></div>
+	            <div class="col-md-3"><b>{% trans "Organization:" %}</b></div><div class="col-md-6"><a href="{% url 'show-org' team.organization.slug %}">{{ team.organization.name }}</a></div>
             </div>
             {% endif %}
             {% if team.web_url %}
             <div class="row">
-	            <div class="col-md-3"><b>Website:</b></div><div class="col-md-6"><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></div>
+	            <div class="col-md-3"><b>{% trans "Website:" %}</b></div><div class="col-md-6"><a href="{{ team.web_url }}" target="_blank">{{ team.web_url }}</a></div>
+            </div>
+            {% endif %}
+            {% if team.city %}
+            <div class="row">
+	            <div class="col-md-3"><b>{% trans "City:" %}</b></div><div class="col-md-6"><a href="/?city={{team.city.id}}">{{ team.city.short_name }}</a></div>
             </div>
             {% endif %}
 
             </div>
 
             <div class="container container-secondary mb-3">
-                <h4>Upcoming Events
+                <h4>{% trans "Upcoming Events" %}
                     <small><a href="{% url 'team-event-ical' team.id %}" class="far fa-calendar-alt" title="iCal"></a></small>
                 </h4>
                 {% for event in upcoming_events %}
                 <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
-                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
+                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> ({% trans "Canceled" %}){% endif %}</div>
                     <div class="col">{{ event.place }}</div>
                     <div class="col">{{ event.local_start_time }}</div>
                 </div>
@@ -37,7 +42,7 @@
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i>  Host a Get Together</a>
+                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i>  {% trans "Host a Get Together" %}</a>
                     </div>
                 </div>
                 {% endif %}
@@ -45,7 +50,7 @@
 
             {% if recent_events %}
             <div class="container container-secondary mb-3">
-                <h4>Recent Events</h4>
+                <h4>{% trans "Recent Events" %}</h4>
                 {% for event in recent_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>

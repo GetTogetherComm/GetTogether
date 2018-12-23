@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12 align-left">
-            <h2>Confirmation email sent</h2>
+            <h2>{% trans "Confirmation email sent" %}</h2>
 
-            <p>An email has been sent to <strong>{{request.user.email}}</strong>. Click the link it contains to confirm that you have access to this email address.</p>
+            <p>{% blocktrans with email=request.user.email %}An email has been sent to <strong>{{email}}</strong>. Click the link it contains to confirm that you have access to this email address.{% endblocktrans %}</p>
 
-            <p>This confirmation request will expire on {{confirmation.expires}}</p>
+            <p>{% blocktrans with expires=confirmation.expires %}This confirmation request will expire on {{expires}}{% endblocktrans %}</p>
         </div>
     </div>
 </div>

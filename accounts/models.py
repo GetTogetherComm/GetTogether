@@ -57,7 +57,7 @@ class Account(models.Model):
                 return self.acctname
             return "%s" % self.user.username
         except:
-            return "Unknown Account"
+            return _("Unknown Account")
 
 
 def _getUserAccount(self):

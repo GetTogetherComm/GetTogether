@@ -1,4 +1,4 @@
-{% load static markup %}
+{% load static markup i18n %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -56,10 +56,10 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item{% if request.resolver_match.url_name == "events" or request.resolver_match.url_name == "all-events" %} active{% endif %}">
-            <a class="nav-link" href="{% url 'events' %}"><i class="far fa-calendar-alt"></i> Events{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% url 'events' %}"><i class="far fa-calendar-alt"></i> {% trans "Events" %}{% if request.resolver_match.url_name == "events" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if request.resolver_match.url_name == "teams" or request.resolver_match.url_name == "all-teams" %} active{% endif %}">
-            <a class="nav-link" href="{% url 'teams' %}"><i class="fa fa-users"></i>  Teams{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% url 'teams' %}"><i class="fa fa-users"></i>  {% trans "Teams" %}{% if request.resolver_match.url_name == "teams" %} <span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% comment %}
           <li class="nav-item{% if request.resolver_match.url_name == "places" %} active{% endif %}">
@@ -69,7 +69,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="far fa-calendar-plus"></i> Host a Get Together</a>
+            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="far fa-calendar-plus"></i> {% trans "Host a Get Together" %}</a>
           </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
@@ -77,12 +77,12 @@
                   <img class="rounded-circle mr-1" src="{{request.user.profile.avatar_url}}" height="24px"/>{% if request.user.profile.realname %}{{ request.user.profile.realname }}{% else %}{{ request.user.username }}{% endif %}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarUserMenuLink">
-                  <a class="dropdown-item" href="{% url 'show-profile' request.user.profile.id %}"><i class="fa fa-user"></i>  Profile</a>
-                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i>  Logout</a>
+                  <a class="dropdown-item" href="{% url 'show-profile' request.user.profile.id %}"><i class="fa fa-user"></i>  {% trans "Profile" %}</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i>  {% trans "Logout" %}</a>
                 </div>
             </li>
             {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Signup or Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Signup or Login" %}</a></li>
             {% endif %}
         </ul>
       </div>
@@ -92,7 +92,7 @@
 
       {% if tip %}
       <div class="alerts">
-          <div class="alert {{ tip.tags }}"><strong>Tip: </strong>{{ tip.text|safe }}</div>
+          <div class="alert {{ tip.tags }}"><strong>{% trans "Tip:" %}" </strong>{{ tip.text|safe }}</div>
       </div>
       {% endif %}
 

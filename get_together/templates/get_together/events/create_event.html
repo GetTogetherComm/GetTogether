@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block meta %}
 <script type="text/javascript" src="{% static 'recurrence/js/recurrence.js' %}"></script>
@@ -12,8 +12,8 @@
 {% endblock %}
 
 {% block content %}
-<h2>Plan a <strong>{{team.name}}</strong> get together</h2>
-{% if event.parent %}<p class="text-muted">As part of <a href="{% url "show-common-event" event.parent.id event.parent.slug %}">{{ event.parent.name }}</a></p>{% endif %}
+<h2>{% blocktrans with team_name=team.name %}Plan a <strong>{{team_name}}</strong> get together{% endblocktrans %}</h2>
+{% if event.parent %}<p class="text-muted">{% blocktrans %}As part of{% endblocktrans %} <a href="{% url "show-common-event" event.parent.id event.parent.slug %}">{{ event.parent.name }}</a></p>{% endif %}
 
 <form action="{% url "create-event" team.id%}" method="post">
 {% csrf_token %}
@@ -21,7 +21,7 @@
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Schedule event</button>
+<button type="submit" class="btn btn-primary">{% trans "Schedule event" %}</button>
 </div>
 </form>
 {% endblock %}

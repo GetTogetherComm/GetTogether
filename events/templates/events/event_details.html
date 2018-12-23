@@ -1,15 +1,15 @@
 <p>{{ event.summary }}</p>
 <table>
 <tr>
-	<td><b>Time:</b></td><td>{{ event.start_time }} - {{ event.end_time }}</td>
+	<td><b>{% trans "Time:" %}</b></td><td>{{ event.start_time }} - {{ event.end_time }}</td>
 </tr><tr>
-	<td><b>Place:</b></td><td>{{ event.place }}</td>
+	<td><b>{% trans "Place:" %}</b></td><td>{{ event.place }}</td>
 <tr>
-	<td><b>Host:</b></td><td>{{ event.created_by }}</td>
+	<td><b>{% trans "Host:" %}</b></td><td>{{ event.created_by }}</td>
 </tr><tr>
 {% if event.web_url %}
 </tr><tr>
-	<td><b>Website:</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
+	<td><b>{% trans "Website:" %}</b></td><td><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></td>
 {% endif %}
 </tr>
 </table>

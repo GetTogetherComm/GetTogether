@@ -1,9 +1,9 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 
 {% block content %}
-<h2>New Talk</h2>
+<h2>{% trans "New Talk" %}</h2>
 
 
 <form action="{% url "add-talk" %}" method="post">
@@ -15,7 +15,7 @@
         {{talk_form}}
     </table>
 	<br />
-<button type="submit" class="btn btn-primary">Save</button>
+<button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 </div>
 </form>
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup %}
+{% load markup i18n %}
 
 {% block add_to_title %} | {{org.name}}{% endblock %}
 
@@ -23,21 +23,21 @@
         <div class="col-sm-9">
             {% if can_edit_org %}
             <div id="admin_buttons" class="mb-2">
-                <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit Org</a>
-                <a href="{% url 'manage-teams' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-users"></i> Manage Teams</a>
+                <a href="{% url 'edit-org' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> {% trans "Edit Org" %}</a>
+                <a href="{% url 'manage-teams' org.slug %}" class="btn btn-secondary btn-sm"><i class="fa fa-users"></i> {% trans "Manage Teams" %}</a>
             </div>
             {% endif %}
             {% if org.banner_img %}
             <div class="team-banner mb-3">
                 <img class="card-img-top" src="{{ org.banner_img.url }}" alt="{{org.name}}'s cover image" height="200px" width="825px">
-                <h2 class="team-title">Welcome to {{ org.name }}</h2>
+                <h2 class="team-title">{% blocktrans with org_name=org.name %}Welcome to {{ org_name }}{% endblocktrans %}</h2>
             </div>
             {% else %}
-                <h2>Welcome to {{ org.name }}</h2>
+                <h2>{% blocktrans with org_name=org.name %}Welcome to {{ org_name }}{% endblocktrans %}</h2>
             {% endif %}
             <div id="action_buttons" class="mb-2">
                 {% if request.user.profile.is_a_team_admin %}
-                <a href="{% url 'request-to-join-org' org.slug %}" class="btn btn-success btn-sm"><i class="fa fa-globe"></i> Join Organization</a>
+                <a href="{% url 'request-to-join-org' org.slug %}" class="btn btn-success btn-sm"><i class="fa fa-globe"></i> {% trans "Join Organization" %}</a>
                 {% endif %}
             </div>
 
@@ -50,7 +50,7 @@
             {% endif %}
 
             <div class="container container-secondary mb-3">
-            <h4>Upcoming Events</h4>
+            <h4>{% trans "Upcoming Events" %}</h4>
                 {% for event in upcoming_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
@@ -61,7 +61,7 @@
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i> Create an Event</a>
+                        <br/><a href="{% url 'create-common-event' org.slug %}" class="btn btn-primary"><i class="far fa-calendar-plus"></i> {% trans "Create an Event" %}</a>
                     </div>
                 </div>
                 {% endif %}
@@ -70,7 +70,7 @@
 
             {% if recent_events %}
             <div class="container container-secondary mb-3">
-            <h4>Recent Events</h4>
+            <h4>{% trans "Recent Events" %}</h4>
                 {% for event in recent_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
@@ -86,14 +86,14 @@
         <div class="col-sm-3">
             <div class="container container-secondary">
             <h4>Teams</h4>
-                <small class="text-muted">{{member_count}} Members, {{event_count}} Events</small>
+                <small class="text-muted">{% blocktrans %}{{member_count}} Members, {{event_count}} Events{% endblocktrans %}</small>
                 <hr/>
                 {% for member in member_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">
                       <div class="media-body">
                           <h6 class="mt-0 mb-0"><a href="{% url 'show-team-by-slug' member.slug %}" title="{{member.name}}"><i class="fa fa-users">&nbsp;</i>{{member.name}}</a></h6>
-                          <small class="text-muted">{{member.member_set.count}} Members, {{member.event_set.count}} Events</small>
+                          <small class="text-muted">{% blocktrans with member_count=member.member_set.count event_count=member.event_set.count %}{{member_count}} Members, {{event_count}} Events{% endblocktrans %}</small>
                       </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                 {% if can_edit_org %}
                 <div class="row mb-3">
                     <div class="col">
-                      <center><a class="btn btn-success btn-sm" href="{% url 'create-team' %}?organization={{org.id}}">Add Team</a></center>
+                      <center><a class="btn btn-success btn-sm" href="{% url 'create-team' %}?organization={{org.id}}">{% trans "Add Team" %}</a></center>
                     </div>
                 </div>
                 {% endif %}

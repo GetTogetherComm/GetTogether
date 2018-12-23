@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static markup tz %}
+{% load static markup tz i18n %}
 
 {% block add_to_title %} | {{event.name}}{% endblock %}
 
@@ -26,7 +26,7 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Sponsors for <a href="{{event.get_absolute_url}}">{{ event.name }}</a>
+            <h2>{% blocktrans with event_url=event.get_absolute_url event_name=event.name %}Sponsors for <a href="{{event_url}}">{{ event_name }}</a>{% endblocktrans %}
             </h2>
                 <hr/>
             {% comment %}
@@ -54,9 +54,9 @@
                                 <strong>{{sponsor.name}}</strong><br/>
                                 <div class="btn-group">
                                     {% if sponsor in event.sponsors.all %}
-                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-danger" href="javascript:toggle_sponsor({{sponsor.id}});">Remove</a></span>
+                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-danger" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Remove" %}</a></span>
                                     {% else %}
-                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-success" href="javascript:toggle_sponsor({{sponsor.id}});">Add</a></span>
+                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-success" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Add" %}</a></span>
                                     {% endif %}
                                 </div>
                               </div>
@@ -72,14 +72,14 @@
         <div class="col-md-3">
             <div class="container">
                 <div class="row">
-                    <div class="col"><h4>New Sponsor</h4><hr/></div>
+                    <div class="col"><h4>{% trans "New Sponsor" %}</h4><hr/></div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <form enctype="multipart/form-data" action="{% url 'manage-event-sponsors' event.id %}" method="POST">
                             {% csrf_token %}
                             {{sponsor_form.as_p}}
-                            <button class="btn btn-primary" type="submit">Add Sponsor</button>
+                            <button class="btn btn-primary" type="submit">{% trans "Add Sponsor" %}</button>
                         </form>
                     </div>
                 </div>

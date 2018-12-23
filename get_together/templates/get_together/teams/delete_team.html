@@ -1,11 +1,12 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Confirm deletion</h2>
-Are you sure you want to delete <strong>{{team.name}}</strong>?
+<h2>{% trans "Confirm deletion" %}</h2>
+{% blocktrans with team_name=team.name %}Are you sure you want to delete <strong>{{team_name}}</strong>?{% endblocktrans %}
 {% if team.event_set.count > 0 %}
     <div class="alerts">
-        <div class="alert alert-danger">This team has {{ team.event_set.count }} events!</div>
+        <div class="alert alert-danger">{% blocktrans with event_count=team.event_set.count %}This team has {{ event_count }} events!{% endblocktrans %}</div>
     </div>
 {% endif %}
 <form action="{% url "delete-team" team.id %}" method="post">
@@ -13,7 +14,7 @@ Are you sure you want to delete <strong>{{team.name}}</strong>?
 <div class="form-group">
 {{ delete_form }}
 	<br />
-<button type="submit" class="btn btn-danger">Delete Team</button>
+<button type="submit" class="btn btn-danger">{% trans "Delete Team" %}</button>
 </div>
 </form>
 {% endblock %}

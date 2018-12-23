@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Confirm deletion</h2>
-Are you sure you want to cancel <strong>{{event.name}}</strong>?
+<h2>{% trans "Confirm cancelation" %}</h2>
+{% blocktrans with event_name=event.name %}Are you sure you want to cancel <strong>{{event_name}}</strong>?{% endblocktrans %}
 <form action="{% url "cancel-event" event.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {{ cancel_form.as_p }}
 	<br />
-<button type="submit" class="btn btn-danger">Cancel Event</button>
+<button type="submit" class="btn btn-danger">{% trans "Cancel Event" %}</button>
 </div>
 </form>
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup tz %}
+{% load markup tz i18n %}
 
 {% block add_to_title %} | {{team.name}}{% endblock %}
 
@@ -21,16 +21,16 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Members of <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
+            <h2>{% trans "Members of" %} <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
             </h2>
-            <p><a href="{% url 'invite-members' team.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> Invite Members</a></p>
+            <p><a href="{% url 'invite-members' team.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> {% trans "Invite Members" %}</a></p>
 
             <table class="table">
             <tr>
-                <th colspan="2">Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Joined</th>
+                <th colspan="2">{% trans "Name" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Role" %}</th>
+                <th>{% trans "Joined" %}</th>
             </tr>
             {% for member in members %}
             <tr>
@@ -46,20 +46,20 @@
                 {% if member.role == member.ADMIN %}
                   <span class="btn btn-sm btn-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">Moderator</a>
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">Normal</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">{% trans "Moderator" %}</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">{% trans "Normal" %}</a>
                   </div>
                 {% elif member.role == member.MODERATOR %}
                   <span class="btn btn-sm btn-default dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">Administrator</a>
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">Normal</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">{% trans "Administrator" %}</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=normal&csrftoken={{csrf_token}}">{% trans "Normal" %}</a>
                   </div>
                 {% elif member.role == member.NORMAL %}
                   <span class="btn btn-sm btn-secondary dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ member.role_name }}</span>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">Administrator</a>
-                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">Moderator</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=admin&csrftoken={{csrf_token}}">{% trans "Administrator" %}</a>
+                    <a class="dropdown-item" href="{% url 'change-member-role' team.id member.user.id %}?role=moderator&csrftoken={{csrf_token}}">{% trans "Moderator" %}</a>
                   </div>
                 {% endif %}
                     </div>
@@ -74,13 +74,13 @@
 
         <div class="col-sm-3">
             <div class="container">
-            <h4>Contact</h4><hr/>
+            <h4>{% trans "Contact" %}</h4><hr/>
                 <div class="row">
                     <div class="col">
                         <form action="{% url 'manage-members' team.id %}" method="POST">
                             {% csrf_token %}
                             {{ contact_form.as_p }}
-                            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                            <button type="submit" class="btn btn-primary btn-sm">{% trans "Send" %}</button>
                         </form>
                     </div>
                 </div>

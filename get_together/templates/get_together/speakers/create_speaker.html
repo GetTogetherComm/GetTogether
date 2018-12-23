@@ -1,9 +1,9 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 
 {% block content %}
-<h2>New Speaker</h2>
+<h2>{% trans "New Speaker Bio" %}</h2>
 
 
 <form enctype="multipart/form-data" action="{% url "add-speaker" %}" method="post">
@@ -14,7 +14,7 @@
         {{speaker_form}}
     </table>
 	<br />
-<button type="submit" class="btn btn-primary">Save</button>
+<button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 </div>
 </form>
 {% endblock %}

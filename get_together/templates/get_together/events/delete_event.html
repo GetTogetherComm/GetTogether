@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Confirm deletion</h2>
-Are you sure you want to delete <strong>{{event.name}}</strong>?
+<h2>{% trans "Confirm deletion" %}</h2>
+{% blocktrans with event_name=event.name %}Are you sure you want to delete <strong>{{event_name}}</strong>?{% endblocktrans %}
 <form action="{% url "delete-event" event.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {{ delete_form }}
 	<br />
-<button type="submit" class="btn btn-danger">Delete Event</button>
+<button type="submit" class="btn btn-danger">{% trans "Delete Event" %}</button>
 </div>
 </form>
 {% endblock %}

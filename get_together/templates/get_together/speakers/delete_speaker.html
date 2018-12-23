@@ -1,19 +1,26 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Confirm deletion</h2>
+<h2>{% trans "Confirm deletion" %}</h2>
 {% if speaker.talks.count > 0 %}
     <div class="alerts">
-        <div class="alert alert-danger">This speaker profile has {{ speaker.talks.count }} talks!</div>
+        <div class="alert alert-danger">
+            {% blocktrans count talk_count=speaker.talks.count %}
+            This speaker profile has {{ talk_count }} talk!
+            {% plural %}
+            This speaker profile has {{ talk_count }} talks!
+            {% endblocktrans %}
+        </div>
     </div>
 {% endif %}
-Are you sure you want to delete <strong>{{speaker.title}}</strong>?
+{% blocktrans with speaker_title=speaker.title %}Are you sure you want to delete <strong>{{speaker_title}}</strong>?{% endblocktrans %}
 <form action="{% url "delete-speaker" speaker.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {{ delete_form }}
 	<br />
-<button type="submit" class="btn btn-danger">Delete Talk</button>
+<button type="submit" class="btn btn-danger">{% trans "Delete Talk" %}</button>
 </div>
 </form>
 {% endblock %}

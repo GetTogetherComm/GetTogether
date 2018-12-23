@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Select which team:</h2>
+<h2>{% blocktrans %}Select which team:{% endblocktrans %}</h2>
 <div class="container">
   <div class="row">
 {% for team in teams %}
@@ -22,9 +22,9 @@
         <div class="card-body">
           <p class="card-text"><strong>{{team.city}}</strong></p>
           <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted">{{ team.members.count }} members</small>
+            <small class="text-muted">{% blocktrans count member_count=team.members.count %}{{ member_count }} member{% plural %}{{ member_count }} members{% endblocktrans %}</small>
             <div class="btn-group">
-                <a class="btn btn-success" href="{% url 'create-event' team.id %}">Create Event</a></span>
+                <a class="btn btn-success" href="{% url 'create-event' team.id %}">{% trans "Create Event" %}</a></span>
             </div>
           </div>
         </div>

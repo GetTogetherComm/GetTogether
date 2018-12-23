@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup tz %}
+{% load markup tz i18n %}
 
 {% block add_to_title %} | {{team.name}}{% endblock %}
 
@@ -7,13 +7,13 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>Invite people to <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
+            <h2>{% trans "Invite people to" %} <a href="{% url 'show-team-by-slug' team.slug %}">{{ team.name }}</a>
             </h2>
-            <p>Add a list of emails, separated by commas</p>
+            <p>{% trans "Add a list of emails, separated by commas" %}</p>
             <form action="{% url 'invite-members' team.id %}" method="POST">
                 {% csrf_token %}
                 {{ invite_form.as_p }}
-                <button type="submit" class="btn btn-primary btn-sm">Send Invites</button>
+                <button type="submit" class="btn btn-primary btn-sm">{% trans "Send Invites" %}</button>
             </form>
         </div>
 

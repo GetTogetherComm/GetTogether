@@ -1,16 +1,16 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12">
             <center>
-                <h3>Tell people more about your team</h3>
+                <h3>{% trans "Tell people more about your team" %}</h3>
                 <form action="{% url "define-team" team.id %}" method="post" class="form">
                 {% csrf_token %}
                 <p>{% include "events/define_team_form.html" %}</p>
-                <p><button type="submit" class="btn btn-primary">Continue</button></p>
+                <p><button type="submit" class="btn btn-primary">{% trans "Continue" %}</button></p>
                 </form>
             </center>
         </div>

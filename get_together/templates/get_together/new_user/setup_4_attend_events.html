@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-12">
             <center>
-                <h3>Now pick some events that you'd like to attend</h3>
+                <h3>{% trans "Now pick some events that you'd like to attend" %}</h3>
             </center>
         </div>
     </div>
@@ -33,7 +33,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn btn-outline-primary team_toggle">
-                        <input name="event_{{event.id}}" type="checkbox" autocomplete="off"> Attend
+                        <input name="event_{{event.id}}" type="checkbox" autocomplete="off"> {% trans "Attend" %}
                     </label>
                 </div>
               </div>
@@ -45,7 +45,7 @@
     <div class="row pb-5">
         <div class="col-12">
             <center>
-                <button class="btn btn-success pl-5 pr-5" type="submit">Continue</button>
+                <button class="btn btn-success pl-5 pr-5" type="submit">{% trans "Continue" %}</button>
             </center>
         </div>
     </div>

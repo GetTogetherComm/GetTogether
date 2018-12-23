@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static tz %}
+{% load static tz i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -27,7 +27,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <a href="{% url 'add-speaker' %}" class="btn btn-success"><i class="fa fa-plus"></i> Speaker Bio</a>
+                <a href="{% url 'add-speaker' %}" class="btn btn-success"><i class="fa fa-plus"></i> {% trans "Speaker Bio" %}</a>
             </div>
         </div>
         <hr/>
@@ -48,7 +48,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <a href="{% url 'add-talk' %}" class="btn btn-success"><i class="fa fa-plus"></i> Talk</a>
+                <a href="{% url 'add-talk' %}" class="btn btn-success"><i class="fa fa-plus"></i> {% trans "Talk" %}</a>
             </div>
         </div>
     </div>

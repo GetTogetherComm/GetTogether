@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static markup tz %}
+{% load static markup tz i18n %}
 
 {% block add_to_title %} | {{team.name}}{% endblock %}
 
@@ -22,12 +22,12 @@
 <div class="fluid-container">
     <div class="row">
         <div class="col-sm-9">
-            <h2>{{attendees.count}} Attendees for <a href="{{event.get_absolute_url}}">{{ event.name }}</a>
+            <h2>{% blocktrans with event_url=event.get_absolute_url event_name=event.name count attendee_count=attendees.count %}{{attendee_count}} Attendee for <a href="{{event_url}}">{{ event_name }}{% plural %}{{attendee_count}} Attendees for <a href="{{event_url}}">{{ event_name }}{% endblocktrans %}</a>
             </h2>
 
             <p>
                 {% if not event.is_over %}
-                <a href="{% url 'invite-attendees' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> Invite Attendees</a>
+                <a href="{% url 'invite-attendees' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-user-plus"></i> {% trans "Invite Attendees" %}</a>
                 {% endif %}
             </p>
 
@@ -65,10 +65,10 @@
                               </div>
                                 {% if event.is_over %}
                               <div id="attendee-actual-form-{{attendee.id}}" class="align-items-center" style="display: {% if attendee.actual == attendee.MAYBE %}block{% else %}none{% endif %}">
-                                <small class="text-muted">Attended:</small><br/>
+                                <small class="text-muted">{% trans "Attended:" %}</small><br/>
                                 <div class="btn-group">
-                                    <a class="btn btn-success" href="javascript:mark_attended({{attendee.id}}, 'yes');">Yes</a></span>
-                                    <a class="btn btn-danger" href="javascript:mark_attended({{attendee.id}}, 'no');">No</a></span>
+                                    <a class="btn btn-success" href="javascript:mark_attended({{attendee.id}}, 'yes');">{% trans "Yes" %}</a></span>
+                                    <a class="btn btn-danger" href="javascript:mark_attended({{attendee.id}}, 'no');">{% trans "No" %}</a></span>
                                 </div>
                               </div>
                                 {% endif %}

@@ -109,5 +109,5 @@ class Presentation(models.Model):
         try:
             return '%s at %s' % (self.talk.title, self.event.name)
         except:
-            return "No talk"
+            return _("No talk")
 

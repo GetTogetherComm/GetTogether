@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Add photo to {{event.name}}</h2>
+<h2>{% blocktrans with event_name=event.name%}Add photo to {{event_name}}{% endblocktrans %}</h2>
 <form enctype="multipart/form-data" action="{% url "add-event-photo" event.id%}" method="post">
 {% csrf_token %}
 <table>
 {{ photo_form }}
 </table>
 <br />
-<button type="submit" class="btn btn-primary">Upload</button>
+<button type="submit" class="btn btn-primary">{% trans "Upload" %}</button>
 </form>
 {% endblock %}
 

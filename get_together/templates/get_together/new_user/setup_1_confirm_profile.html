@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
 <div class="container">
@@ -7,12 +7,12 @@
         <div class="col-12">
             <center>
                 <p><img class="align-bottom" border="1" src="{{profile.avatar_url}}" height="64px"/></p>
-                <h3>Please confirm your profile information</h3>
+                <h3>{% trans "Please confirm your profile information" %}</h3>
 
                 <form enctype="multipart/form-data" action="{% url 'setup-1-confirm-profile' %}" method="POST" class="form">
                     {% csrf_token %}
                     <p>{% include "events/profile_form.html" %}</p>
-                    <p><button type="submit" class="btn btn-success pl-5 pr-5">Continue</button></p>
+                    <p><button type="submit" class="btn btn-success pl-5 pr-5">{% trans "Continue" %}</button></p>
                 </form>
             </center>
         </div>
