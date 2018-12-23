@@ -55,7 +55,7 @@ class UserProfile(models.Model):
                 return self.realname
             return "%s" % self.user.username
         except:
-            return "Unknown Profile"
+            return _("Unknown Profile")
 
     @property
     def personal_team(self):

@@ -1,14 +1,14 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
-<h2>Change host for: {{event.name}}</h2>
-<p>Select which of your teams you would like to host this event.</p>
+<h2>{% blocktrans with event_name=event.name %}Change host for: {{event_name}}{% endblocktrans %}</h2>
+<p>{% blocktrans %}Select which of your teams you would like to host this event.{% endblocktrans %}</p>
 <form action="{% url "change-team" event.id %}" enctype="multipart/form-data" method="post">
 {% csrf_token %}
 {% include "events/change_team_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Change</button>
-<a class="btn btn-secondary" href="{{event.get_absolute_url}}">Cancel</a>
+<button type="submit" class="btn btn-primary">{% trans "Change" %}</button>
+<a class="btn btn-secondary" href="{{event.get_absolute_url}}">{% trans "Cancel" %}</a>
 </form>
 {% endblock %}
 

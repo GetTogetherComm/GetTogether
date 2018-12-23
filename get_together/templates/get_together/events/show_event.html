@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup static tz %}
+{% load markup static tz i18n %}
 
 {% block add_to_title %} | {{event.name}}{% endblock %}
 
@@ -101,39 +101,39 @@ textarea {
             {% if team.banner_img %}
             <div class="team-banner">
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
-                <h2 class="team-title">{{ event.name }}{% if event.status == event.CANCELED %} (Canceled){% endif %}</h2>
+                <h2 class="team-title">{{ event.name }}{% if event.status == event.CANCELED %} ({% trans "Canceled" %}){% endif %}</h2>
             </div>
             {% else %}
             <h2>{{ event.name }}</h2>
             {% endif %}
             {% if team.access == team.PERSONAL %}
-            <p class="text-muted">Hosted by <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
+            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
             {% else %}
-            <p class="text-muted">Hosted by <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
             {% endif %}
             {% if event.status != event.CANCELED and not request.user.profile.do_not_track %}
             {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
-                <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> Tweet</a>
+                <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> {% trans "Tweet" %}</a>
             {% endif %}
             {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
-                <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> Share</a>
+                <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> {% trans "Share" %}</a>
             {% endif %}
             {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
-                <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fab fa-linkedin"></i> Share</a>
+                <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fab fa-linkedin"></i> {% trans "Share" %}</a>
             {% endif %}
             {% if not event.is_over %}
                 {% if can_edit_team or is_email_confirmed %}
-                    <a href="{% url 'invite-attendees' event.id %}" class="btn btn-danger btn-sm"><i class="fa fa-envelope"></i> Invite</a>
+                    <a href="{% url 'invite-attendees' event.id %}" class="btn btn-danger btn-sm"><i class="fa fa-envelope"></i> {% trans "Invite" %}</a>
                 {% endif %}
                 {% if not is_attending %}
                     <div class="btn-group">
-                      <a href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> Attend</a>
+                      <a href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> {% trans "Attend" %}</a>
                       <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Attendance options</span>
                       </button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
-                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
+                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
+                        <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">{% trans "No" %}</a>
                       </div>
                     </div>
                 {% endif %}
@@ -142,21 +142,21 @@ textarea {
             {% if can_edit_event %}
             <div class="btn-group dropdown">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <a class="fa fa-edit">&nbsp;</a>Edit
+                  <a class="fa fa-edit">&nbsp;</a>{% trans "Edit" %}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
-                        <a href="{% url 'edit-event' event.id %}" class="dropdown-item">Event Details</a>
-                        <a href="{% url 'change-team' event.id %}" class="dropdown-item">Change Host</a>
-                        <a href="{% url 'manage-event-sponsors' event.id %}" class="dropdown-item">Manage Sponsors</a>
-                        <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">Manage Talks</a>
-                        <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">Manage Attendees</a>
+                        <a href="{% url 'edit-event' event.id %}" class="dropdown-item">{% trans "Event Details" %}</a>
+                        <a href="{% url 'change-team' event.id %}" class="dropdown-item">{% trans "Change Host" %}</a>
+                        <a href="{% url 'manage-event-sponsors' event.id %}" class="dropdown-item">{% trans "Manage Sponsors" %}</a>
+                        <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">{% trans "Manage Talks" %}</a>
+                        <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">{% trans "Manage Attendees" %}</a>
                 </div>
             </div>
             {% endif %}
 
             {% if event.status == event.CANCELED %}
             <p class="alerts">
-                <div class="alert alert-danger">This event has been canceled.</div>
+                <div class="alert alert-danger">{% trans "This event has been canceled." %}</div>
             </p>
             {% endif %}
 
@@ -169,12 +169,12 @@ textarea {
             <div class="container container-secondary mt-3">
             {% if event.parent %}
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Part of:</b></div><div class="col-9"><a href="{{ event.parent.get_absolute_url }}" target="_blank">{{ event.parent.name }}</a></div>
+	            <div class="col-3" width="120px"><b>{% trans "Part of:" %}</b></div><div class="col-9"><a href="{{ event.parent.get_absolute_url }}" target="_blank">{{ event.parent.name }}</a></div>
             </div>
             {% endif %}
             {% if event.series %}
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Repeats:</b></div><div class="col-9"><a href="{{ event.series.get_absolute_url }}">
+	            <div class="col-3" width="120px"><b>{% trans "Repeats:" %}</b></div><div class="col-9"><a href="{{ event.series.get_absolute_url }}">
                 {% for rule in event.series.recurrences.rrules %}
                 {{rule.to_text|capfirst}}
 	            {% endfor %}</a>
@@ -182,38 +182,38 @@ textarea {
             </div>
             {% endif %}
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Time:</b></div><div class="col-9">{{ event.local_start_time }} - {{ event.local_end_time }}</div>
+	            <div class="col-3" width="120px"><b>{% trans "Time:" %}</b></div><div class="col-9">{{ event.local_start_time }} - {{ event.local_end_time }}</div>
             </div>
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Place:</b></div><div class="col-9">
+	            <div class="col-3" width="120px"><b>{% trans "Place:" %}</b></div><div class="col-9">
                       {% if event.place %}
                           <a class="" href="{% url 'show-place' event.place.id %}">{{ event.place.name }}</a>
-                          {% if can_edit_event %}<a href="{% url 'add-place' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-globe-americas">&nbsp;</i>Change</a>{% endif %}
+                          {% if can_edit_event %}<a href="{% url 'add-place' event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-globe-americas">&nbsp;</i>{% trans "Change" %}</a>{% endif %}
                       {% elif can_edit_event %}
-                          <a class="" href="{% url 'add-place' event.id %}">No place selected yet.</a>
+                          <a class="" href="{% url 'add-place' event.id %}">{% trans "No place selected yet." %}</a>
                       {% else %}
-                          No place selected yet.
+                        {% trans "No place selected yet." %}
                       {% endif %}
 	            </div>
             </div>
             {% if event.web_url %}
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Website:</b></div><div class="col-9"><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></div>
+	            <div class="col-3" width="120px"><b>{% trans "Website:" %}</b></div><div class="col-9"><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></div>
             </div>
             {% endif %}
 
             {% if event.enable_presentations %}
             <div class="row mb-2">
-	            <div class="col-3" width="120px"><b>Presentations:</b></div>
+	            <div class="col-3" width="120px"><b>{% trans "Presentations:" %}</b></div>
                 <div class="col-9">
                     {% for presentation in presentation_list %}
-                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> by <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker}}</a></div>
+                        <div><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a> {% trans "by" context "{{talk}} by {{speaker}}"%} <a href="{% url 'show-speaker' presentation.talk.speaker.id %}">{{presentation.talk.speaker}}</a></div>
                     {% endfor %}
                     {% if not event.is_over %}
-                    <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">Propose a talk</a>
+                    <a class="btn btn-primary btn-sm" href="{% url 'propose-event-talk' event.id %}">{% trans "Propose a talk" %}</a>
                     {% endif %}
                     {% if pending_presentations and can_edit_event %}
-                    <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{{pending_presentations}} proposed talks</a>
+                    <a class="btn btn-success btn-sm" href="{% url 'schedule-event-talks' event.id %}">{% blocktrans count pending_presentations=pending_presentations %}{{pending_presentations}} proposed talk{% plural %}{{pending_presentations}} proposed talks{% endblocktrans %}</a>
                     {% endif %}
                 </div>
             </div>
@@ -224,7 +224,7 @@ textarea {
             {% if event.enable_comments %}
             <div class="container container-secondary mt-3">
                 <div class="row">
-                    <div class="col"><h4>Comments</h4></div>
+                    <div class="col"><h4>{% trans "Comments" %}</h4></div>
                 </div>
                 <div class="row">
                     {% load mptt_tags %}
@@ -258,7 +258,7 @@ textarea {
                         <form action="{% url 'comment-event' event.id %}" method="POST">
                             {% csrf_token %}
                             {{ comment_form.body }}
-                            <br/><button type="submit" class="btn btn-primary"><i class="pr-2 fa fa-comment"></i>Comment</button>
+                            <br/><button type="submit" class="btn btn-primary"><i class="pr-2 fa fa-comment"></i>{% trans "Comment" %}</button>
                         </form>
                         </div>
                         {% endif %}
@@ -272,7 +272,7 @@ textarea {
             <div class="container container-secondary mb-3">
                 {% if sponsor_count > 0 %}
                 <div class="row">
-                    <div class="col"><h4>Sponsors</h4><hr/></div>
+                    <div class="col"><h4>{% trans "Sponsors" %}</h4><hr/></div>
                 </div>
                 {% for sponsor in sponsor_list %}
                 <div class="row mb-3">
@@ -289,7 +289,7 @@ textarea {
             <div class="container container-secondary mb-3">
                 {% endif %}
                 <div class="row">
-                    <div class="col"><h4>Attendees ({{attendee_count}})</h4></div>
+                    <div class="col"><h4>{% trans "Attendees" %} ({{attendee_count}})</h4></div>
                 </div>
                 {% for attendee in attendee_list %}
                 <div class="row mb-3">
@@ -303,20 +303,20 @@ textarea {
                               {% if attendee.status == attendee.YES %}
                                   <span class="badge badge-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">{% trans "No" %}</a>
                                   </div>
                               {% elif attendee.status == attendee.MAYBE %}
                                   <span class="badge badge-default dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">Yes</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">No</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">{% trans "Yes" %}</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">{% trans "No" %}</a>
                                   </div>
                               {% elif attendee.status == attendee.NO %}
                                   <span class="badge badge-danger dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">Yes</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">Maybe</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">{% trans "Yes" %}</a>
+                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
                                   </div>
                               {% endif %}
                           {% else %}
@@ -338,7 +338,7 @@ textarea {
             {% if event.enable_photos %}
             <div class="container container-secondary mb-3">
                 <div class="row">
-                    <div class="col"><h4>Photos</h4></div>
+                    <div class="col"><h4>{% trans "Photos" %}</h4></div>
                 </div>
                 <div class="row">
                 {% for photo in event.photos.all %}
@@ -359,7 +359,7 @@ textarea {
                 </div>
                 {% if can_edit_event %}
                 <div class="row">
-                    <div class="col"><a class="btn btn-primary btn-sm" href="{% url 'add-event-photo' event.id %}"><i class="fa fa-upload"></i> Upload</a></div>
+                    <div class="col"><a class="btn btn-primary btn-sm" href="{% url 'add-event-photo' event.id %}"><i class="fa fa-upload"></i> {% trans "Upload" %}</a></div>
                 </div>
                 {% endif %}
             </div>

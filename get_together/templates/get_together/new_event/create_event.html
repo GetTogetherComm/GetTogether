@@ -1,15 +1,15 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
-<h2>Host a Get Together</h2>
+<h2>{% trans "Host a Get Together" %}</h2>
 
 <form action="{% url "new-event-start" %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Schedule event</button>
+<button type="submit" class="btn btn-primary">{% trans "Schedule event" %}</button>
 </div>
 </form>
 {% endblock %}

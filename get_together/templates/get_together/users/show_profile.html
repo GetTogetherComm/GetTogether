@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -18,11 +18,11 @@
                 {% if user.user.id == request.user.id %}
                 <div class="btn-group dropdown">
                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="editMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Edit
+                            {% trans "Edit" %}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="editMenuButton">
-                        <a href="{% url 'edit-profile'  %}" class="dropdown-item">Profile</a>
-                        <a href="{% url 'user-talks'  %}" class="dropdown-item">Talks</a>
+                        <a href="{% url 'edit-profile'  %}" class="dropdown-item">{% trans "Profile" %}</a>
+                        <a href="{% url 'user-talks'  %}" class="dropdown-item">{% trans "Talks" %}</a>
                     </div>
                 </div>
                 <a href="{% url 'user-event-ical' request.user.profile.secret_key %}" class="btn btn-success btn-sm">iCal</a>
@@ -33,21 +33,21 @@
             <div class="container container-secondary mb-3">
                 {% if user.web_url %}
                 <div class="row">
-                    <div class="col-md-3">Homepage:</div><div class="col-md-3"><a href="{{user.web_url}}" target="_blank">{{user.web_url}}</a></div>
+                    <div class="col-md-3">{% trans "Homepage:" %}</div><div class="col-md-3"><a href="{{user.web_url}}" target="_blank">{{user.web_url}}</a></div>
                 </div>
                 {% endif %}
                 <div class="row">
-                    <div class="col-md-3">Timezone:</div><div class="col-md-3">{{user.tz}}</div>
+                    <div class="col-md-3">{% trans "Timezone:" %}</div><div class="col-md-3">{{user.tz}}</div>
                 </div>
             </div>
 
 
         {% if upcoming_events %}
             <div class="container container-secondary mb-3">
-                <h4>Upcoming Events</h4>
+                <h4>{% trans "Upcoming Events" %}</h4>
                 {% for event in upcoming_events %}
                 <div class="row{% if event.status == event.CANCELED %} text-muted{% endif %}">
-                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> (Canceled){% endif %}</div>
+                    <div class="col">{% if event.status == event.CANCELED %}<del>{% endif %}<a href="{{ event.get_absolute_url }}">{{event.name}}</a>{% if event.status == event.CANCELED %}</del> ({% trans "Canceled" %}){% endif %}</div>
                     <div class="col"><small>{{ event.place }}</small></div>
                     <div class="col"><small>{{ event.local_start_time }}</small></div>
                 </div>
@@ -57,7 +57,7 @@
 
         {% if recent_events %}
             <div class="container container-secondary mb-3">
-                <h4>Past Events</h4>
+                <h4>{% trans "Past Events" %}</h4>
                 {% for event in recent_events %}
                 <div class="row">
                     <div class="col"><a href="{{ event.get_absolute_url }}">{{event.name}}</a></div>
@@ -69,7 +69,7 @@
         {% endif %}
 
         {% if talks %}
-            <h3>Talks</h3>
+            <h3>{% trans "Talks" %}</h3>
             <div class="container container-secondary mb-3">
             {% for talk in talks %}
             <div class="row">
@@ -87,7 +87,7 @@
         <div class="col-md-3">
             {% if badges %}
                 <div class="container container-secondary mb-3">
-                <h4>Badges</h4>
+                <h4>{% trans "Badges" %}</h4>
                 <div class="mb-3">
                 {% for badge in badges %}
 		            <div class="ml-3 mb-1">
@@ -99,14 +99,14 @@
             {% endif %}
             {% if teams %}
                 <div class="container container-secondary mb-3">
-                <h4>Teams</h4>
+                <h4>{% trans "Teams" %}</h4>
                 {% for t in teams %}
 		            <a href="{% url 'show-team-by-slug' t.slug %}" title="Team page for {{t.name}}"><i class="fa fa-users">&nbsp;</i>{{t.name}}</a><br/>
                 {% endfor %}
                 </div>
             {% endif %}
             <div class="container container-secondary mb-3">
-            <h4>Categories</h4>
+            <h4>{% trans "Categories" %}</h4>
             <ul>
             {% for c in user.categories.all %}
 	            <li>
@@ -121,7 +121,7 @@
 
 {% else %}
 
-<h2>User not found.</h2>
+<h2>{% trans "User not found." %}</h2>
 
 {% endif %}
 

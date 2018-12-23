@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup static %}
+{% load markup static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -12,7 +12,7 @@
         <div class="col-md-9">
             <img src="{{speaker.headshot_url}}"/>                
             {% if speaker.user == request.user.profile %}
-            <a href="{% url 'edit-speaker' speaker.id %}" class="btn btn-secondary btn-sm">Edit Bio</a>
+            <a href="{% url 'edit-speaker' speaker.id %}" class="btn btn-secondary btn-sm">{% trans "Edit Bio" %}</a>
             {% endif %}
             <hr/>
             <h3>{{ speaker.user }}</h3>
@@ -23,7 +23,7 @@
 
 {% if talks %}
         <br/>
-        <h4>Talks</h4>
+        <h4>{% trans "Talks" %}</h4>
         <div class="container">
         <div class="row">
         {% for talk in talks %}
@@ -45,7 +45,7 @@
         <div class="col-md-3">
             <div class="container">
                 <div class="row">
-                    <div class="col"><h4>Events ({{presentations.count}})</h4><hr/></div>
+                    <div class="col"><h4>{% trans "Events" %} ({{presentations.count}})</h4><hr/></div>
                 </div>
                 {% for presentation in presentations %}
                 <div class="row mb-3">

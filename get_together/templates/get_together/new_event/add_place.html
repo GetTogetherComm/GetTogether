@@ -1,20 +1,20 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-6">
 
-            <h2>Choose your meeting place</h2>
+            <h2>{% trans "Choose your meeting place" %}</h2>
             <form action="{% url "new-event-add-place" event.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" id="id_id" name="id" value="" />
             {% include "events/place_form.html" %}
 	            <div class="fluid-layout" id="place-map"></div>
             <br />
-            <button type="submit" class="btn btn-primary">Add Place</button>
+            <button type="submit" class="btn btn-primary">{% trans "Add Place" %}</button>
             </form>
-            <a class="btn btn-secondary" href="{% url 'new-event-add-details' event.id %}">Skip</a>
+            <a class="btn btn-secondary" href="{% url 'new-event-add-details' event.id %}">{% trans "Skip" %}</a>
         </div>
         <div id="map" class="col-md-6"></div>
     </div>

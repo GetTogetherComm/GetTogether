@@ -1,12 +1,13 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
+
 {% block content %}
-<h2>Update {{org.name}}</h2>
+<h2>{%blocktrans with org_name=org.name %}Update <b>{{org_name}}</b>{% endblocktrans %}</h2>
 <form action="{% url "edit-org" org.slug %}" enctype="multipart/form-data" method="post">
 {% csrf_token %}
 {% include "events/org_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Save</button>
+<button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 </form>
 {% endblock %}
 

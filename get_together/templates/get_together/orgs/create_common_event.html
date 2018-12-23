@@ -1,14 +1,14 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
-<h2>Plan a <strong>{{org.name}}</strong> event</h2>
+<h2>{% blocktrans with org_name=org.name %}Plan a <strong>{{org_name}}</strong> event{% endblocktrans %}</h2>
 <form action="{% url "create-common-event" org.slug%}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Save</button>
+<button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 </div>
 </form>
 {% endblock %}

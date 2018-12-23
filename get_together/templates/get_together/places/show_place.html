@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup %}
+{% load markup i18n %}
 
 {% block styles %}
     <style>
@@ -21,18 +21,18 @@
         <div class="col-md-9">
             <h2>{{ place.name }}
                 {% if can_edit_place %}
-                <a href="{% url 'edit-place' place.id %}" class="btn btn-secondary btn-sm">Edit Place</a>
+                <a href="{% url 'edit-place' place.id %}" class="btn btn-secondary btn-sm">{% trans "Edit Place" %}</a>
                 {% endif %}
             </h2>
             <table class="table">
             <tr>
-	            <td><b>Address:</b></td><td>{{ place.address }}</td>
+	            <td><b>{% trans "Address:" %}</b></td><td>{{ place.address }}</td>
             </tr><tr>
-	            <td><b>City:</b></td><td>{{ place.city }}</td>
+	            <td><b>{% trans "City:" %}</b></td><td>{{ place.city }}</td>
             </tr><tr>
             {% if place.place_url %}
             </tr><tr>
-	            <td><b>Website:</b></td><td><a href="{{ place.place_url }}" target="_blank">{{ place.place_url }}</a></td>
+	            <td><b>{% trans "Website:" %}</b></td><td><a href="{{ place.place_url }}" target="_blank">{{ place.place_url }}</a></td>
             {% endif %}
             </tr>
             </table>
@@ -50,7 +50,7 @@
         <div class="col-3-sm">
             <div class="container">
                 <div class="row">
-                    <div class="col"><h4>Events ({{event_list.count}})</h4><hr/></div>
+                    <div class="col"><h4>{% trans "Events" %} ({{event_list.count}})</h4><hr/></div>
                 </div>
                 {% for event in event_list %}
                 <div class="row mb-3">

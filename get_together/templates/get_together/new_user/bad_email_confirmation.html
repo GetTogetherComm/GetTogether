@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12 align-left">
-            <h2>Unable to confirm email</h2>
+            <h2>{% trans "Unable to confirm email" %}</h2>
 
-            <p>The confirmation link is invalid. Either it does not belong to <strong>{{request.user.email}}</strong> or the confirmation key has expired.</p>
+            <p>{% blocktrans with email=request.user.email %}The confirmation link is invalid. Either it does not belong to <strong>{{email}}</strong> or the confirmation key has expired.{% endblocktrans %}</p>
 
-            <p><a href="{% url 'send-confirm-email' %}" class="btn btn-primary">Resend confirmation email</a></p>
+            <p><a href="{% url 'send-confirm-email' %}" class="btn btn-primary">{% trans "Resend confirmation email" %}</a></p>
         </div>
     </div>
 </div>

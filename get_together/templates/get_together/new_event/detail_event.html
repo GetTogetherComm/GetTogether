@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block meta %}
 <script type="text/javascript" src="{% static 'recurrence/js/recurrence.js' %}"></script>
@@ -8,15 +8,15 @@
 {% endblock %}
 
 {% block content %}
-<h2>Provide some more information about your event</h2>
+<h2>{% trans "Provide some more information about your event" %}</h2>
 
 <form action="{% url "new-event-add-details" event.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {% include "events/event_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Save details</button>
-<a class="btn btn-secondary" href="{% url 'new-event-add-team' event.id %}">Skip</a>
+<button type="submit" class="btn btn-primary">{% trans "Save details" %}</button>
+<a class="btn btn-secondary" href="{% url 'new-event-add-team' event.id %}">{% trans "Skip" %}</a>
 </div>
 </form>
 {% endblock %}

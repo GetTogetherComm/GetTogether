@@ -1,14 +1,14 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
-<h2>Get Together with friends</h2>
+<h2>{% trans "Get Together with friends" %}</h2>
 <form action="{% url "create-team" %}" enctype="multipart/form-data" method="post" class="form">
 {% csrf_token %}
 {% include "events/team_form.html" %}
 
 	<br />
-<button type="submit" class="btn btn-primary">Gather your Team</button>
+<button type="submit" class="btn btn-primary">{% trans "Start your Team" %}</button>
 </form>
 {% endblock %}
 

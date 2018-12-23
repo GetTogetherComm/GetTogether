@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static tz %}
+{% load static tz i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -9,11 +9,11 @@
 {% block content %}
 {% if talks_count == 0 %}
         <div class="alerts">
-            <div class="alert alert-info">No talks have been proposed for this event.</div>
+            <div class="alert alert-info">{% trans "No talks have been proposed for this event." %}</div>
         </div>
 {% endif %}
         <div class="container">
-        <h2>Manage talks for: {{event.name}}</h2>
+        <h2>{% blocktrans with event_name=event.name %}Manage talks for: {{event_name}}{% endblocktrans %}</h2>
 {% if pending_talks %}
         <hr/>
         <div class="row">
@@ -28,8 +28,8 @@
                   <div class="card-text">
                     <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
                     <div>
-                        <button class="btn btn-sm btn-success" type="submit" name="action" value="accept">Accept</button>
-                        <button class="btn btn-sm btn-danger" type="submit" name="action" value="decline">Decline</button>
+                        <button class="btn btn-sm btn-success" type="submit" name="action" value="accept">{% trans "Accept" %}</button>
+                        <button class="btn btn-sm btn-danger" type="submit" name="action" value="decline">{% trans "Decline" %}</button>
                     </div>
                   </div>
                 </div>
@@ -52,17 +52,17 @@
                   <p class="card-title" style="height: 2rem;">
                       <strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong>
                     {% if presentation.status == -1 %}
-                        <span class="badge badge-danger" >Declined</span>
+                        <span class="badge badge-danger" >{% trans "Declined" %}</span>
                     {% elif presentation.status == 1 %}
-                        <span class="badge badge-success" >Accepted</span>
+                        <span class="badge badge-success" >{% trans "Accepted" %}</span>
                     {% else %}
-                        <span class="badge badge-info" >Submitted</span>
+                        <span class="badge badge-info" >{% trans "Submitted" %}</span>
                     {% endif %}
                   </p>
                   <div class="card-text">
                     <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
                     <div>
-                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">Reset</button>
+                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">{% trans "Reset" %}</button>
                     </div>
                   </div>
                 </div>
@@ -85,17 +85,17 @@
                   <p class="card-title" style="height: 2rem;">
                       <strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong>
                     {% if presentation.status == -1 %}
-                        <span class="badge badge-danger" >Declined</span>
+                        <span class="badge badge-danger" >{% trans "Declined" %}</span>
                     {% elif presentation.status == 1 %}
-                        <span class="badge badge-success" >Accepted</span>
+                        <span class="badge badge-success" >{% trans "Accepted" %}</span>
                     {% else %}
-                        <span class="badge badge-info" >Submitted</span>
+                        <span class="badge badge-info" >{% trans "Submitted" %}</span>
                     {% endif %}
                   </p>
                   <div class="card-text">
                     <small class="text-muted mb-1">{{ presentation.talk.speaker }}</small>
                     <div>
-                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">Reset</button>
+                        <button class="btn btn-sm btn-dark" type="submit" name="action" value="propose">{% trans "Reset" %}</button>
                     </div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
 {% endif %}
         <div class="row">
             <div class="col">
-                <a href="{{event.get_absolute_url}}" class="btn btn-primary">Done</a>
+                <a href="{{event.get_absolute_url}}" class="btn btn-primary">{% trans "Done" %}</a>
             </div>
         </div>
     </div>

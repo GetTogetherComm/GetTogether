@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup static %}
+{% load markup static i18n %}
 
 {% block add_to_totle %} | {{common_event.name}}{% endblock %}
 
@@ -91,7 +91,7 @@
         <div class="col-md-9">
             {% if can_edit_event %}
             <div id="admin_buttons" class="mb-2">
-                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> Edit Event</a>
+                <a href="{% url 'edit-common-event' common_event.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> {% trans "Edit Event" %}</a>
             </div>
             {% endif %}
             {% if common_event.organization.banner_img %}
@@ -106,17 +106,17 @@
             <div class="mb-2">
                 {% if not request.user.profile.do_not_track %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
-                    <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> Tweet</a>
+                    <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{common_event.name|urlencode}}&original_referer={{common_event.get_full_url|urlencode}}&url={{common_event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> {% trans "Tweet" %}</a>
                 {% endif %}
                 {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
-                    <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> Share</a>
+                    <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> {% trans "Share" %}</a>
                 {% endif %}
                 {% endif %}
             </div>
 
 
             <div class="container container-secondary mb-3">
-            <p class="text-muted">Organized by <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p>
+            <p class="text-muted">{% trans "Organized by" %} <a href="{% url "show-org" common_event.organization.slug %}">{{ common_event.organization.name }}</a></p>
             {% if common_event.summary %}
                 <p>{{ common_event.summary|markdown }}</p>
             {% endif %}
@@ -125,26 +125,26 @@
             <div class="container container-secondary mb-3">
             <table class="table">
             <tr>
-	            <td><b>Date:</b></td><td>{{ common_event.start_time }} - {{ common_event.end_time }}</td>
+	            <td><b>{% trans "Date:" %}</b></td><td>{{ common_event.start_time }} - {{ common_event.end_time }}</td>
             </tr>
             <tr>
-	            <td><b>Location:</b></td><td>{{ common_event.location }}</td>
+	            <td><b>{% trans "Location:" %}</b></td><td>{{ common_event.location }}</td>
             </tr>
             {% if common_event.place %}
             <tr>
-	            <td><b>Place:</b></td><td>
+	            <td><b>{% trans "Place:" %}</b></td><td>
                           <a class="" href="{% url 'show-place' common_event.place.id %}">{{ common_event.place.name }}</a>
 	            </td>
             </tr>
             {% endif %}
             {% if common_event.web_url %}
             <tr>
-	            <td><b>Website:</b></td><td><a href="{{ common_event.web_url }}" target="_blank">{{ common_event.web_url }}</a></td>
+	            <td><b>{% trans "Website:" %}</b></td><td><a href="{{ common_event.web_url }}" target="_blank">{{ common_event.web_url }}</a></td>
             </tr>
             {% endif %}
             {% if common_event.announce_url %}
             <tr>
-	            <td><b>Announcement:</b></td><td><a href="{{ common_event.announce_url }}" target="_blank">{{ common_event.announce_url }}</a></td>
+	            <td><b>{% trans "Announcement:" %}</b></td><td><a href="{{ common_event.announce_url }}" target="_blank">{{ common_event.announce_url }}</a></td>
             </tr>
             {% endif %}
             </table>
@@ -152,7 +152,7 @@
 
             <div class="container container-secondary mb-3">
                 <div class="row">
-                    <div class="col"><h4>Participating Teams</h4></div>
+                    <div class="col"><h4>{% trans "Participating Teams" %}</h4></div>
                 </div>
                 <div class="row">
                 {% for event in participating_events %}
@@ -169,7 +169,7 @@
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">{{ event.local_start_time }}</small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{{ event.get_absolute_url }}">View</a></span>
+                                <a class="btn btn-primary" href="{{ event.get_absolute_url }}">{% trans "View" %}</a></span>
                             </div>
                           </div>
                         </div>
@@ -179,7 +179,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">Host an event</a>
+                        <a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">{% trans "Host an event" %}</a>
                     </div>
                 </div>
             </div>

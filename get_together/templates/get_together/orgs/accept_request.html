@@ -1,14 +1,15 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
+
 {% block content %}
-<h2><b>{{team.name}}</b> has asked to join <b>{{org.name}}</b></h2>
-<p>Would you like to add this team?</p>
+<h2>{% blocktrans with team_name=team.name org_name=org.name %}<b>{{team_name}}</b> has asked to join <b>{{org_name}}</b>{% endblocktrans %}</h2>
+<p>{% trans "Would you like to add this team?" %}</p>
 <form action="{% url "confirm-request-to-join-org" invite.request_key %}" method="post">
 {% csrf_token %}
 {% include "events/org_request_form.html" %}
 	<br />
-<button type="submit" class="btn btn-primary">Accept</button>
-<a class="btn btn-secondary" href="{% url 'show-org' org.slug %}">Decline</a>
+<button type="submit" class="btn btn-primary">{% trans "Accept" %}</button>
+<a class="btn btn-secondary" href="{% url 'show-org' org.slug %}">{% trans "Decline" %}</a>
 </form>
 {% endblock %}
 

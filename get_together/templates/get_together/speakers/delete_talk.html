@@ -1,19 +1,20 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<h2>Confirm deletion</h2>
+<h2>{% trans "Confirm deletion" %}</h2>
 {% if talk.future_presentations.count > 0 %}
     <div class="alerts">
-        <div class="alert alert-danger">This talk has {{ talk.future_presentations.count }} pending events!</div>
+        <div class="alert alert-danger">{% blocktrans with event_count=talk.future_presentations.count %}This talk has {{ event_count }} pending events!{% endblocktrans %}</div>
     </div>
 {% endif %}
-Are you sure you want to delete <strong>{{talk.title}}</strong>?
+{% blocktrans with talk_title=talk.title %}Are you sure you want to delete <strong>{{talk_title}}</strong>?{% endblocktrans %}
 <form action="{% url "delete-talk" talk.id %}" method="post">
 {% csrf_token %}
 <div class="form-group">
 {{ delete_form }}
 	<br />
-<button type="submit" class="btn btn-danger">Delete Talk</button>
+<button type="submit" class="btn btn-danger">{% trans "Delete Talk" %}</button>
 </div>
 </form>
 {% endblock %}

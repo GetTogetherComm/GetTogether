@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -9,13 +9,13 @@
     <div class="container">
         <div class="row navbar-inverse bg-inverse mb-3">
             <div class="col-12 navbar-text">
-                <form action="{% url 'home' %}" method="GET">{{search_form}} <input type="submit" value="Search" class="btn btn-primary btn-sm"></form>
+                <form action="{% url 'home' %}" method="GET">{{search_form}} <input type="submit" value="{% trans "Search" %}" class="btn btn-primary btn-sm"></form>
             </div>
         </div>
 {% if geoip_lookup or city_search %}
         <div class="row">
             <div class="col-12">
-            <h3>Nearby Events</h3>
+            <h3>{% trans "Nearby Events" %}</h3>
             </div>
         </div>
         <div class="row">
@@ -48,10 +48,14 @@
             {% else %}
                 <div class="col-12 mb-3">
                     <div class="alert alert-info">
-                        There are no events within {{ distance }}km of {% if city %}{{ city }}{% else %}you{% endif %}.
-                        <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">Create one now</a>
+                        {% if city %}
+                            {% blocktrans %}There are no events within {{ distance }}km of {{ city }}.{% endblocktrans %}
+                        {% else %}
+                            {% blocktrans %}There are no events within {{ distance }}km of you.{% endblocktrans %}
+                        {% endif %}
+                        <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">trans "Create one now" %}</a>
                         or
-                        <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">View all events</a>
+                        <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">trans "View all events" %}</a>
                     </div>
                 </div>
             {% endif %}
@@ -74,7 +78,7 @@
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">{{ event.local_start_time }}<br/>{{event.location_name}}</small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{{event.event_url}}">View</a></span>
+                                <a class="btn btn-primary" href="{{event.event_url}}">{% trans "View" %}</a></span>
                             </div>
                           </div>
                         </div>
@@ -85,7 +89,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-            <h3>Nearby Teams</h3>
+            <h3>{% trans "Nearby Teams" %}</h3>
             </div>
         </div>
         <div class="row">
@@ -102,9 +106,15 @@
                         <div class="card-body">
                           <p class="card-text"><strong><a class="card-link" href="{% url 'show-team-by-slug' team.slug %}">{{team.city}}</a></strong></p>
                           <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">{{ team.members.count }} Member{% if team.members.count > 1 %}s{% endif %}, {{ team.event_set.count }} Events</small>
+                            <small class="text-muted">
+                                {% blocktrans with event_count=team.event_set.count count member_count=team.members.count %}
+                                    {{ members_count }} Member, {{ event_count }} Events
+                                {% plural %}
+                                    {{ members_count }} Members, {{ event_count }} Events
+                                {% endblocktrans %}
+                            </small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{% url 'show-team-by-slug' team.slug %}">View</a></span>
+                                <a class="btn btn-primary" href="{% url 'show-team-by-slug' team.slug %}">{% trans "View" %}</a></span>
                             </div>
                           </div>
                         </div>
@@ -114,10 +124,14 @@
             {% else %}
                 <div class="col-12">
                     <div class="alert alert-info">
-                        There are no teams within {{ distance }}km of {% if city %}{{ city }}{% else %}you{% endif %}.
-                        <a class="btn btn-success btn-sm" href="{% url 'create-team' %}">Create one now</a>
+                        {% if city %}
+                            {% blocktrans %}There are no teams within {{ distance }}km of {{ city }}.{% endblocktrans %}
+                        {% else %}
+                            {% blocktrans %}There are no teams within {{ distance }}km of you.{% endblocktrans %}
+                        {% endif %}
+                        <a class="btn btn-success btn-sm" href="{% url 'create-team' %}">{% trans "Create one now" %}</a>
                         or
-                        <a class="btn btn-primary btn-sm" href="{% url 'all-teams' %}">View all teams</a>
+                        <a class="btn btn-primary btn-sm" href="{% url 'all-teams' %}">{% trans "View all teams" %}</a>
                     </div>
                 </div>
             {% endif %}
@@ -136,7 +150,7 @@
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">{{ team.members.count }} members</small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{% url 'show-team-by-slug' team.slug %}">View</a></span>
+                                <a class="btn btn-primary" href="{% url 'show-team-by-slug' team.slug %}">{% trans "View" %}</a></span>
                             </div>
                           </div>
                         </div>
@@ -147,7 +161,7 @@
         </div>
 {% else %}
     </div>
-    <div class="alert alert-warning">We were unable to determine your location. Use the search field above to enter your city.</div>
+    <div class="alert alert-warning">{% trans "We were unable to determine your location. Use the search field above to enter your city." %}</div>
 {% endif %}
 {% endblock %}
 

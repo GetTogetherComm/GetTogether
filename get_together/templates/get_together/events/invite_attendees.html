@@ -1,22 +1,22 @@
 {% extends "get_together/base.html" %}
-{% load markup tz %}
+{% load markup tz i18n %}
 
 {% block add_to_title %} | {{event.name}}{% endblock %}
 
 {% block content %}
 <div class="fluid-container">
-    <h2>Invite people to <a href="{{event.get_absolute_url}}">{{ event.name }}</a></h2>
+    <h2>{% blocktrans with event_url=event.get_absolute_url event_name=event.name %}Invite people to <a href="{{event_url}}">{{ event_name }}</a>{% endblocktrans %}</h2>
     <div class="row">
 
         {% if is_email_confirmed %}
         <div class="col-sm-6">
             <hr />
-            <h4>By email</h4>
-            <p>Add a list of emails, separated by commas</p>
+            <h4>{% trans "By email" %}</h4>
+            <p>{% trans "Add a list of emails, separated by commas" %}</p>
             <form action="{% url 'invite-attendees' event.id %}" method="POST">
                 {% csrf_token %}
                 {{ email_form.as_p }}
-                <button type="submit" name="form" value="email" class="btn btn-primary btn-sm">Send Invites</button>
+                <button type="submit" name="form" value="email" class="btn btn-primary btn-sm">{% trans "Send Invites" %}</button>
             </form>
         </div>
         {% endif %}
@@ -26,21 +26,21 @@
             <hr />
             <h4>Team members</h4>
             {% if member_choice_count > 0 %}
-            <p>Select team member of members to invite</p>
+            <p>{% trans "Select team member of members to invite" %}</p>
             <form action="{% url 'invite-attendees' event.id %}" method="POST">
                 {% csrf_token %}
                 {{ team_form.as_p }}
-                <button type="submit" name="form" value="team" class="btn btn-primary btn-sm">Invite members</button>
+                <button type="submit" name="form" value="team" class="btn btn-primary btn-sm">{% trans "Invite members" %}</button>
             </form>
             {% else %}
-            <div class="alert alert-success">All invitable team members have responded.</div>
+            <div class="alert alert-success">{% trans "All invitable team members have responded." %}</div>
             {% endif %}
         </div>
         {% endif %}
 
         {% if not can_edit_team and not is_email_confirmed %}
         <div class="col-sm-12">
-            <div class="alert alert-danger">You can not send invites for this event.</div>
+            <div class="alert alert-danger">{% trans "You can not send invites for this event." %}</div>
         </div>
         {% endif %}
     </div>

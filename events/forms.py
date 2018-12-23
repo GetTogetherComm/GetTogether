@@ -223,11 +223,11 @@ class TeamDefinitionForm(forms.ModelForm):
         fields = ['category', 'web_url', 'description', 'about_page']
 
 class DeleteTeamForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, delete team", required=True)
+    confirm = forms.BooleanField(label=_("Yes, delete team"), required=True)
 
 class TeamContactForm(forms.Form):
-    to = forms.ChoiceField(label=_(""))
-    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+    to = forms.ChoiceField(label="")
+    body = forms.CharField(label="", widget=forms.widgets.Textarea)
 
 class MultiEmailField(forms.Field):
     def to_python(self, value):
@@ -245,11 +245,12 @@ class MultiEmailField(forms.Field):
             validate_email(email)
 
 class TeamInviteForm(forms.Form):
-    to = MultiEmailField(label=_(""), widget=forms.widgets.Textarea)
+    to = MultiEmailField(label="", widget=forms.widgets.Textarea)
 
 
 class TeamEventForm(forms.ModelForm):
-    recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
+    # Translators: Repeating/recurring events
+    recurrences = recurrence.forms.RecurrenceField(label=_("Repeat"), required=False)
     class Meta:
         model = Event
         fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary', 'web_url', 'announce_url', 'enable_comments', 'enable_photos', 'enable_presentations']
@@ -272,7 +273,7 @@ class TeamEventForm(forms.ModelForm):
         return cleaned_data
 
 class NewTeamEventForm(forms.ModelForm):
-    recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
+    recurrences = recurrence.forms.RecurrenceField(label=_("Repeat"), required=False)
     class Meta:
         model = Event
         fields = ['name', 'start_time', 'end_time', 'recurrences', 'summary']
@@ -319,7 +320,7 @@ class NewEventForm(forms.ModelForm):
 
 
 class NewEventDetailsForm(forms.ModelForm):
-    recurrences = recurrence.forms.RecurrenceField(label="Repeat", required=False)
+    recurrences = recurrence.forms.RecurrenceField(label=_("Repeat"), required=False)
 
     class Meta:
         model = Event
@@ -333,10 +334,10 @@ class EventSettingsForm(forms.ModelForm):
 
 
 class DeleteEventForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, delete event", required=True)
+    confirm = forms.BooleanField(label=_("Yes, delete event"), required=True)
 
 class CancelEventForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, cancel this event", required=True)
+    confirm = forms.BooleanField(label=_("Yes, cancel this event"), required=True)
     reason = forms.CharField(label=_("Reason for cancellation"), widget=forms.widgets.Textarea)
 
 class ChangeEventHostForm(forms.ModelForm):
@@ -347,14 +348,14 @@ class ChangeEventHostForm(forms.ModelForm):
         ]
 
 class EventInviteMemberForm(forms.Form):
-    member = forms.ChoiceField(label=_(""))
+    member = forms.ChoiceField(label="")
 
 class EventInviteEmailForm(forms.Form):
-    emails = MultiEmailField(label=_(""), widget=forms.widgets.Textarea)
+    emails = MultiEmailField(label="", widget=forms.widgets.Textarea)
 
 class EventContactForm(forms.Form):
-    to = forms.ChoiceField(label=_(""))
-    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+    to = forms.ChoiceField(label="")
+    body = forms.CharField(label="", widget=forms.widgets.Textarea)
 
 class EventSeriesForm(forms.ModelForm):
     class Meta:
@@ -366,7 +367,7 @@ class EventSeriesForm(forms.ModelForm):
         }
 
 class DeleteEventSeriesForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, delete series", required=True)
+    confirm = forms.BooleanField(label=_("Yes, delete series"), required=True)
 
 class UploadEventPhotoForm(forms.ModelForm):
     class Meta:
@@ -451,8 +452,8 @@ class OrganizationForm(forms.ModelForm):
         ]
 
 class OrgContactForm(forms.Form):
-    to = forms.ChoiceField(label=_(""))
-    body = forms.CharField(label=_(""), widget=forms.widgets.Textarea)
+    to = forms.ChoiceField(label="")
+    body = forms.CharField(label="", widget=forms.widgets.Textarea)
 
 class RequestToJoinOrgForm(forms.ModelForm):
     class Meta:
@@ -462,7 +463,7 @@ class RequestToJoinOrgForm(forms.ModelForm):
         ]
 
 class AcceptRequestToJoinOrgForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, add this team to my organization", required=True)
+    confirm = forms.BooleanField(label=_("Yes, add this team to my organization"), required=True)
 
 class InviteToJoinOrgForm(forms.ModelForm):
     class Meta:
@@ -472,7 +473,7 @@ class InviteToJoinOrgForm(forms.ModelForm):
         ]
 
 class AcceptInviteToJoinOrgForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, add my team to this organization", required=True)
+    confirm = forms.BooleanField(label=_("Yes, add my team to this organization"), required=True)
 
 class CommonEventForm(forms.ModelForm):
     class Meta:
@@ -508,7 +509,7 @@ class SpeakerBioForm(forms.ModelForm):
         fields = ['avatar', 'title', 'bio', 'categories']
 
 class DeleteSpeakerForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, delete series", required=True)
+    confirm = forms.BooleanField(label=_("Yes, delete series"), required=True)
 
 class UserTalkForm(forms.ModelForm):
     class Meta:
@@ -516,7 +517,7 @@ class UserTalkForm(forms.ModelForm):
         fields = ['speaker', 'title', 'abstract', 'talk_type', 'web_url', 'category']
 
 class DeleteTalkForm(forms.Form):
-    confirm = forms.BooleanField(label="Yes, delete series", required=True)
+    confirm = forms.BooleanField(label=_("Yes, delete series"), required=True)
 
 class SchedulePresentationForm(forms.ModelForm):
     class Meta:

@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -7,7 +7,7 @@
 
 {% block content %}
 <center>
-<h3>Login to your account</h3>
+<h3>{% trans "Login to your account" %}</h3>
 <div class="container container-secondary box-shadow mt-4 mb-4 pt-4 pb-4" style="width: 400px">
     <div >
         <div >
@@ -21,10 +21,10 @@
         <div>
             <ul class="nav nav-tabs justify-content-center mb-2" id="localTab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link {% if action != 'signup' %}active{% endif %}" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+                <a class="nav-link {% if action != 'signup' %}active{% endif %}" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">{% trans "Login" %}</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {% if action == 'signup' %}active{% endif %}" id="signup-tab" data-toggle="tab" href="#signup" role="tab" aria-controls="signup" aria-selected="false">Signup</a>
+                <a class="nav-link {% if action == 'signup' %}active{% endif %}" id="signup-tab" data-toggle="tab" href="#signup" role="tab" aria-controls="signup" aria-selected="false">{% trans "Signup" %}</a>
               </li>
             </ul>
             <div class="tab-content" id="localFormContent">
@@ -34,7 +34,7 @@
                     <table>
                     {{ login_form }}
                     </table>
-                    <button class="btn btn-primary" type="submit" name="action" value="login">Login</button>
+                    <button class="btn btn-primary" type="submit" name="action" value="login">{% trans "Login" %}</button>
                 </form>
               </div>
               <div class="tab-pane fade {% if action == 'signup' %}show active{% endif %}" id="signup" role="tabpanel" aria-labelledby="signup-tab">
@@ -43,7 +43,7 @@
                     <table class="table">
                     {{ signup_form }}
                     </table>
-                    <button class="btn btn-primary" type="submit" name="action" value="signup">Signup</button>
+                    <button class="btn btn-primary" type="submit" name="action" value="signup">{% trans "Signup" %}</button>
                 </form>
               </div>
             </div>

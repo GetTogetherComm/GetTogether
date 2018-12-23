@@ -1,19 +1,19 @@
 {% extends "get_together/base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12">
             <center>
-                <h3>Pick a name and location for your new team</h3>
+                <h3>{% trans "Pick a name and location for your new team" %}</h3>
 
                 <form action="{% url "create-team" %}" method="post" enctype="multipart/form-data" class="form">
                 {% csrf_token %}
                 {% if team.organization %}<input type="hidden" name="organization" value="{{team.organization.id}}" />{% endif %}
                 {% if event %}<input type="hidden" name="event" value="{{event}}" />{% endif %}
                 <p>{% include "events/new_team_form.html" %}</p>
-                <p><button type="submit" class="btn btn-primary">Continue</button></p>
+                <p><button type="submit" class="btn btn-primary">{% trans "Continue" %}</button></p>
                 </form>
             </center>
         </div>

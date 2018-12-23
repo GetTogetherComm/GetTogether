@@ -1,20 +1,21 @@
 {% extends "get_together/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12 align-left">
-            <h2>Manage email notifications</h2>
+            <h2>{% trans "Manage email notifications" %}</h2>
 
-            <p>GetTogether can send notifications to <strong>{{request.user.email}}</strong> about your upcoming events or new events for teams you are a member of.</p>
-            <p>Please confirm whether or not you would like to receive these notifcation emails.</p>
+            <p>{% blocktrans with email=request.user.email %}GetTogether can send notifications to <strong>{{email}}</strong> about your upcoming events or new events for teams you are a member of.{% endblocktrans %}</p>
+            <p>{% trans "Please confirm whether or not you would like to receive these notifcation emails." %}</p>
 
             <p>
                 <form action={% url 'confirm-notifications' %} method="POST">
                     {% csrf_token %}
                     {{notifications_form}}
                     <br/>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
                 </form>
             </p>
         </div>

@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load static tz %}
+{% load static tz i18n %}
 
 {% block styles %}
     <link href="{% static 'css/bootstrap-album.css' %}" rel="stylesheet"/>
@@ -9,7 +9,7 @@
 {% block content %}
         <div class="container">
 {% if not has_talks %}
-            <div class="alert alert-warning">You must create a talk before it can be proposed to this event.</div>
+            <div class="alert alert-warning">{% trans "You must create a talk before it can be proposed to this event." %}</div>
 {% endif %}
 
 {% if proposed_talks %}
@@ -21,11 +21,11 @@
                   <p class="card-title" style="height: 2rem;">
                       <strong><a href="{% url 'show-talk' presentation.talk.id %}">{{presentation.talk.title}}</a></strong>
                     {% if presentation.status == -1 %}
-                        <span class="badge badge-danger" >Declined</span>
+                        <span class="badge badge-danger" >{% trans "Declined" %}</span>
                     {% elif presentation.status == 1 %}
-                        <span class="badge badge-success" >Accepted</span>
+                        <span class="badge badge-success" >{% trans "Accepted" %}</span>
                     {% else %}
-                        <span class="badge badge-info" >Submitted</span>
+                        <span class="badge badge-info" >{% trans "Submitted" %}</span>
                     {% endif %}
                   </p>
                   <div class="card-text">
@@ -48,7 +48,7 @@
                   <p class="card-title" style="height: 2rem;"><strong><a href="{% url 'show-talk' talk.id %}">{{talk.title}}</a></strong></p>
                   <div class="card-text">
                     <small class="text-muted mb-1">{{ talk.speaker }}</small>
-                    <button class="btn btn-primary" type="submit" name="talk_id" value="{{talk.id}}">Propose</a></span>
+                    <button class="btn btn-primary" type="submit" name="talk_id" value="{{talk.id}}">{% trans "Propose" %}</a></span>
                   </div>
                 </div>
               </div>
@@ -58,8 +58,8 @@
         </div>
         <div class="row">
             <div class="col">
-                <a href="{{event.get_absolute_url}}" class="btn btn-secondary">Cancel</a>
-                <a href="{% url 'add-talk' %}?event={{event.id}}" class="btn btn-success">New Talk</a>
+                <a href="{{event.get_absolute_url}}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                <a href="{% url 'add-talk' %}?event={{event.id}}" class="btn btn-success">{% trans "New Talk" %}</a>
             </div>
         </div>
     </div>

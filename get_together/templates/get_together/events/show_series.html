@@ -1,5 +1,5 @@
 {% extends "get_together/base.html" %}
-{% load markup static tz %}
+{% load markup static tz i18n %}
 
 {% block add_to_title %} | {{series.name}}{% endblock %}
 
@@ -36,10 +36,10 @@
         <div class="col-md-9">
             <h2>{{ series.name }}
                 {% if can_edit_event %}
-                <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm">Edit Series</a>
+                <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm">{% trans "Edit Series" %}</a>
                 {% endif %}
             </h2>
-            <p class="text-muted">Hosted by <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
             <hr/>
 
             <p>{{ series.summary|markdown }}</p>
@@ -47,34 +47,34 @@
             <table class="table">
             {% if series.parent %}
             <tr>
-	            <td width="120px"><b>Part of:</b></td><td><a href="{{ series.parent.get_absolute_url }}" target="_blank">{{ series.parent.name }}</a></td>
+	            <td width="120px"><b>{% trans "Part of:" %}</b></td><td><a href="{{ series.parent.get_absolute_url }}" target="_blank">{{ series.parent.name }}</a></td>
             </tr>
             {% endif %}
             <tr>
-	            <td width="120px"><b>Repeats:</b></td><td>
+	            <td width="120px"><b>{% trans "Repeats:" %}</b></td><td>
                 {% for rule in series.recurrences.rrules %}
                 {{rule.to_text|capfirst}}
 	            {% endfor %}
             </td>
             </tr>
             <tr>
-	            <td width="120px"><b>Time:</b></td><td>{{ series.start_time }} - {{ series.end_time }}</td>
+	            <td width="120px"><b>{% trans "Time:" %}</b></td><td>{{ series.start_time }} - {{ series.end_time }}</td>
             </tr>
             <tr>
-	            <td width="120px"><b>Place:</b></td><td>
+	            <td width="120px"><b>{% trans "Place:" %}</b></td><td>
                       {% if series.place %}
                           <a class="" href="{% url 'show-place' series.place.id %}">{{ series.place.name }}</a>
-                          {% if can_edit_event %}<a href="{% url 'add-place-to-series' series.id %}" class="btn btn-secondary btn-sm">Change</a>{% endif %}
+                          {% if can_edit_event %}<a href="{% url 'add-place-to-series' series.id %}" class="btn btn-secondary btn-sm">{% trans "Change" %}</a>{% endif %}
                       {% elif can_edit_event %}
-                          <a class="" href="{% url 'add-place-to-series' series.id %}">No place selected yet.</a>
+                          <a class="" href="{% url 'add-place-to-series' series.id %}">{% trans "No place selected yet." %}</a>
                       {% else %}
-                          No place selected yet.
+                        {% trans "No place selected yet." %}
                       {% endif %}
 	            </td>
             </tr>
             {% if series.web_url %}
             <tr>
-	            <td width="120px"><b>Website:</b></td><td><a href="{{ series.web_url }}" target="_blank">{{ series.web_url }}</a></td>
+	            <td width="120px"><b>{% trans "Website:" %}</b></td><td><a href="{{ series.web_url }}" target="_blank">{{ series.web_url }}</a></td>
             </tr>
             {% endif %}
             </table>
@@ -87,14 +87,14 @@
         <div class="col-md-3">
             <div class="container">
                 <div class="row">
-                    <div class="col"><h4>Instances</h4><hr/></div>
+                    <div class="col"><h4>{% trans "Instances" %}</h4><hr/></div>
                 </div>
                 {% for instance in instances %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">
                       <div class="media-body">
                         <h6 class="mt-2 mb-0">
-                          {% if instance.status == event.CANCELED %}<del>{% endif %}<a href="{{ instance.get_absolute_url }}">{{instance.local_start_time.date}}</a>{% if instance.status == event.CANCELED %}</del> (Canceled){% endif %}
+                          {% if instance.status == event.CANCELED %}<del>{% endif %}<a href="{{ instance.get_absolute_url }}">{{instance.local_start_time.date}}</a>{% if instance.status == event.CANCELED %}</del> ({% trans "Canceled" %}){% endif %}
                           <br/><small class="text-muted">{{ instance.name }}</small>
                       </div>
                     </div>
