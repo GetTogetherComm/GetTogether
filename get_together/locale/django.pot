@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-23 17:47+0000\n"
+"POT-Creation-Date: 2018-12-23 18:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -635,7 +635,7 @@ msgstr ""
 
 #: get_together/templates/get_together/events/cancel_event.html:6
 #, python-format
-msgid "Are you sure you want to cancel <strong>%(event.name)s</strong>?"
+msgid "Are you sure you want to cancel <strong>%(event_name)s</strong>?"
 msgstr ""
 
 #: get_together/templates/get_together/events/cancel_event.html:12
@@ -683,10 +683,9 @@ msgid "Select which team:"
 msgstr ""
 
 #: get_together/templates/get_together/events/create_event_team_select.html:25
-#: get_together/templates/get_together/orgs/create_common_event_team_select.html:25
 #, python-format
-msgid "%(members_count)s member"
-msgid_plural "%(members_count)s members"
+msgid "%(member_count)s member"
+msgid_plural "%(member_count)s members"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1209,18 +1208,25 @@ msgstr ""
 msgid "Plan a <strong>%(org_name)s</strong> event"
 msgstr ""
 
+#: get_together/templates/get_together/orgs/create_common_event_team_select.html:25
+#, python-format
+msgid "%(members_count)s member"
+msgid_plural "%(members_count)s members"
+msgstr[0] ""
+msgstr[1] ""
+
 #: get_together/templates/get_together/orgs/create_common_event_team_select.html:27
 msgid "Host Event"
 msgstr ""
 
 #: get_together/templates/get_together/orgs/edit_org.html:5
 #, python-format
-msgid "Update <b>%(org.name)s</b>"
+msgid "Update <b>%(org_name)s</b>"
 msgstr ""
 
 #: get_together/templates/get_together/orgs/invite_to_join.html:5
 #, python-format
-msgid "Invite: %(team.name)s"
+msgid "Invite: %(team_name)s"
 msgstr ""
 
 #: get_together/templates/get_together/orgs/invite_to_join.html:6
@@ -1237,8 +1243,8 @@ msgid ""
 "            "
 msgid_plural ""
 "\n"
-"            You have <a href=\"#requests\">%(requests.count)s requests</a> "
-"to join your Org!\n"
+"            You have <a href=\"#requests\">%(requests)s requests</a> to join "
+"your Org!\n"
 "            "
 msgstr[0] ""
 msgstr[1] ""
