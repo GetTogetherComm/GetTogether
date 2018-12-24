@@ -30,8 +30,6 @@ ALLOWED_HOSTS = []
 SITE_ID=1
 ADMINS = [ 'mhall119' ]
 
-EVENTS_TEAMS_DEFAULT_PREMIUM=False
-
 # Application definition
 
 INSTALLED_APPS = [
