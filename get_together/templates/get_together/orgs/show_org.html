@@ -159,7 +159,7 @@
                         var position = new google.maps.LatLng(team['latitude'], team['longitude'])
                         var marker = new google.maps.Marker({
                           position: position,
-                          label: team['name'],
+                          title: team['name'],
                           map: map,
                         });
                         options.markers.push(marker);
