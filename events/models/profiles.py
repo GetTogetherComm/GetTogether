@@ -404,6 +404,18 @@ class Team(models.Model):
             return ''
 
     @property
+    def latitude(self):
+        if self.city:
+            return self.city.latitude
+        return None
+
+    @property
+    def longitude(self):
+        if self.city:
+            return self.city.longitude
+        return None
+
+    @property
     def administrators(self):
         return [member.user for member in Member.objects.filter(team=self, role=Member.ADMIN)]
 
@@ -432,6 +444,18 @@ class Team(models.Model):
     def get_absolute_url(self):
         return reverse('show-team-by-slug', kwargs={'team_slug': self.slug})
 
+class TeamSerializer(serializers.ModelSerializer):
+    web_url = serializers.CharField(source='get_absolute_url', read_only=True)
+    class Meta:
+        model = Team
+        fields = (
+            'id',
+            'name',
+            'slug',
+            'latitude',
+            'longitude',
+            'web_url',
+        )
 
 class Member(models.Model):
     NORMAL=0
