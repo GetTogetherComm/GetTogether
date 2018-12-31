@@ -45,6 +45,7 @@ urlpatterns = [
     path('api/spr/', event_views.spr_list),
     path('api/cities/', event_views.city_list),
     path('api/find_city/', event_views.find_city),
+    path('api/org/<int:org_id>/', event_views.org_member_list),
 
     path('profile/+confirm_profile', views.setup_1_confirm_profile, name='setup-1-confirm-profile'),
     path('profile/+pick_categories', views.setup_2_pick_categories, name='setup-2-pick-categories'),

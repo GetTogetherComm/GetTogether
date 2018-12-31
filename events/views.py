@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from rest_framework.response import Response
 from .models.search import Searchable, SearchableSerializer
 from .models.events import Event, EventComment, Place, PlaceSerializer, Attendee
 from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
-from .models.profiles import Team, UserProfile, Member, Sponsor, SponsorSerializer
+from .models.profiles import Organization, Team, TeamSerializer, UserProfile, Member, Sponsor, SponsorSerializer
 from .forms import EventCommentForm
 from .utils import verify_csrf
 
@@ -27,6 +28,12 @@ def events_list(request, *args, **kwargs):
         'events_list': events,
     }
     return render(request, 'events/event_list.html', context)
+
+@api_view(['GET'])
+def org_member_list(request, org_id):
+    org = get_object_or_404(Organization, id=org_id)
+    serializer = TeamSerializer(org.teams.all(), many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def places_list(request, *args, **kwargs):
