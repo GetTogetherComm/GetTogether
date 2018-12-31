@@ -21,6 +21,7 @@
                             {% trans "Edit" %}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="editMenuButton">
+                        <a href="{% url 'password_change'  %}" class="dropdown-item">{% trans "Change Password" %}</a>
                         <a href="{% url 'edit-profile'  %}" class="dropdown-item">{% trans "Profile" %}</a>
                         <a href="{% url 'user-talks'  %}" class="dropdown-item">{% trans "Talks" %}</a>
                     </div>

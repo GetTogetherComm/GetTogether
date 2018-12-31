@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-23 18:36+0000\n"
+"POT-Creation-Date: 2018-12-31 15:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -143,7 +143,7 @@ msgstr ""
 #: get_together/templates/get_together/events/show_series.html:97
 #: get_together/templates/get_together/teams/show_team.html:37
 #: get_together/templates/get_together/teams/team_events.html:21
-#: get_together/templates/get_together/users/show_profile.html:50
+#: get_together/templates/get_together/users/show_profile.html:51
 msgid "Canceled"
 msgstr ""
 
@@ -590,7 +590,7 @@ msgstr ""
 
 #: get_together/templates/get_together/base.html:63
 #: get_together/templates/get_together/orgs/manage_teams.html:24
-#: get_together/templates/get_together/users/show_profile.html:102
+#: get_together/templates/get_together/users/show_profile.html:103
 msgid "Teams"
 msgstr ""
 
@@ -603,7 +603,7 @@ msgid "Host a Get Together"
 msgstr ""
 
 #: get_together/templates/get_together/base.html:82
-#: get_together/templates/get_together/users/show_profile.html:24
+#: get_together/templates/get_together/users/show_profile.html:25
 msgid "Profile"
 msgstr ""
 
@@ -1358,7 +1358,7 @@ msgstr ""
 #: get_together/templates/get_together/orgs/show_org.html:53
 #: get_together/templates/get_together/teams/show_team.html:32
 #: get_together/templates/get_together/teams/team_events.html:16
-#: get_together/templates/get_together/users/show_profile.html:47
+#: get_together/templates/get_together/users/show_profile.html:48
 msgid "Upcoming Events"
 msgstr ""
 
@@ -1471,8 +1471,8 @@ msgid "Edit Bio"
 msgstr ""
 
 #: get_together/templates/get_together/speakers/show_speaker.html:26
-#: get_together/templates/get_together/users/show_profile.html:25
-#: get_together/templates/get_together/users/show_profile.html:72
+#: get_together/templates/get_together/users/show_profile.html:26
+#: get_together/templates/get_together/users/show_profile.html:73
 msgid "Talks"
 msgstr ""
 
@@ -1557,7 +1557,7 @@ msgid "Organization:"
 msgstr ""
 
 #: get_together/templates/get_together/teams/team_events.html:31
-#: get_together/templates/get_together/users/show_profile.html:60
+#: get_together/templates/get_together/users/show_profile.html:61
 msgid "Past Events"
 msgstr ""
 
@@ -1643,28 +1643,141 @@ msgid "Login"
 msgstr ""
 
 #: get_together/templates/get_together/users/login.html:28
-#: get_together/templates/get_together/users/login.html:47
+#: get_together/templates/get_together/users/login.html:49
 msgid "Signup"
 msgstr ""
 
-#: get_together/templates/get_together/users/show_profile.html:36
+#: get_together/templates/get_together/users/show_profile.html:24
+msgid "Change Password"
+msgstr ""
+
+#: get_together/templates/get_together/users/show_profile.html:37
 msgid "Homepage:"
 msgstr ""
 
-#: get_together/templates/get_together/users/show_profile.html:40
+#: get_together/templates/get_together/users/show_profile.html:41
 msgid "Timezone:"
 msgstr ""
 
-#: get_together/templates/get_together/users/show_profile.html:90
+#: get_together/templates/get_together/users/show_profile.html:91
 msgid "Badges"
 msgstr ""
 
-#: get_together/templates/get_together/users/show_profile.html:109
+#: get_together/templates/get_together/users/show_profile.html:110
 msgid "Categories"
 msgstr ""
 
-#: get_together/templates/get_together/users/show_profile.html:124
+#: get_together/templates/get_together/users/show_profile.html:125
 msgid "User not found."
+msgstr ""
+
+#: get_together/templates/registration/password_change_done.html:7
+msgid "Your password was changed."
+msgstr ""
+
+#: get_together/templates/registration/password_change_form.html:14
+msgid "Please correct the error below."
+msgstr ""
+
+#: get_together/templates/registration/password_change_form.html:14
+msgid "Please correct the errors below."
+msgstr ""
+
+#: get_together/templates/registration/password_change_form.html:19
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+
+#: get_together/templates/registration/password_change_form.html:47
+#: get_together/templates/registration/password_reset_confirm.html:24
+msgid "Change my password"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_complete.html:9
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_complete.html:11
+msgid "Log in"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_confirm.html:10
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_confirm.html:16
+msgid "New password:"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_confirm.html:21
+msgid "Confirm password:"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_confirm.html:30
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_done.html:6
+msgid "Home"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_done.html:7
+msgid "Password reset"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_done.html:15
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_done.html:17
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_email.html:5
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_email.html:7
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_email.html:11
+msgid "Your username, in case you've forgotten:"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_email.html:13
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_email.html:15
+#, python-format
+msgid "The %(site_name)s team"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_form.html:9
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+
+#: get_together/templates/registration/password_reset_form.html:15
+msgid "Email address:"
+msgstr ""
+
+#: get_together/templates/registration/password_reset_form.html:18
+msgid "Reset my password"
 msgstr ""
 
 #: get_together/views/events.py:120
