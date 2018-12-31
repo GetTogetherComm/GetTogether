@@ -53,9 +53,9 @@
                         {% else %}
                             {% blocktrans %}There are no events within {{ distance }}km of you.{% endblocktrans %}
                         {% endif %}
-                        <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">trans "Create one now" %}</a>
+                        <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">{% trans "Create one now" %}</a>
                         or
-                        <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">trans "View all events" %}</a>
+                        <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">{% trans "View all events" %}</a>
                     </div>
                 </div>
             {% endif %}
