@@ -37,89 +37,37 @@ admin.site.register(Continent)
 admin.site.register(Country)
 
 from django.db.models import Count
-class NumberOfEventsFilter(SimpleListFilter):
-    title = _('Event Count')
-    parameter_name = 'event_count'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('0', '0'),
-            ('1', '1'),
-            ('2', '2 - 9'),
-            ('10', '10 - 99'),
-            ('100', '100+'),
-            ('>0', '> 0')
-        )
+def countFilter(field_name):
 
-    def queryset(self, request, queryset):
-        if self.value() == '0':
-            return queryset.annotate(num_events=Count('event')).filter(num_events=0)
-        if self.value() == '>0':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=0)
-        if self.value() == '1':
-            return queryset.annotate(num_events=Count('event')).filter(num_events=1)
-        if self.value() == '2':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=2, num_events__lte=9)
-        if self.value() == '10':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=10, num_events__lte=99)
-        if self.value() == '100':
-            return queryset.annotate(num_events=Count('event')).filter(num_events__gte=100)
+    class CountFilter(SimpleListFilter):
+        title = '%s Count' % field_name.title()
+        parameter_name = '%s_count' % field_name
 
-class NumberOfMembersFilter(SimpleListFilter):
-    title = _('Member Count')
-    parameter_name = 'member_count'
+        def lookups(self, request, model_admin):
+            return (
+                ('0', '0'),
+                ('1', '1'),
+                ('2', '2 - 9'),
+                ('10', '10 - 99'),
+                ('100', '100+'),
+                ('>0', '> 0')
+            )
 
-    def lookups(self, request, model_admin):
-        return (
-            ('0', '0'),
-            ('1', '1'),
-            ('2', '2 - 9'),
-            ('10', '10 - 99'),
-            ('100', '100+'),
-            ('>0', '> 0')
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == '0':
-            return queryset.annotate(num_events=Count('member')).filter(num_events=0)
-        if self.value() == '>0':
-            return queryset.annotate(num_events=Count('member')).filter(num_events__gt=0)
-        if self.value() == '1':
-            return queryset.annotate(num_events=Count('member')).filter(num_events=1)
-        if self.value() == '2':
-            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=2, num_events__lte=9)
-        if self.value() == '10':
-            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=10, num_events__lte=99)
-        if self.value() == '100':
-            return queryset.annotate(num_events=Count('member')).filter(num_events__gte=100)
-
-class NumberOfAttendeesFilter(SimpleListFilter):
-    title = _('Attendee Count')
-    parameter_name = 'attendee_count'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('0', '0'),
-            ('1', '1'),
-            ('2', '2 - 9'),
-            ('10', '10 - 99'),
-            ('100', '100+'),
-            ('>0', '> 0')
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == '0':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events=0)
-        if self.value() == '>0':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gt=0)
-        if self.value() == '1':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events=1)
-        if self.value() == '2':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=2, num_events__lte=9)
-        if self.value() == '10':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=10, num_events__lte=99)
-        if self.value() == '100':
-            return queryset.annotate(num_events=Count('attendee')).filter(num_events__gte=100)
+        def queryset(self, request, queryset):
+            if self.value() == '0':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events=0)
+            if self.value() == '>0':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events__gt=0)
+            if self.value() == '1':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events=1)
+            if self.value() == '2':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events__gte=2, num_events__lte=9)
+            if self.value() == '10':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events__gte=10, num_events__lte=99)
+            if self.value() == '100':
+                return queryset.annotate(num_events=Count(field_name)).filter(num_events__gte=100)
+    return CountFilter
 
 class SPRAdmin(admin.ModelAdmin):
     raw_id_fields = ('country',)
@@ -153,13 +101,17 @@ class OrgRequestAdmin(admin.ModelAdmin):
 admin.site.register(OrgTeamRequest, OrgRequestAdmin)
 
 class SponsorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'web_url')
+    list_display = ('name', 'web_url', 'event_count')
+    list_filter = (countFilter('events'),)
+    def event_count(self, sponsor):
+        return sponsor.events.all().count()
+    event_count.short_description = 'Sponsored Events'
 admin.site.register(Sponsor, SponsorAdmin)
 
 class TeamAdmin(admin.ModelAdmin):
     raw_id_fields = ('country', 'spr', 'city', 'owner_profile', 'admin_profiles', 'contact_profiles', 'sponsors')
-    list_display = ('__str__', 'active', 'member_count', 'event_count', 'owner_profile', 'created_date', 'access')
-    list_filter = ('access', 'organization', NumberOfMembersFilter, NumberOfEventsFilter, ('country',admin.RelatedOnlyFieldListFilter), 'active')
+    list_display = ('__str__', 'open_link', 'member_count', 'event_count', 'owner_profile', 'created_date', 'access', 'active')
+    list_filter = ('access', 'organization', countFilter('member'), countFilter('event'), ('country',admin.RelatedOnlyFieldListFilter), 'active')
     ordering = ('-created_date',)
 
     def member_count(self, team):
@@ -168,6 +120,9 @@ class TeamAdmin(admin.ModelAdmin):
     def event_count(self, team):
         return team.event_set.all().count()
     event_count.short_description = 'Events'
+    def open_link(self, team):
+        return mark_safe('<a href="%s" target="_blank">Open</a>' % team.get_absolute_url())
+    open_link.short_description = 'Link'
 admin.site.register(Team, TeamAdmin)
 
 class SearchableAdmin(admin.ModelAdmin):
@@ -182,12 +137,15 @@ admin.site.register(Place, PlaceAdmin)
 
 class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'created_by', 'sponsors')
-    list_display = ('__str__', 'attendee_count', 'start_time', 'created_by', 'created_time')
-    list_filter = ('created_time', 'start_time', NumberOfAttendeesFilter, ('team__country',admin.RelatedOnlyFieldListFilter))
+    list_display = ('__str__', 'open_link', 'attendee_count', 'start_time', 'created_by', 'created_time')
+    list_filter = ('created_time', 'start_time', countFilter('attendee'), ('team__country',admin.RelatedOnlyFieldListFilter))
     ordering = ('-start_time',)
     def attendee_count(self, event):
         return event.attendees.all().count()
     attendee_count.short_description = 'Attendees'
+    def open_link(self, event):
+        return mark_safe('<a href="%s" target="_blank">Open</a>' % event.get_absolute_url())
+    open_link.short_description = 'Link'
 admin.site.register(Event, EventAdmin)
 
 class EventPhotoAdmin(admin.ModelAdmin):
@@ -215,6 +173,7 @@ admin.site.register(CommonEvent, CommonEventAdmin)
 class EventSeriesAdmin(admin.ModelAdmin):
     raw_id_fields = ('place', 'team')
     list_display = ('__str__', 'instance_count', 'team', 'start_time', 'last_time')
+    list_filter=( ('team',admin.RelatedOnlyFieldListFilter), countFilter('instances'))
     ordering = ('-last_time',)
     def instance_count(self, series):
         return series.instances.all().count()
