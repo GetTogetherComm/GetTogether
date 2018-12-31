@@ -57,6 +57,8 @@ class ViewTests(TestCase):
         if not response.status_code == status:
             print("check_view(%s) returned %s" % (url, response.status_code))
         assert(response.status_code == status)
+        if response.status_code == 200:
+            self.assertContains(response, 'trans', 0)
 
     def test_teams_list(self): 
         self.check_view('/teams/', login=True)
