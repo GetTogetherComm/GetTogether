@@ -4,7 +4,7 @@
 
 Get Together is an open source event manager for local communities.
 
-Get Together is version *0.8.0*.
+Get Together is version *0.9.0*.
 
 Try it free at https://gettogether.community
 
