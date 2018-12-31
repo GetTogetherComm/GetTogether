@@ -104,13 +104,13 @@
                           <p class="card-title">{{team.name}}</p>
                         </div>
                         <div class="card-body">
-                          <p class="card-text"><strong><a class="card-link" href="{% url 'show-team-by-slug' team.slug %}">{{team.city}}</a></strong></p>
+                          <p class="card-text"><strong><a class="card-link" href="{% url 'show-team-by-slug' team.slug %}">{{team.city.short_name}}</a></strong></p>
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
                                 {% blocktrans with event_count=team.event_set.count count member_count=team.members.count %}
-                                    {{ members_count }} Member, {{ event_count }} Events
+                                    {{ member_count }} Member, {{ event_count }} Events
                                 {% plural %}
-                                    {{ members_count }} Members, {{ event_count }} Events
+                                    {{ member_count }} Members, {{ event_count }} Events
                                 {% endblocktrans %}
                             </small>
                             <div class="btn-group">

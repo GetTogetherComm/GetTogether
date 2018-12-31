@@ -27,7 +27,7 @@
                 <div class="card-body">
                   <p class="card-text"><strong>{{event.team.name}}</strong></p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted">{{ event.local_start_time }}</small>
+                    <small class="text-muted">{{ event.local_start_time }}{% if event.place %}<br/>{{event.place.city.short_name}}{% endif %}</small>
                     <div class="btn-group">
                         <a class="btn btn-primary" href="{{ event.get_absolute_url }}">{% trans "View" %}</a></span>
                     </div>
