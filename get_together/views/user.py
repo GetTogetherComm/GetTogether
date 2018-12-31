@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.views import PasswordResetView as DjangoPasswordResetView
 
 from events.models.profiles import Team, UserProfile, Member
 from events.forms import UserForm, UserProfileForm
@@ -126,3 +127,6 @@ def edit_profile(request):
     else:
      return redirect('home')
 
+class PasswordResetView(DjangoPasswordResetView):
+    email_template_name = 'registration/password_reset_email.txt'
+    html_email_template_name = 'registration/password_reset_email.html'
