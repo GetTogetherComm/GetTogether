@@ -47,17 +47,23 @@ def home(request, *args, **kwards):
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
     context['geoip_lookup'] = False
+    context['city_search'] = False
 
     city=None
     ll = None
     if "city" in request.GET and request.GET.get("city"):
-        context['city_search'] = True
-        city = City.objects.get(id=request.GET.get("city"))
-        context['city'] = city
-        ll = [city.latitude, city.longitude]
-        ga.add_event(request, 'homepage_search', category='search', label=city.short_name)
-    else :
-        context['city_search'] = False
+        try:
+            city_id = int(request.GET.get("city"))
+            city = City.objects.get(id=city_id)
+            context['city'] = city
+            ll = [city.latitude, city.longitude]
+            ga.add_event(request, 'homepage_search', category='search', label=city.short_name)
+            context['city_search'] = True
+        except:
+            messages.add_message(request, messages.ERROR, message=_('Could not locate the City you requested.'))
+            context['city_search'] = False
+
+    if context['city_search'] == False:
         try:
             g = location.get_geoip(request)
             if g.latlng is not None and len(g.latlng) >= 2 and g.latlng[0] is not None and g.latlng[1] is not None:
