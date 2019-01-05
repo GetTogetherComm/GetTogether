@@ -59,6 +59,7 @@ class ViewTests(TestCase):
         assert(response.status_code == status)
         if response.status_code == 200:
             self.assertContains(response, 'trans', 0)
+        return response
 
     def test_teams_list(self): 
         self.check_view('/teams/', login=True)
@@ -240,6 +241,18 @@ class ViewTests(TestCase):
     def test_show_event(self): 
         self.check_view('/events/%s/test-event/' % self.event.id)
 
+    def test_do_not_track(self):
+        settings.SOCIAL_AUTH_FACEBOOK_KEY = 'mock_facebook_key'
+        response = self.check_view('/events/%s/test-event/' % self.event.id, login=True)
+        self.assertContains(response, "facebookShareButton", 1)
+        self.assertContains(response, "attendEventButton", 1)
+
+        self.userProfile.do_not_track = True
+        self.userProfile.save()
+
+        response = self.check_view('/events/%s/test-event/' % self.event.id, login=True)
+        self.assertContains(response, "facebookShareButton", 0)
+        self.assertContains(response, "attendEventButton", 1)
 
     def test_show_series(self): 
         series = mommy.make(EventSeries, team=self.team, name='Test Series')
