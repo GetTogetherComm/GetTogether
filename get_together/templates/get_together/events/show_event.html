@@ -112,14 +112,15 @@ textarea {
             <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
             {% endif %}
             {% if event.status != event.CANCELED and not request.user.profile.do_not_track %}
-            {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
-                <a href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> {% trans "Tweet" %}</a>
-            {% endif %}
-            {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
-                <a href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> {% trans "Share" %}</a>
-            {% endif %}
-            {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
-                <a href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fab fa-linkedin"></i> {% trans "Share" %}</a>
+                {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
+                    <a id="twitterShareButton" href="https://twitter.com/intent/tweet?text=I'm+having+a+get+together!%0D{{event.name|urlencode}}&original_referer={{event.get_full_url|urlencode}}&url={{event.get_full_url|urlencode}}&hashtags=gettogether" data-size="large" class="btn btn-twitter btn-sm"><i class="fab fa-twitter"></i> {% trans "Tweet" %}</a>
+                {% endif %}
+                {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}
+                    <a id="facebookShareButton" href="#" onClick="shareFacebook();" class="btn btn-facebook btn-sm"><i class="fab fa-facebook"></i> {% trans "Share" %}</a>
+                {% endif %}
+                {% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}
+                    <a id="linkedinShareButton" href="#" onClick="shareLinkedIn();" class="IN-widget btn btn-linkedin btn-sm"><i class="fab fa-linkedin"></i> {% trans "Share" %}</a>
+                {% endif %}
             {% endif %}
             {% if not event.is_over %}
                 {% if can_edit_team or is_email_confirmed %}
@@ -127,7 +128,7 @@ textarea {
                 {% endif %}
                 {% if not is_attending %}
                     <div class="btn-group">
-                      <a href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> {% trans "Attend" %}</a>
+                      <a id="attendEventButton" href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> {% trans "Attend" %}</a>
                       <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Attendance options</span>
                       </button>
@@ -137,7 +138,6 @@ textarea {
                       </div>
                     </div>
                 {% endif %}
-            {% endif %}
             {% endif %}
             {% if can_edit_event %}
             <div class="btn-group dropdown">
