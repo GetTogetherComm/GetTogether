@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="fluid-container">
-        <div clas="row">
+        <div class="row">
             <div class="col-12 text-center mb-2">
                 <div class="btn-group" role="group">
                   <a class="btn {% if not request.user.is_authenticated %}disabled {% endif %}{% if active == 'my'  %}btn-primary{% else %}btn-secondary{% endif %}" href="{% url 'teams' %}">{% trans "My Teams" %}</a>
