@@ -342,7 +342,7 @@ textarea {
                 </div>
                 <div class="row">
                 {% for photo in event.photos.all %}
-                  <div class="card mb-4 box-shadow mr-1" style="width: 250px">
+                  <div class="card" style="max-width: 90%; margin-left: auto; margin-right: auto;">
                     <div class="card-banner">
                       <a href="{{photo.src.url}}" target="_blank">
                       <img class="card-img-top" src="{{photo.thumbnail.url}}" alt="{{photo.title}}">
@@ -351,7 +351,7 @@ textarea {
                     <div class="card-body">
                       <p class="card-text"><strong>{{photo.title}}</strong></p>
                       <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">{{photo.caption}}</small>
+                        <small class="text-muted" style="width: 100%; overflow-x: hidden;">{{photo.caption}}</small>
                       </div>
                     </div>
                   </div>
