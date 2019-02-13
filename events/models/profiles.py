@@ -245,12 +245,13 @@ class Organization(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        new_slug = slugify(self.name)
-        slug_matches = list(Organization.objects.filter(slug=new_slug))
-        if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].id == self.id):
-            self.slug = new_slug
-        else:
-            self.slug = '%s-%s' % (new_slug, self.id)
+        if not self.slug:
+            new_slug = slugify(self.name)
+            slug_matches = list(Organization.objects.filter(slug=new_slug))
+            if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].id == self.id):
+                self.slug = new_slug
+            else:
+                self.slug = '%s-%s' % (new_slug, self.id)
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
     def get_absolute_url(self):
