@@ -173,6 +173,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = './media/'
 MEDIA_URL = '/media/'
 
+MATOMO_HOST=None
+MATOMO_SITE_ID=None
+
 IPSTACK_ACCESS_KEY=None
 GOOGLE_ANALYTICS_ID=None
 GOOGLE_MAPS_API_KEY=None
@@ -203,6 +206,8 @@ SETTINGS_EXPORT = [
     'SOCIAL_AUTH_TWITTER_KEY',
     'SOCIAL_AUTH_LINKEDIN_KEY',
     'IPSTACK_ACCESS_KEY',
+    'MATOMO_SITE_ID',
+    'MATOMO_HOST',
 ]
 
 # Make django messages framework use Bootstrap's alert style classes
