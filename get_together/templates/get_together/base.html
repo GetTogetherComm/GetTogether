@@ -8,7 +8,21 @@
     <meta name="author" content="">
 
     <title>{% block title %}Get Together{% block add_to_title %}{% endblock %}{% endblock %}</title>
-    <link rel="icon" href="{% static 'img/iconv1_64.png' %}">
+    <!-- <link rel="icon" href="{% static 'img/iconv1_64.png' %}"> -->
+
+    <!-- FAVICON STARTS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'favicon/android-chrome-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg" color="#384244' %}">
+    <meta name="apple-mobile-web-app-title" content="GetTogether">
+    <meta name="application-name" content="GetTogether">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="msapplication-TileImage" content="{% static 'favicon/mstile-144x144.png' %}">
+    <meta name="theme-color" content="#ffffff">
+    <!-- FAVICON ENDS -->
 
     {% block meta %}{% endblock %}
 
