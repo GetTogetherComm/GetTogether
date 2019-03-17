@@ -12,7 +12,7 @@ from django.conf import settings
 
 
 from events.models.profiles import Organization, Team, UserProfile, Member
-from events.models.events import Event, CommonEvent, Place, Attendee
+from events.models.events import Event, EventSeries, CommonEvent, Place, Attendee
 from events.forms import TeamForm, NewTeamForm, DeleteTeamForm, TeamContactForm, TeamInviteForm
 from events import location
 from events.utils import verify_csrf
@@ -74,10 +74,13 @@ def show_team_events_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
     upcoming_events = Event.objects.filter(team=team, end_time__gt=datetime.datetime.now()).order_by('start_time')
     recent_events = Event.objects.filter(team=team, end_time__lte=datetime.datetime.now()).order_by('-start_time')
+    recurring_events = EventSeries.objects.filter(team=team)
+
     context = {
         'team': team,
         'upcoming_events': upcoming_events,
         'recent_events': recent_events,
+        'recurring_events': recurring_events,
         'is_member': request.user.profile in team.members.all(),
         'member_list': Member.objects.filter(team=team).order_by('-role', 'joined_date'),
         'can_create_event': request.user.profile.can_create_event(team),

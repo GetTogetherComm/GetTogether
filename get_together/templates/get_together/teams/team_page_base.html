@@ -41,6 +41,7 @@
                         <a class="btn {% block about-button %}btn-secondary{% endblock %} btn-sm" href="{% url 'show-team-about-by-slug' team.slug %}">{% trans "About" %}</a>
                     {% endif %}
                 </div>
+                <a href="{% url 'team-event-ical' team.id %}" class="btn btn-sm btn-primary" title="iCal"><i class="far fa-calendar-alt"></i> iCal</a>
                 {% if is_member %}
                 {% if not team.owner_profile == request.user.profile %}<a href="{% url 'leave-team' team.id %}?csrftoken={{csrf_token}}" class="btn btn-danger btn-sm">{% trans "Leave Team" %}</a>{% endif %}
                 {% else %}

@@ -36,7 +36,7 @@
         <div class="col-md-9">
             <h2>{{ series.name }}
                 {% if can_edit_event %}
-                <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm">{% trans "Edit Series" %}</a>
+                <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> {% trans "Edit Series" %}</a>
                 {% endif %}
             </h2>
             <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
