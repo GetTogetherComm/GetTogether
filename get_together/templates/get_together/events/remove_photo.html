@@ -1,0 +1,17 @@
+{% extends "get_together/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Confirm removal" %}</h2>
+{% blocktrans with event_name=event.name %}Are you sure you want to remove this photo?{% endblocktrans %}
+<p><img class="card-img-top" src="{{photo.thumbnail.url}}" alt="{{photo.title}}"></p>
+<form action="{% url "remove-event-photo" photo.id %}" method="post">
+{% csrf_token %}
+<div class="form-group">
+{{ remove_form }}
+	<br />
+<button type="submit" class="btn btn-danger">{% trans "Remove Photo" %}</button>
+</div>
+</form>
+{% endblock %}
+

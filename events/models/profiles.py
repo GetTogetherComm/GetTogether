@@ -186,6 +186,8 @@ class UserProfile(models.Model):
             return True
         return False
 
+    def is_in_team(self, team):
+        return Member.objects.filter(team=team, user=self).count() > 0
 
 def get_user_timezone(username):
     # TODO: find a smarter way to get timezone

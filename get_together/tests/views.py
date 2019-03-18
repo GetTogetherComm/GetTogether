@@ -312,7 +312,15 @@ class ViewTests(TestCase):
 
 
     def test_add_event_photo(self): 
+        member = mommy.make(Member, team=self.team, user=self.userProfile, role=Member.NORMAL)
         self.check_view('/events/%s/+photo/' % self.event.id, login=True)
+
+    # TODO: Removed until we can mock an EventPhoto without uploading a real photo
+    # @mock.patch("imagekit.models.ImageSpecField.url", "/static/img/team_placeholder.png")
+    # def test_remove_event_photo(self): 
+    #     member = mommy.make(Member, team=self.team, user=self.userProfile, role=Member.NORMAL)
+    #     photo = mommy.make(EventPhoto, event=self.event, uploader=self.userProfile, src='../static/img/team_placeholder.png')
+    #     self.check_view('/photo/%s/+remove/' % photo.id, login=True)
 
 
     def test_add_place_to_event(self): 

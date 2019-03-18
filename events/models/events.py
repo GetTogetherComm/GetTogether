@@ -280,6 +280,7 @@ class Attendee(models.Model):
         return "%s at %s" % (self.user, self.event)
 
 class EventPhoto(models.Model):
+    uploader = models.ForeignKey(UserProfile, related_name="event_photos", on_delete=models.SET_NULL, null=True)
     event = models.ForeignKey(Event, related_name='photos', on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     caption = models.TextField(null=True, blank=True)

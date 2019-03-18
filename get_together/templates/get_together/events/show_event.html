@@ -342,22 +342,26 @@ textarea {
                 </div>
                 <div class="row">
                 {% for photo in event.photos.all %}
-                  <div class="card" style="max-width: 90%; margin-left: auto; margin-right: auto;">
+                  <div class="card mb-3" style="max-width: 90%; margin-left: auto; margin-right: auto;">
                     <div class="card-banner">
                       <a href="{{photo.src.url}}" target="_blank">
                       <img class="card-img-top" src="{{photo.thumbnail.url}}" alt="{{photo.title}}">
                       </a>
                     </div>
                     <div class="card-body">
-                      <p class="card-text"><strong>{{photo.title}}</strong></p>
+                      <p class="card-text"><strong>{{photo.title}}</strong>
+                        {% if can_edit_event or photo.uploader == request.user.profile %}
+                        <a href="{% url 'remove-event-photo' photo.id %}" class="badge badge-danger"><i class="fa fa-times"></i></a>
+                        {% endif %}
+                      </p>
                       <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted" style="width: 100%; word-break: break-word;overflow-x: hidden;">{{photo.caption}}</small>
                       </div>
-                    </div>
+                  </div>
                   </div>
                 {% endfor %}
                 </div>
-                {% if can_edit_event %}
+                {% if is_in_team %}
                 <div class="row">
                     <div class="col"><a class="btn btn-primary btn-sm" href="{% url 'add-event-photo' event.id %}"><i class="fa fa-upload"></i> {% trans "Upload" %}</a></div>
                 </div>

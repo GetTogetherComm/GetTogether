@@ -374,6 +374,9 @@ class UploadEventPhotoForm(forms.ModelForm):
         model = EventPhoto
         fields = ['src', 'title', 'caption']
 
+class RemoveEventPhotoForm(forms.Form):
+    confirm = forms.BooleanField(label=_("Yes, remove photo"), required=True)
+
 class EventCommentForm(forms.ModelForm):
     class Meta:
         model = EventComment

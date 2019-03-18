@@ -36,6 +36,7 @@ from events.forms import (
     EventCommentForm,
     NewPlaceForm,
     UploadEventPhotoForm,
+    RemoveEventPhotoForm,
     EventInviteEmailForm,
     EventInviteMemberForm,
     EventContactForm,
@@ -89,6 +90,7 @@ def show_event(request, event_id, event_slug):
         'pending_presentations': event.presentations.filter(status=Presentation.PROPOSED).count(),
         'can_edit_event': request.user.profile.can_edit_event(event),
         'can_edit_team': request.user.profile.can_edit_team(event.team),
+        'is_in_team': request.user.profile.is_in_team(event.team),
         'is_email_confirmed': request.user.account.is_email_confirmed,
     }
     return render(request, 'get_together/events/show_event.html', context)
@@ -526,8 +528,8 @@ def send_comment_emails(comment):
 @login_required
 def add_event_photo(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    if not request.user.profile.can_edit_event(event):
-        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this event.'))
+    if not request.user.profile.is_in_team(event.team):
+        messages.add_message(request, messages.WARNING, message=_('You can not add photos this event.'))
         return redirect(event.get_absolute_url())
 
     if not event.enable_photos:
@@ -543,7 +545,7 @@ def add_event_photo(request, event_id):
         }
         return render(request, 'get_together/events/add_photo.html', context)
     elif request.method == 'POST':
-        new_photo = EventPhoto(event=event)
+        new_photo = EventPhoto(event=event, uploader=request.user.profile)
         form = UploadEventPhotoForm(request.POST, request.FILES, instance=new_photo)
         if form.is_valid():
             form.save()
@@ -556,6 +558,32 @@ def add_event_photo(request, event_id):
             return render(request, 'get_together/events/add_photo.html', context)
     else:
      return redirect('home')
+
+@login_required
+def remove_event_photo(request, photo_id):
+    photo = get_object_or_404(EventPhoto, id=photo_id)
+    event = photo.event
+
+    if not request.user.profile.can_edit_event(event) and photo.uploader != request.user.profile:
+        messages.add_message(request, messages.WARNING, message=_('You can not make changes to this photo.'))
+        return redirect(event.get_absolute_url())
+
+    if request.method == 'GET':
+        form = RemoveEventPhotoForm()
+
+        context = {
+            'photo': photo,
+            'event': event,
+            'remove_form': form,
+        }
+        return render(request, 'get_together/events/remove_photo.html', context)
+    elif request.method == 'POST':
+        form = RemoveEventPhotoForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            photo.delete()
+            return redirect(event.get_absolute_url())
+    else:
+        return redirect('home')
 
 @login_required
 def add_place_to_event(request, event_id):

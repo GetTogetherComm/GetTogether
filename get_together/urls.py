@@ -109,6 +109,7 @@ urlpatterns = [
     path('events/<int:event_id>/+add_place/', views.add_place_to_event, name='add-place'),
     path('events/<int:event_id>/+comment/', views.comment_event, name='comment-event'),
     path('events/<int:event_id>/+photo/', views.add_event_photo, name='add-event-photo'),
+    path('photo/<int:photo_id>/+remove/', views.remove_event_photo, name='remove-event-photo'),
     path('events/<int:event_id>/+propose-talk/', views.propose_event_talk, name='propose-event-talk'),
     path('events/<int:event_id>/+schedule-talks/', views.schedule_event_talks, name='schedule-event-talks'),
     path('events/<int:event_id>/<str:event_slug>/', views.show_event, name='show-event'),
