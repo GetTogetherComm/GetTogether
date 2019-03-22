@@ -306,9 +306,19 @@ class ViewTests(TestCase):
         self.check_view('/events/%s/+attended/?attendee=%s' % (self.event.id, attendee.id), login=True)
 
 
-    def test_comment_event(self): 
+    def test_comment_add(self): 
         # Doesn't do anything on a GET
         self.check_view('/events/%s/+comment/' % self.event.id, login=True, status=302)
+
+    def test_comment_edit(self): 
+        # Doesn't do anything on a GET
+        comment = mommy.make(EventComment, event=self.event, author=self.userProfile)
+        self.check_view('/comment/%s/+edit/' % comment.id, login=True, status=302)
+
+    def test_comment_delete(self): 
+        # Doesn't do anything on a GET
+        comment = mommy.make(EventComment, event=self.event, author=self.userProfile)
+        self.check_view('/comment/%s/+delete/' % comment.id, login=True)
 
 
     def test_add_event_photo(self): 

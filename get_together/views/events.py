@@ -34,6 +34,7 @@ from events.forms import (
     EventSeriesForm,
     DeleteEventSeriesForm,
     EventCommentForm,
+    DeleteCommentForm,
     NewPlaceForm,
     UploadEventPhotoForm,
     RemoveEventPhotoForm,
@@ -496,6 +497,53 @@ def comment_event(request, event_id):
 
     return redirect(event.get_absolute_url())
 
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(EventComment, id=comment_id)
+    if not request.user.profile.can_edit_event(comment.event) and request.user.profile.id != comment.author.id:
+        messages.add_message(request, messages.WARNING, message=_("You can not edit a comment that is not yours."))
+        return redirect(comment.event.get_absolute_url())
+
+    if request.method == 'POST':
+        comment_form = EventCommentForm(request.POST, instance=comment)
+        if comment_form.is_valid():
+            comment_form.save()
+            return redirect(comment.event.get_absolute_url()+'#comment-%s'%comment.id)
+        else:
+            messages.add_message(request, messages.ERROR, message=_("Error updating comment."))
+            
+    return redirect(comment.event.get_absolute_url())
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(EventComment, id=comment_id)
+    event = comment.event
+    if not request.user.profile.can_edit_event(comment.event) and request.user.profile.id != comment.author.id:
+        messages.add_message(request, messages.WARNING, message=_('You can not make delete this comment.'))
+        return redirect(event.get_absolute_url()+"#comment-"+comment_id)
+
+    if request.method == 'GET':
+        form = DeleteCommentForm()
+
+        context = {
+            'comment': comment,
+            'event': event,
+            'delete_form': form,
+        }
+        return render(request, 'get_together/events/delete_comment.html', context)
+    elif request.method == 'POST':
+        form = DeleteCommentForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            comment.delete()
+            return redirect(event.get_absolute_url())
+        else:
+            context = {
+                'comment': comment,
+                'event': event,
+                'delete_form': form,
+            }
+            return render(request, 'get_together/events/delete_comment.html', context)
+    else:
+     return redirect
 
 def send_comment_emails(comment):
     context = {
@@ -687,6 +735,16 @@ def edit_event(request, event_id):
                     new_series.save()
                     new_event.series = new_series
                     new_event.save()
+            else:
+                if event.series is not None:
+                    old_series = event.series
+                    event.series = None
+                    event.save()
+                    if old_series.instances.count() < 1:
+                        old_series.delete()
+                else:
+                    event.save()
+
 
             return redirect(new_event.get_absolute_url())
         else:

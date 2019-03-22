@@ -304,6 +304,7 @@ class EventComment(MPTTModel):
     event = models.ForeignKey(Event, related_name='comments', on_delete=models.CASCADE)
     body = models.TextField(help_text=_('Markdown formatting supported'))
     created_time = models.DateTimeField(default=timezone.now, db_index=True)
+    updated_time = models.DateTimeField(default=timezone.now, db_index=True)
     status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
 
@@ -311,8 +312,18 @@ class EventComment(MPTTModel):
     def local_created_time(self):
         return self.event.localize_datetime(self.created_time)
 
+    @property
+    def local_updated_time(self):
+        return self.event.localize_datetime(self.updated_time)
+
     def __str__(self):
         return '%s at %s' % (self.author, self.created_time)
+
+    def save(self, *args, **kwargs):
+        self.updated_time = timezone.now()
+        if not self.id:
+            self.created_time = self.updated_time
+        super().save(*args, **kwargs)  # Call the "real" save() method.
 
 class CommonEvent(models.Model):
     name = models.CharField(max_length=150, verbose_name=_('Event Name'))

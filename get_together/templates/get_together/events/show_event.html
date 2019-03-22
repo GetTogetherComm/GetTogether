@@ -228,9 +228,9 @@ textarea {
                 </div>
                 <div class="row">
                     {% load mptt_tags %}
-                    <ul class="col-md-10 list-group">
+                    <ul class="col-md-10 list-group gt-comment-group">
                         {% recursetree event.comments.all %}
-                            <div id="comment-{{node.id}}" class="list-group-item flex-container">
+                            <div id="comment-{{node.id}}" class="list-group-item flex-container gt-comment-item">
                               <div class="row w-100 ml-0">
                                   <div class="w-100 d-flex justify-content-between">
                                       <div class="media gt-profile">
@@ -238,12 +238,28 @@ textarea {
                                           <span class="gt-profile-badges">{% for badge in node.author.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
                                           <a href="{% url 'show-profile' node.author.id %}" title="{{node.author}}'s profile">{{node.author}}</a>
                                       </div>
-                                      <span>{{ node.local_created_time }}</span>
+                                      <span>{% if node.created_time != node.updated_time %}<i class="far fa-edit text-muted gt-hover-expose" title="{% trans 'Updated:' %} {{ node.local_updated_time}}"></i> {% endif %}{{ node.local_created_time }}</span>
                                   </div>
                               </div>
                               <div class="row">
-                                  <div class="col ml-5">
-                                      <p style="white-space: pre-wrap;">{{ node.body }}</p>
+                                  <div id="comment-box-{{node.id}}" class="col ml-5">
+                                      <p id="comment-body-{{node.id}}" style="white-space: pre-wrap;">{{ node.body }}</p>
+                                      <span class="gt-hover-expose">
+                                      {% if request.user.profile == node.author %}
+                                      <small><a href="javascript:void(null)" onClick="editComment({{node.id}});"><i class="fa fa-edit"></i> Edit</a></small>&nbsp;
+                                      {% endif %}
+                                      {% if can_edit_team or request.user.profile == node.author %}
+                                      <small><a href="{% url 'comment-delete' node.id %}"><i class="fa fa-times"></i> Delete</a></small>
+                                      {% endif %}
+                                      </span>
+                                  </div>
+                                  <div id="comment-form-{{node.id}}" class="col ml-5" style="display:none;">
+                                      <form action="{% url 'comment-edit' node.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <textarea name="body" cols="40" rows="6" required="" id="id_body">{{node.body}}</textarea>
+                                        <br/><button type="submit" class="btn btn-sm btn-primary"><i class="pr-2 fa fa-comment"></i>{% trans "Update" %}</button>
+                                        <button type="button" onclick="cancelEdit({{node.id}});" class="btn btn-sm btn-secondary"><i class="pr-2 fa fa-times"></i>{% trans "Cancel" %}</button>
+                                    </form>
                                   </div>
                               </div>
                                 {% if not node.is_leaf_node %}
@@ -351,7 +367,7 @@ textarea {
                     <div class="card-body">
                       <p class="card-text"><strong>{{photo.title}}</strong>
                         {% if can_edit_event or photo.uploader == request.user.profile %}
-                        <a href="{% url 'remove-event-photo' photo.id %}" class="badge badge-danger"><i class="fa fa-times"></i></a>
+                        <a href="{% url 'remove-event-photo' photo.id %}" class="badge badge-danger gt-hover-expose" title="{% trans 'Remove photo' %}"><i class="fa fa-times"></i></a>
                         {% endif %}
                       </p>
                       <div class="d-flex justify-content-between align-items-center">
@@ -373,3 +389,17 @@ textarea {
 </div>
 {% endblock %}
 
+{% block javascript %}
+<script type="text/javascript">
+function editComment(comment_id) {
+    $('#comment-box-'+comment_id).hide();
+    $('#comment-form-'+comment_id).show();
+}
+
+function cancelEdit(comment_id) {
+    $('#comment-form-'+comment_id).hide();
+    $('#comment-box-'+comment_id).show();
+}
+
+</script>
+{% endblock %}

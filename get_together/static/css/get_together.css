@@ -47,8 +47,25 @@ form {
     position: absolute;
     top: 24px;
     left: 6px;
-
 }
+.gt-hover-expose {
+  opacity: 0.3;
+  filter: grayscale(50%)
+}
+
+.gt-hover-expose:hover {
+  opacity: 1.0;
+  filter: grayscale(0%)
+}
+
+.gt-comment-group.list-group {
+  padding-left: 15px;
+}
+.gt-comment-item.list-group-item {
+  border: 0px;
+  margin-bottom: 0px;
+}
+
 .btn-googleplus {
     color: #FFFFFF;
     background-color: #DB4437;

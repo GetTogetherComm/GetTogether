@@ -382,6 +382,9 @@ class EventCommentForm(forms.ModelForm):
         model = EventComment
         fields = ['body']
 
+class DeleteCommentForm(forms.Form):
+    confirm = forms.BooleanField(label=_("Yes, delete comment"), required=True)
+
 class SponsorForm(forms.ModelForm):
     class Meta:
         model = Sponsor
