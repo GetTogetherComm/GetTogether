@@ -284,6 +284,10 @@ class OrgTeamRequest(models.Model):
     def origin_name(self):
         return OrgTeamRequest.ORIGINS[self.request_origin][1]
 
+    @property
+    def can_resend(self):
+        return self.requested_date.replace(tzinfo=None) < (datetime.datetime.now() - datetime.timedelta(days=1))
+
     def __str__(self):
         return '%s in %s' % (self.team, self.organization)
 

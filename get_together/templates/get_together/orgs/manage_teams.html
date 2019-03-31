@@ -104,10 +104,12 @@
                         {% endif %}
                 </td>
                 <td>
-                    {{req.requested_date|date}}
+                    {{req.requested_date}}
                 </td>
                 <td>
+                    {% if req.can_resend %}
                     <a href="{% url 'resend-org-invite' req.id %}?csrftoken={{csrf_token}}" >Resend</a>
+                    {% endif %}
                 </td>
                 </tr>
             {% endfor %}

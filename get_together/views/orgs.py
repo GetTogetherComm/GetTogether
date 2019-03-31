@@ -341,8 +341,9 @@ def manage_org_teams(request, org_slug):
     context = {
         'org': org,
         'teams': teams,
-        'requests': pending.filter(request_origin=OrgTeamRequest.TEAM),
-        'invites': pending.filter(request_origin=OrgTeamRequest.ORG),
+        'requests': pending.filter(request_origin=OrgTeamRequest.TEAM).order_by('-requested_date'),
+        'invites': pending.filter(request_origin=OrgTeamRequest.ORG).order_by('-requested_date'),
+        'resend_threshold': datetime.datetime.now() - datetime.timedelta(days=1),
         'contact_form': contact_form,
         'can_edit_org': request.user.profile.can_edit_org(org),
     }
