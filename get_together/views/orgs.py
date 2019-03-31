@@ -15,7 +15,7 @@ from events.models.profiles import Organization, Team, UserProfile, Member, OrgT
 from events.models.events import Event, CommonEvent, Place, Attendee
 from events.forms import OrganizationForm, CommonEventForm, RequestToJoinOrgForm, InviteToJoinOrgForm, AcceptRequestToJoinOrgForm, AcceptInviteToJoinOrgForm, OrgContactForm
 from events import location
-from events.utils import slugify
+from events.utils import slugify, verify_csrf
 
 from accounts.models import EmailRecord
 
@@ -174,6 +174,16 @@ def invite_to_join_org(request, team_id):
     else:
      return redirect('home')
 
+
+@login_required
+@verify_csrf(token_key='csrftoken')
+def resend_org_invite(request, invite_id):
+    invite = get_object_or_404(OrgTeamRequest, id=invite_id)
+    send_org_invite(invite)
+    invite.requested_date = datetime.datetime.now()
+    invite.save()
+    messages.add_message(request, messages.SUCCESS, message=_('Your request has been resent to the team administrators.'))
+    return redirect('manage-teams', org_slug=invite.organization.slug)
 
 def send_org_invite(req):
     context = {

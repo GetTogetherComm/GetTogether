@@ -66,6 +66,9 @@
                 </td>
                 <td>
                         <a href="{% url 'show-profile' req.team.owner_profile.id %}">{{req.team.owner_profile}}</a>
+                        {% if req.team.owner_profile.user.account.is_email_confirmed %}
+                            <i class="fa fa-envelope" title="Email Confirmed"></i>
+                        {% endif %}
                 </td>
                 <td>
                     {{req.requested_date|date}}
@@ -96,9 +99,15 @@
                 </td>
                 <td>
                         <a href="{% url 'show-profile' req.team.owner_profile.id %}">{{req.team.owner_profile}}</a>
+                        {% if req.team.owner_profile.user.account.is_email_confirmed %}
+                            <i class="fa fa-envelope text-muted" title="Email Confirmed"></i>
+                        {% endif %}
                 </td>
                 <td>
                     {{req.requested_date|date}}
+                </td>
+                <td>
+                    <a href="{% url 'resend-org-invite' req.id %}?csrftoken={{csrf_token}}" >Resend</a>
                 </td>
                 </tr>
             {% endfor %}

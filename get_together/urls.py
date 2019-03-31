@@ -124,6 +124,7 @@ urlpatterns = [
     path('org/<str:org_slug>/', views.show_org, name='show-org'),
     path('org/<str:org_slug>/+edit/', views.edit_org, name='edit-org'),
     path('team/<int:team_id>/+invite_to_join_org/', views.invite_to_join_org, name='invite-to-join-org'),
+    path('org/invite/<int:invite_id>/+resend/', views.resend_org_invite, name='resend-org-invite'),
     path('org/<str:org_slug>/+request_to_join_org/', views.request_to_join_org, name='request-to-join-org'),
     path('org/+confirm_request/<str:request_key>/', views.confirm_request_to_join_org, name='confirm-request-to-join-org'),
     path('org/<str:org_slug>/+manage_teams/', views.manage_org_teams, name='manage-teams'),
