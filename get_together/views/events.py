@@ -85,7 +85,7 @@ def show_event(request, event_id, event_slug):
         'sponsor_count': event.sponsors.count(),
         'sponsor_list': event.sponsors.all(),
         'is_attending': request.user.profile in event.attendees.all(),
-        'attendee_list': Attendee.objects.filter(event=event).order_by('-status'),
+        'attendee_list': Attendee.objects.filter(event=event).order_by('-role', '-status'),
         'attendee_count': Attendee.objects.filter(event=event, status=Attendee.YES).count(),
         'presentation_list': event.presentations.filter(status=Presentation.ACCEPTED).order_by('start_time'),
         'pending_presentations': event.presentations.filter(status=Presentation.PROPOSED).count(),
