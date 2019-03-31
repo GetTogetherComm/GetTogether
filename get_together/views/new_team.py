@@ -87,6 +87,9 @@ def define_new_team(request, team_id):
             if team.organization:
                 messages.add_message(request, messages.SUCCESS, message=_('Your new member team is ready to go!'))
                 return redirect('show-org', org_slug=team.organization.slug)
+            elif team.event_set.count() > 0:
+                messages.add_message(request, messages.SUCCESS, message=_('Your new team is ready to go!'))
+                return redirect('show-team-by-slug', team_slug=team.slug)
             else:
                 messages.add_message(request, messages.SUCCESS, message=_('Your new team is ready to go! Now it\'s time to plan your first event.'))
                 return redirect('create-event', team_id=team.id)
