@@ -10,7 +10,7 @@ from events.models.locale import City
 from events.models.events import Event, Place, Attendee
 from events.models.profiles import Team, UserProfile, Member
 from events.models.search import Searchable
-from events.forms import SearchForm
+from events.forms import SearchForm, SearchTeamsByName
 from events import location
 
 from accounts.decorators import setup_wanted
@@ -46,6 +46,7 @@ def home(request, *args, **kwards):
 
     near_distance = int(request.GET.get("distance", DEFAULT_NEAR_DISTANCE))
     context['distance'] = near_distance
+    context['name']  = request.GET.get("name", "")
     context['geoip_lookup'] = False
     context['city_search'] = False
 
@@ -115,6 +116,8 @@ def home(request, *args, **kwards):
                                                     longitude__gte=minlng,
                                                     longitude__lte=maxlng,
                                                     end_time__gte=datetime.datetime.now())
+            if context['name']:
+                near_events = near_events.filter(Q(event_title__icontains=context['name']) | Q(group_name__icontains=context['name']))
             context['near_events'] = sorted(near_events, key=lambda searchable: location.searchable_distance_from(ll, searchable))
 
 #            # If there aren't any teams in the user's geoip area, show them the closest ones
@@ -128,6 +131,8 @@ def home(request, *args, **kwards):
                                              city__longitude__lte=maxlng
                                              ).filter(Q(access=Team.PUBLIC) | Q(access=Team.PRIVATE,
                                                                                 owner_profile=request.user.profile))
+            if context['name']:
+                near_teams = near_teams.filter(name__icontains=context['name'])
             context['near_teams'] = sorted(near_teams, key=lambda team: location.team_distance_from(ll, team))
 
 #            # If there aren't any teams in the user's geoip area, show them the closest ones
@@ -140,7 +145,9 @@ def home(request, *args, **kwards):
     initial_search = {'distance': near_distance}
     if city is not None and city.id > 0:
         initial_search['city'] = city.id
-    search_form = SearchForm(initial=initial_search)
+    if context['name']:
+        initial_search['name'] = context['name']
+    search_form = SearchTeamsByName(initial=initial_search)
     context['search_form'] = search_form
     return render(request, 'get_together/index.html', context)
 

@@ -448,6 +448,15 @@ class SearchForm(forms.Form):
             'city': Lookup(source=City, label='name'),
         }
 
+class SearchTeamsByName(forms.Form):
+    name = forms.CharField(label=_('Name'), required=False)
+    city = forms.IntegerField(required=False, widget=Lookup(source=City, label='name'))
+    distance = forms.IntegerField(label=_("Distance(km)"), required=True)
+    class Meta:
+        widgets ={
+            'city': Lookup(source=City, label='name'),
+        }
+
 class OrganizationForm(forms.ModelForm):
     class Meta:
         model = Team

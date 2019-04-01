@@ -182,12 +182,25 @@ $(document).ready(function(){
                 return callback(q, data);
             });
         }
-    })
+    });
+    $('#city_select').on("select", function() {
+      this.form.submit();
+    });
     $("#city_search").keyup(function() {
         var searchText = this.value;
     });
-
 });
 </script>
+<style>
+#id_distance {
+  max-width: 75px;
+}
+#id_name {
+  max-width: 200px;
+}
+label {
+  margin-right: 0.5em;
+}
+</style>
 
 {% endblock %}

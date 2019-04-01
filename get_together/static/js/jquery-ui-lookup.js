@@ -57,9 +57,11 @@
             var data = this.current_data[item.index-1]
 
             this._trigger( "select", event, { item: item, data: data } );
+            this.element.trigger("select");
 
             if ( item.index !== oldIndex ) {
                 this._trigger( "change", event, { item: item } );
+                this.element.trigger("change");
             }
 
             this.close( event );
