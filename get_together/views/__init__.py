@@ -40,7 +40,6 @@ KM_PER_DEGREE_LNG = 111.320 # At the equator
 DEFAULT_NEAR_DISTANCE = 100 # kilometeres
 # Create your views here.
 
-@setup_wanted
 def home(request, *args, **kwards):
     context = {}
 

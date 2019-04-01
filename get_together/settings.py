@@ -106,6 +106,7 @@ TEMPLATES = [
                 'django_settings_export.settings_export',
                 'simple_ga.context_processors.events',
                 'totd.context_processors.tips',
+                'accounts.decorators.check_setup',
              ],
         },
     },

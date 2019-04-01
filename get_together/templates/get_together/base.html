@@ -122,6 +122,16 @@
 
     <main role="main" class="container">
 
+      {% block account_setup_alert %}
+      {% if account_needs_setup %}
+      <div class="alerts">
+          <div class="alert alert-warning">
+            {% blocktrans %}<a href="{{account_setup_url}}">Click here</a> to finish your account setup.{% endblocktrans %}
+          </div>
+      </div>
+      {% endif %}
+      {% endblock %}
+
       {% if tip %}
       <div class="alerts">
           <div class="alert {{ tip.tags }}"><strong>{% trans "Tip:" %}" </strong>{{ tip.text|safe }}</div>

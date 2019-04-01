@@ -25,3 +25,15 @@ def setup_wanted(view_func, setup_url=None, redirect_field_name=REDIRECT_FIELD_N
     return wrap
 
 setup_required = login_required(setup_wanted)
+
+def check_setup(request):
+    """
+    Checks if a user has completed setup
+    """
+    if not request.user.is_authenticated or request.user.account.has_completed_setup:
+        return {'account_needs_setup': False, 'current_user_account': None}
+    elif request.user.account.has_completed_setup:
+        return {'account_needs_setup': False, 'current_user_account': request.user.account}
+    else:
+        resolved_setup_url = resolve_url(settings.SETUP_URL)
+        return {'account_needs_setup': True, 'account_setup_url': resolved_setup_url, 'current_user_account': request.user.account}
