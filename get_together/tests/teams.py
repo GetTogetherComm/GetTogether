@@ -9,7 +9,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from events.ipstack import get_ipstack_geocoder
-from events.models import Team
+from events.models import Team, UserProfile
 # Create your tests here.
 
 
@@ -51,4 +51,34 @@ class TeamDisplayTests(TestCase):
 
         c = Client()
         response = c.get(team_about_url)
+        assert(response.status_code == 302)
+
+class TeamInternalsTests(TestCase):
+
+    def setUp(self):
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_personal_team_creation(self):
+        user = mommy.make(UserProfile, realname='Test User')
+        user.save()
+
+        team = user.personal_team
+        assert(team.slug == 'test-user')
+        team_url = team.get_absolute_url()
+
+        c = Client()
+        response = c.get(team_url)
+        assert(response.status_code == 302)
+
+        user2 = mommy.make(UserProfile, realname='Test User')
+        user2.save()
+
+        team2 = user2.personal_team
+        assert(team2.slug == 'test-user-u%s' % user2.id)
+
+        team2_url = team2.get_absolute_url()
+        response = c.get(team2_url)
         assert(response.status_code == 302)

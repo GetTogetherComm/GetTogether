@@ -63,7 +63,14 @@ class UserProfile(models.Model):
         if teams.count() > 0:
             return teams[0]
         else:
-            return Team.objects.create(name=str(self), access=Team.PERSONAL, owner_profile=self, city=self.city)
+            new_slug = slugify(str(self))
+            slug_matches = list(Team.objects.filter(slug=new_slug))
+            if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].owner_profile.id == self.id):
+                team_slug = new_slug
+            else:
+                team_slug = '%s-u%s' % (new_slug, self.id)
+
+            return Team.objects.create(name=str(self), slug=team_slug, access=Team.PERSONAL, owner_profile=self, city=self.city)
 
     def avatar_url(self):
         try:
@@ -372,7 +379,7 @@ class Team(models.Model):
 
     members = models.ManyToManyField(UserProfile, through='Member', related_name="memberships", blank=True)
 
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=True, null=True)
     topics = models.ManyToManyField('Topic', blank=True)
 
     sponsors = models.ManyToManyField('Sponsor', related_name='teams', blank=True)
@@ -440,7 +447,10 @@ class Team(models.Model):
         if self.city is not None:
             self.spr = self.city.spr
             self.country = self.spr.country
-        new_slug = slugify(self.name)
+        if self.slug is None:
+            new_slug = slugify(self.name)
+        else:
+            new_slug = self.slug
         slug_matches = list(Team.objects.filter(slug=new_slug))
         if len(slug_matches) == 0 or (len(slug_matches) == 1 and slug_matches[0].id == self.id):
             self.slug = new_slug
