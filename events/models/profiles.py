@@ -447,7 +447,7 @@ class Team(models.Model):
         if self.city is not None:
             self.spr = self.city.spr
             self.country = self.spr.country
-        if self.slug is None:
+        if self.slug is None or len(self.slug) < 1:
             new_slug = slugify(self.name)
         else:
             new_slug = self.slug

@@ -82,3 +82,9 @@ class TeamInternalsTests(TestCase):
         team2_url = team2.get_absolute_url()
         response = c.get(team2_url)
         assert(response.status_code == 302)
+
+    def test_empty_string_slug(self):
+        team = mommy.make(Team, name="Test Team", slug="")
+        team.save()
+
+        assert(team.slug == "test-team")
