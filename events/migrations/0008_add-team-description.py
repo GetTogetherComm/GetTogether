@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0007_add-city-lonlat'),
-    ]
+    dependencies = [("events", "0007_add-city-lonlat")]
 
     operations = [
         migrations.AddField(
-            model_name='team',
-            name='description',
-            field=models.TextField(blank=True, help_text='Team Description', null=True),
-        ),
+            model_name="team",
+            name="description",
+            field=models.TextField(blank=True, help_text="Team Description", null=True),
+        )
     ]

@@ -1,5 +1,8 @@
 body {
   padding-top: 5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 .navbar {
     padding: 0rem 1rem !important;
@@ -143,7 +146,7 @@ ul.errorlist li {
     background-color: #e2e3e5;
     border-color: #d6d8db;
   }
-  
+
 .btn-default {
   color: #fff;
   background-color: #848484;
@@ -175,6 +178,9 @@ ul.errorlist li {
   border-color: #adadad;
 }
 
+main.container {
+  flex: 1;
+}
 
 .container-primary {
     background: #f5f5f5;

@@ -5,43 +5,65 @@ from django.utils import timezone
 
 import pytz
 
+
 def localize_event_datetimes(apps, schema_editor):
-    Event = MyModel = apps.get_model('events', 'Event')
+    Event = MyModel = apps.get_model("events", "Event")
     for event in Event.objects.all():
-        utc_tz = pytz.timezone('UTC')
+        utc_tz = pytz.timezone("UTC")
         event_tz = get_event_timezone(event)
         print("Converting event %s to %s" % (event.id, event_tz))
-        event.start_time = utc_tz.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(event.start_time, pytz.utc))))
-        event.end_time = utc_tz.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(event.end_time, pytz.utc))))
+        event.start_time = utc_tz.localize(
+            timezone.make_naive(
+                event_tz.localize(timezone.make_naive(event.start_time, pytz.utc))
+            )
+        )
+        event.end_time = utc_tz.localize(
+            timezone.make_naive(
+                event_tz.localize(timezone.make_naive(event.end_time, pytz.utc))
+            )
+        )
         event.save()
 
+
 def localize_commonevent_datetimes(apps, schema_editor):
-    CommonEvent = MyModel = apps.get_model('events', 'CommonEvent')
+    CommonEvent = MyModel = apps.get_model("events", "CommonEvent")
     for event in CommonEvent.objects.all():
-        utc_tz = pytz.timezone('UTC')
+        utc_tz = pytz.timezone("UTC")
         event_tz = get_event_timezone(event)
         print("Converting common event %s to %s" % (event.id, event_tz))
-        event.start_time = utc_tz.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(event.start_time, pytz.utc))))
-        event.end_time = utc_tz.localize(timezone.make_naive(event_tz.localize(timezone.make_naive(event.end_time, pytz.utc))))
+        event.start_time = utc_tz.localize(
+            timezone.make_naive(
+                event_tz.localize(timezone.make_naive(event.start_time, pytz.utc))
+            )
+        )
+        event.end_time = utc_tz.localize(
+            timezone.make_naive(
+                event_tz.localize(timezone.make_naive(event.end_time, pytz.utc))
+            )
+        )
         event.save()
+
 
 def get_event_timezone(event):
     if event.place is not None:
         return pytz.timezone(event.place.tz)
-    elif hasattr(event, 'team') and event.team is not None:
+    elif hasattr(event, "team") and event.team is not None:
         return pytz.timezone(event.team.tz)
-    elif hasattr(event, 'city') and event.city is not None:
+    elif hasattr(event, "city") and event.city is not None:
         return pytz.timezone(event.city.tz)
     else:
         return pytz.timezone("UTC")
 
+
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0021_add_account_secret'),
-    ]
+    dependencies = [("events", "0021_add_account_secret")]
 
     operations = [
-        migrations.RunPython(localize_event_datetimes, reverse_code=migrations.RunPython.noop),
-        migrations.RunPython(localize_commonevent_datetimes, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(
+            localize_event_datetimes, reverse_code=migrations.RunPython.noop
+        ),
+        migrations.RunPython(
+            localize_commonevent_datetimes, reverse_code=migrations.RunPython.noop
+        ),
     ]

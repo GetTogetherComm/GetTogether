@@ -644,7 +644,7 @@ msgstr ""
 
 #: get_together/templates/get_together/events/change_team.html:4
 #, python-format
-msgid "Change host for: %(event_name)s"
+msgid "Change host for:"
 msgstr ""
 
 #: get_together/templates/get_together/events/change_team.html:5

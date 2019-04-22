@@ -5,19 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0036_auto_20180701_2148'),
-    ]
+    dependencies = [("events", "0036_auto_20180701_2148")]
 
     operations = [
         migrations.AddField(
-            model_name='organization',
-            name='cover_img',
-            field=models.ImageField(blank=True, null=True, upload_to='org_covers', verbose_name='Cover Image'),
+            model_name="organization",
+            name="cover_img",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to="org_covers",
+                verbose_name="Cover Image",
+            ),
         ),
         migrations.AddField(
-            model_name='organization',
-            name='description',
+            model_name="organization",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
     ]

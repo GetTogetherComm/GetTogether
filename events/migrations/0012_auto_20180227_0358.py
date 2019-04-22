@@ -5,24 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0011_auto_20180227_0210'),
-    ]
+    dependencies = [("events", "0011_auto_20180227_0210")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='topics',
-        ),
+        migrations.RemoveField(model_name="event", name="topics"),
         migrations.AddField(
-            model_name='searchable',
-            name='img_url',
-            field=models.URLField(default='https://gettogether.community/static/img/team_placeholder.png'),
+            model_name="searchable",
+            name="img_url",
+            field=models.URLField(
+                default="https://gettogether.community/static/img/team_placeholder.png"
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='event',
-            name='tags',
-            field=models.CharField(blank=True, max_length=128, null=True, verbose_name='Keyword Tags'),
+            model_name="event",
+            name="tags",
+            field=models.CharField(
+                blank=True, max_length=128, null=True, verbose_name="Keyword Tags"
+            ),
         ),
     ]
