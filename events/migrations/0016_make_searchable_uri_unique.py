@@ -5,19 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0015_populate_searchable_uri'),
-    ]
+    dependencies = [("events", "0015_populate_searchable_uri")]
 
     operations = [
         migrations.AlterField(
-            model_name='searchable',
-            name='event_uri',
+            model_name="searchable",
+            name="event_uri",
             field=models.CharField(max_length=256, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='searchable',
-            name='event_url',
-            field=models.URLField(),
+            model_name="searchable", name="event_url", field=models.URLField()
         ),
     ]

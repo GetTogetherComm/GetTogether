@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from .events import *
 from .event_reminder import *
+from .events import *
 from .speakers import *
 from .teams import *
 from .views import *

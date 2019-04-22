@@ -1,16 +1,18 @@
-from django.contrib.sites.models import Site
-from django_ical.views import ICalFeed
-from django.utils import timezone
-
 import datetime
 
-from .models.events import Event, CommonEvent
-from .models.profiles import UserProfile, Team, Organization
+from django.contrib.sites.models import Site
+from django.utils import timezone
+
+from django_ical.views import ICalFeed
+
+from .models.events import CommonEvent, Event
+from .models.profiles import Organization, Team, UserProfile
+
 
 class AbstractEventCalendarFeed(ICalFeed):
     def item_guid(self, event):
         site = Site.objects.get(id=1)
-        return  '%s@%s' % (event.id, site.domain)
+        return "%s@%s" % (event.id, site.domain)
 
     def item_link(self, event):
         return event.get_full_url()
@@ -46,21 +48,26 @@ class AbstractEventCalendarFeed(ICalFeed):
             return (latitude, longitude)
         return None
 
+
 class UserEventsCalendar(AbstractEventCalendarFeed):
-    timezone = 'UTC'
+    timezone = "UTC"
 
     def get_object(self, request, account_secret):
         return UserProfile.objects.get(secret_key=account_secret)
 
     def items(self, user):
-        return Event.objects.filter(attendees=user, end_time__gt=timezone.now()).order_by('-start_time')
+        return Event.objects.filter(
+            attendees=user, end_time__gt=timezone.now()
+        ).order_by("-start_time")
+
 
 class TeamEventsCalendar(AbstractEventCalendarFeed):
-    timezone = 'UTC'
+    timezone = "UTC"
 
     def get_object(self, request, team_id):
         return Team.objects.get(id=team_id)
 
     def items(self, team):
-        return Event.objects.filter(team=team, end_time__gt=timezone.now()).order_by('-start_time')
-
+        return Event.objects.filter(team=team, end_time__gt=timezone.now()).order_by(
+            "-start_time"
+        )

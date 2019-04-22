@@ -5,19 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0008_add-team-description'),
-    ]
+    dependencies = [("events", "0008_add-team-description")]
 
     operations = [
         migrations.AlterField(
-            model_name='searchable',
-            name='venue_name',
+            model_name="searchable",
+            name="venue_name",
             field=models.CharField(blank=True, max_length=256),
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='avatar',
-            field=models.URLField(blank=True, max_length=150, null=True, verbose_name='Photo Image'),
+            model_name="userprofile",
+            name="avatar",
+            field=models.URLField(
+                blank=True, max_length=150, null=True, verbose_name="Photo Image"
+            ),
         ),
     ]

@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0009_auto_20180224_0556'),
-    ]
+    dependencies = [("events", "0009_auto_20180224_0556")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='send_notifications',
-            field=models.BooleanField(default=True, verbose_name='Send notification emails'),
-        ),
+            model_name="userprofile",
+            name="send_notifications",
+            field=models.BooleanField(
+                default=True, verbose_name="Send notification emails"
+            ),
+        )
     ]
