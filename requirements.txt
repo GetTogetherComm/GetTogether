@@ -1,3 +1,4 @@
+black==19.3b0
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
@@ -18,6 +19,7 @@ future==0.16.0
 geocoder==1.36.0
 icalendar==4.0.1
 idna==2.6
+isort==4.3.17
 Markdown==2.6.11
 mock==2.0.0
 model-mommy==1.5.1
