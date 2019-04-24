@@ -5,19 +5,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0029_add_team_premium_fields'),
-    ]
+    dependencies = [("events", "0029_add_team_premium_fields")]
 
     operations = [
         migrations.AddField(
-            model_name='attendee',
-            name='actual',
-            field=models.SmallIntegerField(choices=[(-1, 'No'), (0, 'Maybe'), (1, 'Yes')], db_index=True, default=0, verbose_name='Attended'),
+            model_name="attendee",
+            name="actual",
+            field=models.SmallIntegerField(
+                choices=[(-1, "No"), (0, "Maybe"), (1, "Yes")],
+                db_index=True,
+                default=0,
+                verbose_name="Attended",
+            ),
         ),
         migrations.AlterField(
-            model_name='attendee',
-            name='status',
-            field=models.SmallIntegerField(choices=[(-1, 'No'), (0, 'Maybe'), (1, 'Yes')], db_index=True, default=1, verbose_name='Attending'),
+            model_name="attendee",
+            name="status",
+            field=models.SmallIntegerField(
+                choices=[(-1, "No"), (0, "Maybe"), (1, "Yes")],
+                db_index=True,
+                default=1,
+                verbose_name="Attending",
+            ),
         ),
     ]

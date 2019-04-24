@@ -4,17 +4,19 @@
 
 Get Together is an open source event manager for local communities.
 
-Get Together is version *0.9.0*.
+Get Together is version _0.9.0_.
 
 Try it free at https://gettogether.community
 
 ## Goals
- * Be feature-competitive with Meetup.com
- * Allow multiple instances to share federated event data
- * Provide sustainable, cost-effective hosting for FOSS communites
- * Be developed and maintained by the communities using it
+
+- Be feature-competitive with Meetup.com
+- Allow multiple instances to share federated event data
+- Provide sustainable, cost-effective hosting for FOSS communites
+- Be developed and maintained by the communities using it
 
 ## Getting Started
+
 To start running the service use the following commands:
 
 ```
@@ -24,6 +26,19 @@ virtualenv --python=python3 ./env
 ./env/bin/python manage.py createsuperuser
 ./env/bin/python manage.py runserver
 ```
+
+## Installing pre-commit hooks
+
+Pre-commit is a tools that helps us commiting better code. Before writing any code first install the hooks to your repo using:
+
+`pre-commit install`
+
+From now on everytime you commit some code this will be checked by our pre-commit hooks.
+
+### Code formatters
+
+- [Black](https://github.com/ambv/black)
+- [iSort](https://github.com/timothycrosley/isort)
 
 ### Loading City data
 
@@ -66,6 +81,7 @@ file):
 `./env/bin/python manage.py load_cities cities15000.txt`
 
 ### Using docker
+
 ```
 docker build -t get_together .
 docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1" -d --name get_together -p 8000:8000 get_together
@@ -73,6 +89,7 @@ docker exec -it get_together venv/bin/python manage.py createsuperuser
 ```
 
 ### Using docker-compose
+
 ```
 docker-compose up -d
 docker-compose exec get_together python3 manage.py createsuperuser
@@ -81,10 +98,10 @@ docker-compose exec get_together python3 manage.py createsuperuser
 You can then connect to the container by going to localhost:8000
 
 ## Test Federation
+
 You can import live event data into your "Searchable" table with this command:
 
 `./env/bin/python manage.py import https://gettogether.community/searchables/`
-
 
 ## Getting Involved
 
@@ -92,25 +109,26 @@ To contribute to Get Together, you can file issues here on GitHub, work on
 features you want it to have, or contact us on [Gitter](https://gitter.im/GetTogetherComm/Lobby) to learn more.
 
 Currently the project needs:
- * Designers
-   * We need a color scheme for the website
-   * We need a logo for the project
-   * We need user stories and mockups for those pages
- * Front-end developers
-   * We need to pick a JS/CSS framework for the front-end
-   * We need to Django page templates
-   * We need to know what APIs are needed for a dynamic front-end
- * QA Engineers
-   * We need Django test cases setup
-   * We need fuzz-testing setup with something like model-mommy
-   * We want testing automated on github pull requests
- * API/Federation experts
-   * We need to decide on using AppStream or rolling our own data/protocol
-   * We need to architect what data will be federated and it's use cases
-   * We need to support authenticated access to APIs for 3rd party apps
- * Devops
-   * We need a way to easily deploy and update GetTogether in production
-   * We need an easy way to get a development environment up and running
-   * We need to find a hosting service for gettogether.community
+
+- Designers
+  - We need a color scheme for the website
+  - We need a logo for the project
+  - We need user stories and mockups for those pages
+- Front-end developers
+  - We need to pick a JS/CSS framework for the front-end
+  - We need to Django page templates
+  - We need to know what APIs are needed for a dynamic front-end
+- QA Engineers
+  - We need Django test cases setup
+  - We need fuzz-testing setup with something like model-mommy
+  - We want testing automated on github pull requests
+- API/Federation experts
+  - We need to decide on using AppStream or rolling our own data/protocol
+  - We need to architect what data will be federated and it's use cases
+  - We need to support authenticated access to APIs for 3rd party apps
+- Devops
+  - We need a way to easily deploy and update GetTogether in production
+  - We need an easy way to get a development environment up and running
+  - We need to find a hosting service for gettogether.community
 
 If you can help with any of these, please get in touch with me!

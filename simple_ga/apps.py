@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SimpleGaConfig(AppConfig):
-    name = 'simple_ga'
+    name = "simple_ga"

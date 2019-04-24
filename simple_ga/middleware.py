@@ -1,6 +1,8 @@
 import json
+
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.safestring import SafeData, mark_safe
+
 
 class GAEvent:
     def __init__(self, action, category=None, label=None, value=1):
@@ -13,27 +15,32 @@ class GAEvent:
         return mark_safe(self._to_gtag_js())
 
     def _to_gtag_js(self):
-        return "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'value' : '%(value)s' });" % {
-                'action': self.action,
-                'category': self.category,
-                'label': self.label,
-                'value': self.value,
+        return (
+            "gtag('event', '%(action)s', {'event_category' : '%(category)s', 'event_label' : '%(label)s' , 'value' : '%(value)s' });"
+            % {
+                "action": self.action,
+                "category": self.category,
+                "label": self.label,
+                "value": self.value,
             }
+        )
+
 
 class EventEncoder(json.JSONEncoder):
     """
     Compactly serialize instances of the ``Message`` class as JSON.
     """
-    message_key = '__json_message'
+
+    message_key = "__json_message"
 
     def default(self, obj):
         if isinstance(obj, GAEvent):
             event = {
-                'type': 'GAEvent',
-                'action': obj.action,
-                'category': obj.category,
-                'label': obj.label,
-                'value': obj.value,
+                "type": "GAEvent",
+                "action": obj.action,
+                "category": obj.category,
+                "label": obj.label,
+                "value": obj.value,
             }
             return event
         return super().default(obj)
@@ -48,19 +55,19 @@ class EventDecoder(json.JSONDecoder):
         if isinstance(obj, list) and obj:
             return [self.process_events(item) for item in obj]
         if isinstance(obj, dict):
-            if obj.get('type', None) == 'GAEvent':
-                del obj['type']
+            if obj.get("type", None) == "GAEvent":
+                del obj["type"]
                 return GAEvent(**obj)
-            return {key: self.process_events(value)
-                    for key, value in obj.items()}
+            return {key: self.process_events(value) for key, value in obj.items()}
         return obj
 
     def decode(self, s, **kwargs):
         decoded = super().decode(s, **kwargs)
         return self.process_events(decoded)
 
+
 class EventStorage:
-    session_key = '_ga_events'
+    session_key = "_ga_events"
 
     def __init__(self, request):
         self.request = request
@@ -72,7 +79,7 @@ class EventStorage:
     def __iter__(self):
         next_event = True
         while next_event is not None:
-            next_event = self.pop();
+            next_event = self.pop()
             yield next_event
 
     def __contains__(self, item):
@@ -91,13 +98,15 @@ class EventStorage:
         Store a list of resume points to the request's session.
         """
         if self._ga_events:
-            self.request.session[self.session_key] = self.serialize_events(self._ga_events)
+            self.request.session[self.session_key] = self.serialize_events(
+                self._ga_events
+            )
         else:
             self.request.session.pop(self.session_key, None)
         return []
 
     def serialize_events(self, events):
-        encoder = EventEncoder(separators=(',', ':'))
+        encoder = EventEncoder(separators=(",", ":"))
         return encoder.encode(events)
 
     def deserialize_events(self, data):
@@ -131,6 +140,6 @@ class GAEventMiddleware(MiddlewareMixin):
         """
         # A higher middleware layer may return a request which does not contain
         # resume storage, so make no assumption that it will be there.
-        if hasattr(request, '_ga_events'):
+        if hasattr(request, "_ga_events"):
             request._ga_events.store()
         return response

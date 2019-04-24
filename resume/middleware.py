@@ -1,9 +1,10 @@
 import json
+
 from django.utils.deprecation import MiddlewareMixin
 
 
 class ResumeStorage:
-    session_key = '_resume'
+    session_key = "_resume"
 
     def __init__(self, request):
         self.request = request
@@ -62,6 +63,6 @@ class ResumeMiddleware(MiddlewareMixin):
         """
         # A higher middleware layer may return a request which does not contain
         # resume storage, so make no assumption that it will be there.
-        if hasattr(request, '_resume_points'):
+        if hasattr(request, "_resume_points"):
             request._resume_points.store()
         return response

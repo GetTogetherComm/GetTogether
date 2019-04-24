@@ -1,0 +1,11 @@
+fail_fast: true
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 19.3b0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: "master" # Use the revision sha / tag you want to point at
+    hooks:
+      - id: isort
