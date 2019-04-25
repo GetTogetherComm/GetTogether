@@ -223,7 +223,7 @@ MESSAGE_TAGS = {
 }
 
 THEME_CONFIG = {
-    "actions": {"host_event": {"label": _("Host a Get Togethe"), "icon": "far fa-calendar-plus"}}
+    "actions": {"host_event": {"label": _("Host a Get Together"), "icon": "far fa-calendar-plus"}}
 }
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments
