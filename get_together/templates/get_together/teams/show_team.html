@@ -46,7 +46,7 @@
                 {% if can_create_event %}
                 <div class="row">
                     <div class="col">
-                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="far fa-calendar-plus"></i>  {% trans "Host a Get Together" %}</a>
+                        <br/><a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="{{ theme.buttons.host_event.icon }}"></i>  {{ theme.buttons.host_event.label }}</a>
                     </div>
                 </div>
                 {% endif %}

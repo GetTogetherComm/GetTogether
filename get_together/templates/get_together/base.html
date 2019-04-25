@@ -101,7 +101,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="far fa-calendar-plus"></i> {% trans "Host a Get Together" %}</a>
+            <a class="btn btn-primary" href="{% url 'new-event-start' %}"><i class="{{ theme.buttons.host_event.icon }}"></i> {{ theme.buttons.host_event.label }}</a>
           </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">

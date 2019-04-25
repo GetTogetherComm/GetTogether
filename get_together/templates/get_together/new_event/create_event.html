@@ -2,7 +2,7 @@
 {% load static i18n %}
 
 {% block content %}
-<h2>{% trans "Host a Get Together" %}</h2>
+<h2>{{ theme.buttons.host_event.label }}</h2>
 
 <form action="{% url "new-event-start" %}" method="post">
 {% csrf_token %}

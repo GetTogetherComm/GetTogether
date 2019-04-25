@@ -39,7 +39,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <br/><a href="{% url 'create-event-team-select' %}" class="btn btn-success"><i class="far fa-calendar-plus">&nbsp;</i>{% trans "Host a Get Together" %}</a>
+              <br/><a href="{% url 'create-event-team-select' %}" class="btn btn-success"><i class="{{ theme.buttons.host_event.icon }}">&nbsp;</i>{{ theme.buttons.host_event.label }}</a>
             </div>
         </div>
     </div>
