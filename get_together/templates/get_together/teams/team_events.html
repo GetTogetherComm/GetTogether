@@ -8,7 +8,7 @@
             {% if can_create_event %}
             <div class="row mt-3 mb-3">
                 <div class="col">
-                    <a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="{{ theme.buttons.host_event.icon }}"></i> {{ theme.buttons.host_event.label }}</a>
+                    <a href="{% url 'create-event' team.id %}" class="btn btn-success"><i class="{{ theme.actions.host_event.icon }}"></i> {{ theme.actions.host_event.label }}</a>
                 </div>
             </div>
             {% endif %}
