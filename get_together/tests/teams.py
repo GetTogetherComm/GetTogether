@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import TestCase, Client
 from django.shortcuts import resolve_url
 from django.utils import timezone
@@ -30,7 +31,8 @@ class TeamDisplayTests(TestCase):
         c = Client()
         response = c.get(team_url)
         assert(response.status_code == 200)
-
+        assert response.context["theme"] == settings.THEME_CONFIG
+        
     def test_show_about_team(self):
         team = mommy.make(Team)
         team.about_page = "about this team!"
