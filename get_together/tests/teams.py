@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import resolve_url
 from django.test import Client, TestCase
@@ -31,6 +32,7 @@ class TeamDisplayTests(TestCase):
         c = Client()
         response = c.get(team_url)
         assert response.status_code == 200
+        assert response.context["theme"] == settings.THEME_CONFIG
 
     def test_show_about_team(self):
         team = mommy.make(Team)
