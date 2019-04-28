@@ -1,5 +1,10 @@
+html,body {
+  height: 100%;
+}
 body {
   padding-top: 5rem;
+  display: flex;
+  flex-direction: column;
 }
 .navbar {
     padding: 0rem 1rem !important;
@@ -10,6 +15,7 @@ body {
   border-top: #cfcfcf 1px solid;
   background-color: #f5f5f5;
   color: #aaaaaa;
+  flex-shrink: 0;
 }
 .footer ul {
     display: inline;
@@ -143,7 +149,7 @@ ul.errorlist li {
     background-color: #e2e3e5;
     border-color: #d6d8db;
   }
-  
+
 .btn-default {
   color: #fff;
   background-color: #848484;
@@ -175,6 +181,9 @@ ul.errorlist li {
   border-color: #adadad;
 }
 
+.container {
+  flex: 1 0 auto;
+}
 
 .container-primary {
     background: #f5f5f5;
