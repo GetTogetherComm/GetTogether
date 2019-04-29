@@ -39,7 +39,7 @@
                 <a href="{% url 'edit-series' series.id %}" class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i> {% trans "Edit Series" %}</a>
                 {% endif %}
             </h2>
-            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            <p class="text-muted">{% trans theme.text_labels.hosted_by %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
             <hr/>
 
             <p>{{ series.summary|markdown }}</p>
@@ -105,4 +105,3 @@
     </div>
 </div>
 {% endblock %}
-
