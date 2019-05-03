@@ -223,6 +223,15 @@ textarea {
 
             </div>
 
+            <div title="Add to Calendar" class="addeventatc mt-3">
+                Add to Calendar
+                <span class="start">{{event.local_start_time}}</span>
+                <span class="end">{{event.local_end_time}}</span>
+                <span class="title">{{event.name}}</span>
+                <span class="description">{{event.summary}}</span>
+                <span class="location">{{event.place.name}}</span>
+                </div>
+
             {% if event.enable_comments %}
             <div class="container container-secondary mt-3">
                 <div class="row">
@@ -284,14 +293,7 @@ textarea {
                 </div>
             </div>
         {% endif %} 
-            <div title="Add to Calendar" class="addeventatc mt-3">
-                Add to Calendar
-                <span class="start">{{event.local_start_time}}</span>
-                <span class="end">{{event.local_end_time}}</span>
-                <span class="title">{{event.name}}</span>
-                <span class="description">{{event.summary}}</span>
-                <span class="location">{{event.place.name}}</span>
-                </div>
+            
             </div>
         </div>
 
