@@ -5,24 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0043_remove_premium_restrictions'),
-    ]
+    dependencies = [("events", "0043_remove_premium_restrictions")]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='enable_comments',
-            field=models.BooleanField(default=True, verbose_name='Comments'),
+            model_name="event",
+            name="enable_comments",
+            field=models.BooleanField(default=True, verbose_name="Comments"),
         ),
         migrations.AddField(
-            model_name='event',
-            name='enable_photos',
-            field=models.BooleanField(default=True, verbose_name='Photos'),
+            model_name="event",
+            name="enable_photos",
+            field=models.BooleanField(default=True, verbose_name="Photos"),
         ),
         migrations.AddField(
-            model_name='event',
-            name='enable_presentations',
-            field=models.BooleanField(default=False, verbose_name='Presentations'),
+            model_name="event",
+            name="enable_presentations",
+            field=models.BooleanField(default=False, verbose_name="Presentations"),
         ),
     ]

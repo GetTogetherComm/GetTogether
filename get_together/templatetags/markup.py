@@ -14,17 +14,18 @@ markup syntaxes to HTML; currently there is support for:
 """
 
 from django import template
-from django.template.defaultfilters import stringfilter
 from django.conf import settings
+from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 import markdown as md
 
 register = template.Library()
 
+
 @register.filter
 @stringfilter
-def markdown(value, arg=''):
+def markdown(value, arg=""):
     """
     Runs Markdown over a given value, optionally using various
     extensions python-markdown supports.
@@ -43,8 +44,9 @@ def markdown(value, arg=''):
     """
     return mark_safe(md.markdown(value))
 
+
 @register.filter
 @stringfilter
-def jsencode(value, arg=''):
-    value = value.replace("\n", "\\n").replace('"', '\"').replace("'", "\'")
+def jsencode(value, arg=""):
+    value = value.replace("\n", "\\n").replace('"', '"').replace("'", "'")
     return mark_safe(value)

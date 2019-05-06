@@ -1,3 +1,4 @@
+black==19.3b0
 certifi==2017.11.5
 chardet==3.0.4
 click==6.7
@@ -18,6 +19,7 @@ future==0.16.0
 geocoder==1.36.0
 icalendar==4.0.1
 idna==2.6
+isort==4.3.17
 Markdown==2.6.11
 mock==2.0.0
 model-mommy==1.5.1
@@ -25,6 +27,7 @@ oauthlib==2.0.6
 pbr==4.0.4
 pilkit==2.0
 Pillow==5.0.0
+pre-commit==1.15.2
 PyJWT==1.5.3
 python-dateutil==2.7.2
 python3-openid==3.1.0

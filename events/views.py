@@ -1,41 +1,56 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render, redirect, reverse, get_object_or_404
 
+import simplejson
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 
-from .models.search import Searchable, SearchableSerializer
-from .models.events import Event, EventComment, Place, PlaceSerializer, Attendee
-from .models.locale import Country ,CountrySerializer, SPR, SPRSerializer, City, CitySerializer
-from .models.profiles import Organization, Team, TeamSerializer, UserProfile, Member, Sponsor, SponsorSerializer
 from .forms import EventCommentForm
+from .models.events import Attendee, Event, EventComment, Place, PlaceSerializer
+from .models.locale import (
+    SPR,
+    City,
+    CitySerializer,
+    Country,
+    CountrySerializer,
+    SPRSerializer,
+)
+from .models.profiles import (
+    Member,
+    Organization,
+    Sponsor,
+    SponsorSerializer,
+    Team,
+    TeamSerializer,
+    UserProfile,
+)
+from .models.search import Searchable, SearchableSerializer
 from .utils import verify_csrf
 
-import simplejson
 
 # Create your views here.
 def searchable_list(request, *args, **kwargs):
-    searchables = Searchable.objects.exclude(location_name='')
+    searchables = Searchable.objects.exclude(location_name="")
     serializer = SearchableSerializer(searchables, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+
 def events_list(request, *args, **kwargs):
     events = Event.objects.all()
-    context = {
-        'events_list': events,
-    }
-    return render(request, 'events/event_list.html', context)
+    context = {"events_list": events}
+    return render(request, "events/event_list.html", context)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def org_member_list(request, org_id):
     org = get_object_or_404(Organization, id=org_id)
     serializer = TeamSerializer(org.teams.all(), many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def places_list(request, *args, **kwargs):
     places = Place.objects.all()
     if "q" in request.GET:
@@ -46,7 +61,8 @@ def places_list(request, *args, **kwargs):
     serializer = PlaceSerializer(places, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def country_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
@@ -56,7 +72,8 @@ def country_list(request, *args, **kwargs):
     serializer = CountrySerializer(countries, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def spr_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
@@ -69,11 +86,12 @@ def spr_list(request, *args, **kwargs):
     serializer = SPRSerializer(sprs, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def city_list(request, *args, **kwargs):
     if "q" in request.GET:
         match = request.GET.get("q", "")
-        cities = City.objects.filter(name__icontains=match).order_by('-population')
+        cities = City.objects.filter(name__icontains=match).order_by("-population")
     else:
         cities = City.objects.all()
 
@@ -83,7 +101,8 @@ def city_list(request, *args, **kwargs):
     serializer = CitySerializer(cities[:50], many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def find_city(request):
     cities = City.objects.all()
     if "city" in request.GET:
@@ -100,7 +119,7 @@ def find_city(request):
         return Response({})
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def sponsor_list(request):
     if "q" in request.GET:
         match = request.GET.get("q", "")
@@ -112,31 +131,46 @@ def sponsor_list(request):
     return Response(serializer.data)
 
 
-@verify_csrf(token_key='csrftoken')
+@verify_csrf(token_key="csrftoken")
 def join_team(request, team_id):
 
     if request.user.is_anonymous:
-        messages.add_message(request, messages.WARNING, message=_('You must be logged in to join a team.'))
-        return redirect('show-team', team_id=team_id)
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_("You must be logged in to join a team."),
+        )
+        return redirect("show-team", team_id=team_id)
     team = Team.objects.get(id=team_id)
     if request.user.profile in team.members.all():
-        messages.add_message(request, messages.INFO, message=_('You are already a member of this team.'))
-        return redirect('show-team', team_id=team_id)
-    new_member = Member.objects.create(team=team, user=request.user.profile, role=Member.NORMAL)
-    messages.add_message(request, messages.SUCCESS, message=_('Welcome to the team!'))
-    return redirect('show-team', team_id=team_id)
+        messages.add_message(
+            request, messages.INFO, message=_("You are already a member of this team.")
+        )
+        return redirect("show-team", team_id=team_id)
+    new_member = Member.objects.create(
+        team=team, user=request.user.profile, role=Member.NORMAL
+    )
+    messages.add_message(request, messages.SUCCESS, message=_("Welcome to the team!"))
+    return redirect("show-team", team_id=team_id)
 
 
-@verify_csrf(token_key='csrftoken')
+@verify_csrf(token_key="csrftoken")
 def leave_team(request, team_id):
     if request.user.is_anonymous:
-        messages.add_message(request, messages.WARNING, message=_('You must be logged in to leave a team.'))
-        return redirect('show-team', team_id=team_id)
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_("You must be logged in to leave a team."),
+        )
+        return redirect("show-team", team_id=team_id)
     team = Team.objects.get(id=team_id)
     if request.user.profile not in team.members.all():
-        messages.add_message(request, messages.INFO, message=_('You are not a member of this team.'))
-        return redirect('show-team', team_id=team_id)
+        messages.add_message(
+            request, messages.INFO, message=_("You are not a member of this team.")
+        )
+        return redirect("show-team", team_id=team_id)
     Member.objects.filter(team=team, user=request.user.profile).delete()
-    messages.add_message(request, messages.SUCCESS, message=_('You are no longer on this team.'))
-    return redirect('show-team', team_id=team_id)
-
+    messages.add_message(
+        request, messages.SUCCESS, message=_("You are no longer on this team.")
+    )
+    return redirect("show-team", team_id=team_id)
