@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.test import TestCase, Client
 import datetime
 
 from django.contrib.auth.models import User
@@ -31,6 +33,7 @@ class TeamDisplayTests(TestCase):
         c = Client()
         response = c.get(team_url)
         assert response.status_code == 200
+        assert response.context["theme"] == settings.THEME_CONFIG
 
     def test_show_about_team(self):
         team = mommy.make(Team)

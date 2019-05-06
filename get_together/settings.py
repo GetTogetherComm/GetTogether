@@ -106,6 +106,7 @@ TEMPLATES = [
                 "simple_ga.context_processors.events",
                 "totd.context_processors.tips",
                 "accounts.decorators.check_setup",
+                "get_together.context_processors.theme_engine",
             ]
         },
     }
@@ -207,6 +208,15 @@ MESSAGE_TAGS = {
     messages.SUCCESS: "alert-success",
     messages.WARNING: "alert-warning",
     messages.ERROR: "alert-danger",
+}
+
+THEME_CONFIG = {
+    "actions": {
+        "host_event": {
+            "label": _("Host a Get Together"),
+            "icon": "far fa-calendar-plus",
+        }
+    }
 }
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments
