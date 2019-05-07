@@ -32,7 +32,7 @@
             <div class="card-body">
               <p class="card-text"><strong>{{team.city}}</strong></p>
               <div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-outline-primary" name="team_id" value="{{team.id}}" type="submit">{{ theme.text_labels.host }}</button>
+                <button class="btn btn-outline-primary" name="team_id" value="{{team.id}}" type="submit">{{ theme.text_labels.host_verb }}</button>
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@
         <div class="col-12">
             <center>
                 <a class="btn btn-success" href="{% url 'create-team' %}?event={{event.id}}">{% trans "Create a new Team" %}</a>
-                <a class="btn btn-secondary" href="{{event.get_absolute_url}}">{{ theme.labels.host_as_myself }}</a>
+                <a class="btn btn-secondary" href="{{event.get_absolute_url}}">{{ theme.text_labels.host_as_myself }}</a>
             </center>
         </div>
     </div>
