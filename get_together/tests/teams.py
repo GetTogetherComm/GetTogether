@@ -1,7 +1,6 @@
-from django.conf import settings
-from django.test import TestCase, Client
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import resolve_url
 from django.test import Client, TestCase

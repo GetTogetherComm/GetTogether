@@ -216,7 +216,17 @@ THEME_CONFIG = {
             "label": _("Host a Get Together"),
             "icon": "far fa-calendar-plus",
         }
-    }
+    },
+    "text_labels": {
+        "host": _("host"),
+        "host_verb": _("moderate"),
+        "hosted_by": _("Hosted by"),
+        "change_host": _("Change Host"),
+        "change_host_for": _("Change host for:"),
+        "host_as_myself": _("Host this event as myself"),
+        "which_team_hosting": _("Which team is moderating this event"),
+        "host_event": _("Host Event"),
+    },
 }
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments

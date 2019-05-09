@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-12">
             <center>
-                <h3>{% trans "Which team is hosting this event?" %}</h3>
+                <h3>{{ theme.text_labels.which_team_hosting }}</h3>
             </center>
         </div>
     </div>
@@ -32,7 +32,7 @@
             <div class="card-body">
               <p class="card-text"><strong>{{team.city}}</strong></p>
               <div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-outline-primary" name="team_id" value="{{team.id}}" type="submit">{% trans "Host" %}</button>
+                <button class="btn btn-outline-primary" name="team_id" value="{{team.id}}" type="submit">{{ theme.text_labels.host_verb }}</button>
               </div>
             </div>
           </div>
@@ -55,10 +55,9 @@
         <div class="col-12">
             <center>
                 <a class="btn btn-success" href="{% url 'create-team' %}?event={{event.id}}">{% trans "Create a new Team" %}</a>
-                <a class="btn btn-secondary" href="{{event.get_absolute_url}}">{% trans "Host this event as myself" %}</a>
+                <a class="btn btn-secondary" href="{{event.get_absolute_url}}">{{ theme.text_labels.host_as_myself }}</a>
             </center>
         </div>
     </div>
 </div>
 {% endblock %}
-
