@@ -10,12 +10,6 @@
   <meta property="og:description"   content="{{event.summary}}" />
   <meta property="og:image"         content="{{event.team.full_img_url}}" />
   <!-- AddEvent script -->
-  <script type="text/javascript" async defer>
-  
-    
-    console.log('date', ('{{event.local_start_time}}'));
-    // console.log('formatDate', formatDate('{{event.local_start_time}}'));
-  </script>
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 {% endblock %}
 
@@ -112,7 +106,7 @@ textarea {
                 <h2 class="team-title">{{ event.name }}{% if event.status == event.CANCELED %} ({% trans "Canceled" %}){% endif %}</h2>
             </div>
             {% else %}
-            <h2> {{ event.name }}</h2>
+            <h2>{{ event.name }}</h2>
             {% endif %}
             {% if team.access == team.PERSONAL %}
             <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
@@ -299,8 +293,7 @@ textarea {
                     </ul>
                 </div>
             </div>
-        {% endif %} 
-            
+        {% endif %}
             </div>
         </div>
 
