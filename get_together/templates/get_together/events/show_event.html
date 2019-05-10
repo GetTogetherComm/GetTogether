@@ -225,8 +225,8 @@ textarea {
 
             <div title="Add to Calendar" class="addeventatc mt-3" style="font-family: inherit;">
                 Add to Calendar
-                <span class="start">{{event.local_start_time|date:"y-m-d"}}</span>
-                <span class="end">{{event.local_end_time|date:"y-m-d"}}</span>
+                <span class="start">{{event.local_start_time|date:"y-m-d-h-m"}}</span>
+                <span class="end">{{event.local_end_time|date:"y-m-d-h-m"}}</span>
                 <span class="title">{{event.name}}</span>
                 <span class="timezone">{{event.tz}}</span>
                 <span class="description">{{event.summary}}</span>
