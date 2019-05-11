@@ -9,6 +9,8 @@
   <meta property="og:title"         content="{{event.name}}" />
   <meta property="og:description"   content="{{event.summary}}" />
   <meta property="og:image"         content="{{event.team.full_img_url}}" />
+  <!-- AddEvent script -->
+<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 {% endblock %}
 
 {% block styles %}
@@ -221,6 +223,16 @@ textarea {
 
             </div>
 
+            <div title="Add to Calendar" class="addeventatc mt-3" style="font-family: inherit;">
+                Add to Calendar
+                <span class="start">{{event.local_start_time|date:"y-m-d-h-m"}}</span>
+                <span class="end">{{event.local_end_time|date:"y-m-d-h-m"}}</span>
+                <span class="title">{{event.name}}</span>
+                <span class="timezone">{{event.tz}}</span>
+                <span class="description">{{event.summary}}</span>
+                <span class="location">{{event.place.name}}</span>
+                </div>
+
             {% if event.enable_comments %}
             <div class="container container-secondary mt-3">
                 <div class="row">
@@ -282,6 +294,7 @@ textarea {
                 </div>
             </div>
         {% endif %}
+            </div>
         </div>
 
         <div class="col-md-4">
