@@ -227,6 +227,7 @@ THEME_CONFIG = {
         "which_team_hosting": _("Which team is moderating this event"),
         "host_event": _("Host Event"),
     },
+    "images": {"nav_logo": "img/mixlogo.png"},
 }
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments
