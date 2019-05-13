@@ -37,6 +37,7 @@
             </tr>
             </table>
 
+            {% if settings.GOOGLE_MAPS_API_KEY %}
             <iframe
               width="720"
               height="400"
@@ -44,6 +45,7 @@
               src="https://www.google.com/maps/embed/v1/place?key={{ settings.GOOGLE_MAPS_API_KEY }}&q={{place.address|urlencode}}%2C%20{{place.city|urlencode}}&zoom=14"
               allowfullscreen>
             </iframe>
+            {% endif %}
 
         </div>
 

@@ -202,7 +202,7 @@ textarea {
             </div>
             {% endif %}
 
-            {% if event.place %}
+            {% if event.place and settings.GOOGLE_MAPS_API_KEY %}
             <div class="row mb-2">
               <div class="col-12">
                 <iframe
