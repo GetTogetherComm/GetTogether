@@ -1,8 +1,9 @@
-from django.db import models
-from django.contrib.sites.models import Site
-from django.contrib.messages.constants import DEFAULT_TAGS, INFO
 from django.conf import settings
+from django.contrib.messages.constants import DEFAULT_TAGS, INFO
+from django.contrib.sites.models import Site
+from django.db import models
 from django.utils import timezone
+
 
 # Create your models here.
 class Tip(models.Model):
@@ -16,7 +17,9 @@ class Tip(models.Model):
     view = models.CharField(max_length=256, blank=True, null=True)
     sites = models.ManyToManyField(Site)
 
-    seen_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='seen_tips', blank=True)
+    seen_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="seen_tips", blank=True
+    )
 
     def tags(self):
         return settings.MESSAGE_TAGS[self.level]

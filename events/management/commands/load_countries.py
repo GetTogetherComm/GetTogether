@@ -25,21 +25,23 @@ EQUIVALENTFIPSCODE = 18
 
 
 class Command(BaseCommand):
-    help = 'Loads country data from GeoNames database file'
+    help = "Loads country data from GeoNames database file"
 
     def add_arguments(self, parser):
-        parser.add_argument('file', type=str)
+        parser.add_argument("file", type=str)
 
     def handle(self, *args, **options):
-        if 'file' in options:
-            with open(options['file'], 'r') as countries_file:
+        if "file" in options:
+            with open(options["file"], "r") as countries_file:
                 for country_line in countries_file.readlines():
                     if country_line.startswith("#"):
                         continue
                     country = country_line.split("\t")
                     if len(country) == 19:
                         # print("%s - %s" % (country[ISO], country[COUNTRY]))
-                        Country.objects.get_or_create(name=country[COUNTRY], code=country[ISO])
+                        Country.objects.get_or_create(
+                            name=country[COUNTRY], code=country[ISO]
+                        )
                     else:
                         print("Short line (%s): %s" % (len(country), country_line))
         else:

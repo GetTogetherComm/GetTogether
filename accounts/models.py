@@ -1,13 +1,15 @@
-from django.db import models
-from django.contrib.sites.models import Site
-from django.contrib.auth.models import User, Group, AnonymousUser
-from django.utils.translation import ugettext_lazy as _
-from django.utils.crypto import get_random_string
-from django.conf import settings
-
-import pytz
 import datetime
 import hashlib
+
+from django.conf import settings
+from django.contrib.auth.models import AnonymousUser, Group, User
+from django.contrib.sites.models import Site
+from django.db import models
+from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext_lazy as _
+
+import pytz
+
 
 class Account(models.Model):
     " Store account information about a user "
@@ -19,10 +21,10 @@ class Account(models.Model):
     has_completed_setup = models.BooleanField(default=False)
     setup_completed_date = models.DateTimeField(blank=True, null=True)
 
-    badges = models.ManyToManyField('Badge', through='BadgeGrant')
+    badges = models.ManyToManyField("Badge", through="BadgeGrant")
 
     class Meta:
-        ordering = ('user__username',)
+        ordering = ("user__username",)
 
     def setup_complete(self):
         self.has_completed_setup = True
@@ -30,18 +32,23 @@ class Account(models.Model):
         self.save()
 
     def new_confirmation_request(self):
-        valid_for = getattr(settings, 'EMAIL_CONFIRMAION_EXPIRATION_DAYS', 5)
-        confirmation_key=get_random_string(length=32)
+        valid_for = getattr(settings, "EMAIL_CONFIRMAION_EXPIRATION_DAYS", 5)
+        confirmation_key = get_random_string(length=32)
         return EmailConfirmation.objects.create(
             user=self.user,
             email=self.user.email,
             key=confirmation_key,
-            expires=datetime.datetime.now()+datetime.timedelta(days=valid_for)
+            expires=datetime.datetime.now() + datetime.timedelta(days=valid_for),
         )
 
     def confirm_email(self, confirmation_key):
         try:
-            confirmation_request = EmailConfirmation.objects.get(user=self.user, email=self.user.email, key=confirmation_key, expires__gt=datetime.datetime.now())
+            confirmation_request = EmailConfirmation.objects.get(
+                user=self.user,
+                email=self.user.email,
+                key=confirmation_key,
+                expires__gt=datetime.datetime.now(),
+            )
             if confirmation_request is not None:
                 self.is_email_confirmed = True
                 self.save()
@@ -69,7 +76,7 @@ def _getUserAccount(self):
     if created:
         if self.first_name:
             if self.last_name:
-                profile.acctname = '%s %s' % (self.first_name, self.last_name)
+                profile.acctname = "%s %s" % (self.first_name, self.last_name)
             else:
                 profile.acctname = self.first_name
 
@@ -77,11 +84,14 @@ def _getUserAccount(self):
 
     return profile
 
+
 def _getAnonAccount(self):
-    return Account(acctname=_('Anonymous User'))
+    return Account(acctname=_("Anonymous User"))
+
 
 User.account = property(_getUserAccount)
 AnonymousUser.account = property(_getAnonAccount)
+
 
 class EmailConfirmation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -89,12 +99,14 @@ class EmailConfirmation(models.Model):
     key = models.CharField(max_length=256)
     expires = models.DateTimeField()
 
+
 class Badge(models.Model):
-    name = models.CharField(_('Badge Name'), max_length=64, blank=False, null=False)
-    img_url = models.URLField(_('Badge Image'), blank=False, null=False)
+    name = models.CharField(_("Badge Name"), max_length=64, blank=False, null=False)
+    img_url = models.URLField(_("Badge Image"), blank=False, null=False)
 
     def __str__(self):
         return self.name
+
 
 class BadgeGrant(models.Model):
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
@@ -104,27 +116,30 @@ class BadgeGrant(models.Model):
     granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return '%s for %s' % (self.badge.name, self.account.acctname)
+        return "%s for %s" % (self.badge.name, self.account.acctname)
 
 
 class EmailRecord(models.Model):
     """
     Model to store all the outgoing emails.
     """
-    when = models.DateTimeField(
-        null=False, auto_now_add=True
+
+    when = models.DateTimeField(null=False, auto_now_add=True)
+    sender = models.ForeignKey(
+        User,
+        related_name="sent_messages",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
-    sender = models.ForeignKey(User, related_name='sent_messages', null=True, blank=True, on_delete=models.SET_NULL)
-    recipient = models.ForeignKey(User, related_name='recv_messages', null=True, blank=True, on_delete=models.SET_NULL)
-    email = models.EmailField(
-        null=False, blank=False,
+    recipient = models.ForeignKey(
+        User,
+        related_name="recv_messages",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
-    subject = models.CharField(
-         null=False, max_length=128,
-    )
-    body = models.TextField(
-        null=False, max_length=1024,
-    )
-    ok = models.BooleanField(
-        null=False, default=True,
-    )
+    email = models.EmailField(null=False, blank=False)
+    subject = models.CharField(null=False, max_length=128)
+    body = models.TextField(null=False, max_length=1024)
+    ok = models.BooleanField(null=False, default=True)

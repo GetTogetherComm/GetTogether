@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0002_auto_20171217_0332'),
-    ]
+    dependencies = [("events", "0002_auto_20171217_0332")]
 
     operations = [
         migrations.AddField(
-            model_name='searchable',
-            name='tags',
+            model_name="searchable",
+            name="tags",
             field=models.CharField(blank=True, max_length=128, null=True),
-        ),
+        )
     ]

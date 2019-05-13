@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0038_add_common_event_continent'),
-    ]
+    dependencies = [("events", "0038_add_common_event_continent")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='do_not_track',
-            field=models.BooleanField(default=False, verbose_name='Do not track'),
-        ),
+            model_name="userprofile",
+            name="do_not_track",
+            field=models.BooleanField(default=False, verbose_name="Do not track"),
+        )
     ]

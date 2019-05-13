@@ -5,24 +5,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0006_auto_20180124_0303'),
-    ]
+    dependencies = [("events", "0006_auto_20180124_0303")]
 
     operations = [
         migrations.AddField(
-            model_name='city',
-            name='latitude',
-            field=models.FloatField(blank=True, help_text='Latitude in Degrees North', null=True),
+            model_name="city",
+            name="latitude",
+            field=models.FloatField(
+                blank=True, help_text="Latitude in Degrees North", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='city',
-            name='longitude',
-            field=models.FloatField(blank=True, help_text='Longitude in Degrees East', null=True),
+            model_name="city",
+            name="longitude",
+            field=models.FloatField(
+                blank=True, help_text="Longitude in Degrees East", null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='attendee',
-            name='status',
-            field=models.SmallIntegerField(choices=[(-1, 'No'), (0, 'Maybe'), (1, 'Yes')], db_index=True, default=1, verbose_name='Attending?'),
+            model_name="attendee",
+            name="status",
+            field=models.SmallIntegerField(
+                choices=[(-1, "No"), (0, "Maybe"), (1, "Yes")],
+                db_index=True,
+                default=1,
+                verbose_name="Attending?",
+            ),
         ),
     ]

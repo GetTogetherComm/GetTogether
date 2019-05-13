@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('accounts', '0002_auto_20180226_1532'),
-    ]
+    dependencies = [("accounts", "0002_auto_20180226_1532")]
 
     operations = [
         migrations.AddField(
-            model_name='account',
-            name='has_completed_setup',
+            model_name="account",
+            name="has_completed_setup",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='account',
-            name='setup_completed_date',
+            model_name="account",
+            name="setup_completed_date",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]
