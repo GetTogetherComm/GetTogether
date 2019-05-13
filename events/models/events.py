@@ -1,58 +1,83 @@
-from django.db import models
+import datetime
+import hashlib
+import re
+
+from django.conf import settings
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User, Group
-from django.utils.translation import ugettext_lazy as _
+from django.db import models
 from django.shortcuts import reverse
 from django.utils import timezone
-from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import serializers
-from mptt.models import MPTTModel, TreeForeignKey
-from recurrence.fields import RecurrenceField
+import pytz
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from mptt.models import MPTTModel, TreeForeignKey
+from recurrence.fields import RecurrenceField
+from rest_framework import serializers
 
+from .. import location
 from ..utils import slugify
 from .locale import *
 from .profiles import *
 from .search import *
-from .. import location
 
-import re
-import pytz
-import datetime
-import hashlib
 
 class Place(models.Model):
-    name = models.CharField(help_text=_('Name of the Place'), max_length=150)
-    city = models.ForeignKey(City, verbose_name=_('City'), on_delete=models.CASCADE)
-    address = models.CharField(help_text=_('Address with Street and Number'), max_length=150, null=True, blank=True)
-    longitude = models.FloatField(help_text=_('Longitude in Degrees East'), null=True, blank=True)
-    latitude = models.FloatField(help_text=_('Latitude in Degrees North'), null=True, blank=True)
-    tz = models.CharField(max_length=32, verbose_name=_('Timezone'), default='UTC', choices=location.TimezoneChoices(), blank=False, null=False)
-    place_url = models.URLField(help_text=_('URL for the Place Homepage'), verbose_name=_('URL of the Place'), max_length=200, blank=True, null=True)
+    name = models.CharField(help_text=_("Name of the Place"), max_length=150)
+    city = models.ForeignKey(City, verbose_name=_("City"), on_delete=models.CASCADE)
+    address = models.CharField(
+        help_text=_("Address with Street and Number"),
+        max_length=150,
+        null=True,
+        blank=True,
+    )
+    longitude = models.FloatField(
+        help_text=_("Longitude in Degrees East"), null=True, blank=True
+    )
+    latitude = models.FloatField(
+        help_text=_("Latitude in Degrees North"), null=True, blank=True
+    )
+    tz = models.CharField(
+        max_length=32,
+        verbose_name=_("Timezone"),
+        default="UTC",
+        choices=location.TimezoneChoices(),
+        blank=False,
+        null=False,
+    )
+    place_url = models.URLField(
+        help_text=_("URL for the Place Homepage"),
+        verbose_name=_("URL of the Place"),
+        max_length=200,
+        blank=True,
+        null=True,
+    )
     cover_img = models.URLField(_("Place photo"), null=True, blank=True)
 
     def get_absolute_url(self):
-        return reverse('show-place', kwargs={'place_id': self.id})
+        return reverse("show-place", kwargs={"place_id": self.id})
 
     def __str__(self):
-        return u'%s, %s' % (self.name, self.city.name)
+        return u"%s, %s" % (self.name, self.city.name)
+
 
 class PlaceSerializer(serializers.ModelSerializer):
     city = serializers.CharField(read_only=True)
+
     class Meta:
         model = Place
         fields = (
-            'id',
-            'name',
-            'city',
-            'address',
-            'longitude',
-            'latitude',
-            'tz',
-            'place_url',
-            'cover_img'
+            "id",
+            "name",
+            "city",
+            "address",
+            "longitude",
+            "latitude",
+            "tz",
+            "place_url",
+            "cover_img",
         )
 
 
@@ -66,37 +91,66 @@ class Event(models.Model):
         (PLANNING, _("Planning")),
         (CONFIRMED, _("Confirmed")),
     ]
-    name = models.CharField(max_length=150, verbose_name=_('Event Name'))
+    name = models.CharField(max_length=150, verbose_name=_("Event Name"))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    parent = models.ForeignKey('CommonEvent', related_name='participating_events', null=True, blank=True, on_delete=models.SET_NULL)
-    series = models.ForeignKey('EventSeries',related_name='instances',  null=True, blank=True, on_delete=models.SET_NULL)
-    status = models.SmallIntegerField(choices=STATUSES, default=CONFIRMED, db_index=True)
+    parent = models.ForeignKey(
+        "CommonEvent",
+        related_name="participating_events",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    series = models.ForeignKey(
+        "EventSeries",
+        related_name="instances",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    status = models.SmallIntegerField(
+        choices=STATUSES, default=CONFIRMED, db_index=True
+    )
 
-    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
-    end_time = models.DateTimeField(verbose_name=_('End Time'), db_index=True)
+    start_time = models.DateTimeField(verbose_name=_("Start Time"), db_index=True)
+    end_time = models.DateTimeField(verbose_name=_("End Time"), db_index=True)
 
-    summary = models.TextField(help_text=_('Markdown formatting supported'), blank=True, null=True)
+    summary = models.TextField(
+        help_text=_("Markdown formatting supported"), blank=True, null=True
+    )
 
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.CASCADE)
 
-    web_url = models.URLField(verbose_name=_('Website URL'), max_length=200, blank=True, null=True)
-    announce_url = models.URLField(verbose_name=_('Announcement URL'), max_length=200, blank=True, null=True)
+    web_url = models.URLField(
+        verbose_name=_("Website URL"), max_length=200, blank=True, null=True
+    )
+    announce_url = models.URLField(
+        verbose_name=_("Announcement URL"), max_length=200, blank=True, null=True
+    )
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
+    created_time = models.DateTimeField(
+        help_text=_("the date and time when the event was created"),
+        default=timezone.now,
+        db_index=True,
+    )
 
-    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
-    #image
-    #replies
+    tags = models.CharField(
+        verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128
+    )
+    # image
+    # replies
 
-    attendees = models.ManyToManyField(UserProfile, through='Attendee', related_name="attending", blank=True)
+    attendees = models.ManyToManyField(
+        UserProfile, through="Attendee", related_name="attending", blank=True
+    )
 
-    sponsors = models.ManyToManyField('Sponsor', related_name='events', blank=True)
+    sponsors = models.ManyToManyField("Sponsor", related_name="events", blank=True)
 
-    enable_comments = models.BooleanField(verbose_name=_('Comments'), default=True)
-    enable_photos = models.BooleanField(verbose_name=_('Photos'), default=True)
-    enable_presentations = models.BooleanField(verbose_name=_('Presentations'), default=False)
-
+    enable_comments = models.BooleanField(verbose_name=_("Comments"), default=True)
+    enable_photos = models.BooleanField(verbose_name=_("Photos"), default=True)
+    enable_presentations = models.BooleanField(
+        verbose_name=_("Presentations"), default=False
+    )
 
     @property
     def is_over(self):
@@ -139,7 +193,9 @@ class Event(models.Model):
             return timezone.make_naive(self.end_time.astimezone(event_tz), event_tz)
 
     def get_absolute_url(self):
-        return reverse('show-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
+        return reverse(
+            "show-event", kwargs={"event_id": self.id, "event_slug": self.slug}
+        )
 
     def get_full_url(self):
         site = Site.objects.get(id=1)
@@ -150,7 +206,7 @@ class Event(models.Model):
         return slugify(self.name)
 
     def __str__(self):
-        return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
+        return u"%s by %s at %s" % (self.name, self.team.name, self.start_time)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save() method.
@@ -159,22 +215,23 @@ class Event(models.Model):
         else:
             delete_event_searchable(self)
 
+
 def update_event_searchable(event):
     site = Site.objects.get(id=1)
     if settings.DEBUG:
-        schema = 'http'
+        schema = "http"
     else:
-        schema = 'https'
+        schema = "https"
 
     event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
-    origin_url = "%s://%s%s" % (schema, site.domain, reverse('searchables'))
+    origin_url = "%s://%s%s" % (schema, site.domain, reverse("searchables"))
 
     md5 = hashlib.md5()
-    federation_url = event_url.split('/')
-    federation_node = '/'.join(federation_url[:3])
-    federation_id = '/'.join(federation_url[:5])
-    md5.update(bytes(federation_id, 'utf8'))
-    event_uri = federation_node + '/' + md5.hexdigest()
+    federation_url = event_url.split("/")
+    federation_node = "/".join(federation_url[:3])
+    federation_id = "/".join(federation_url[:5])
+    md5.update(bytes(federation_id, "utf8"))
+    event_uri = federation_node + "/" + md5.hexdigest()
 
     try:
         searchable = Searchable.objects.get(event_uri=event_uri)
@@ -186,10 +243,16 @@ def update_event_searchable(event):
 
     searchable.event_url = event_url
 
-    if event.team.card_img_url.startswith('http:') or event.team.card_img_url.startswith('https:'):
+    if event.team.card_img_url.startswith(
+        "http:"
+    ) or event.team.card_img_url.startswith("https:"):
         searchable.img_url = event.team.card_img_url
     else:
-        searchable.img_url = "%s://%s%s" % (schema, site.domain, event.team.card_img_url)
+        searchable.img_url = "%s://%s%s" % (
+            schema,
+            site.domain,
+            event.team.card_img_url,
+        )
 
     searchable.event_title = event.name
     searchable.group_name = event.team.name
@@ -198,7 +261,7 @@ def update_event_searchable(event):
     searchable.tz = event.tz
     searchable.cost = 0
     searchable.tags = event.tags
-    if (event.place is not None):
+    if event.place is not None:
         searchable.location_name = str(event.place.city)
         searchable.venue_name = event.place.name
         if event.place.longitude is not None and event.place.latitude is not None:
@@ -210,27 +273,30 @@ def update_event_searchable(event):
     else:
         searchable.location_name = event.team.location_name
 
-    if event.team.city is not None and (searchable.longitude is None or searchable.latitude is None):
+    if event.team.city is not None and (
+        searchable.longitude is None or searchable.latitude is None
+    ):
         searchable.longitude = event.team.city.longitude
         searchable.latitude = event.team.city.latitude
 
     searchable.save()
 
+
 def delete_event_searchable(event):
     site = Site.objects.get(id=1)
     if settings.DEBUG:
-        schema = 'http'
+        schema = "http"
     else:
-        schema = 'https'
+        schema = "https"
     event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
-    origin_url = "%s://%s%s" % (schema, site.domain, reverse('searchables'))
+    origin_url = "%s://%s%s" % (schema, site.domain, reverse("searchables"))
 
     md5 = hashlib.md5()
-    federation_url = event_url.split('/')
-    federation_node = '/'.join(federation_url[:3])
-    federation_id = '/'.join(federation_url[:5])
-    md5.update(bytes(federation_id, 'utf8'))
-    event_uri = federation_node + '/' + md5.hexdigest()
+    federation_url = event_url.split("/")
+    federation_node = "/".join(federation_url[:3])
+    federation_id = "/".join(federation_url[:5])
+    md5.update(bytes(federation_id, "utf8"))
+    event_uri = federation_node + "/" + md5.hexdigest()
 
     try:
         searchable = Searchable.objects.get(event_uri=event_uri)
@@ -240,27 +306,25 @@ def delete_event_searchable(event):
 
 
 class Attendee(models.Model):
-    NORMAL=0
-    CREW=1
-    HOST=2
-    ROLES = [
-        (NORMAL, _("Normal")),
-        (CREW, _("Crew")),
-        (HOST, _("Host"))
-    ]
-    NO=-1
-    MAYBE=0
-    YES=1
-    STATUSES = [
-        (NO, _("No")),
-        (MAYBE, _("Maybe")),
-        (YES, _("Yes")),
-    ]
+    NORMAL = 0
+    CREW = 1
+    HOST = 2
+    ROLES = [(NORMAL, _("Normal")), (CREW, _("Crew")), (HOST, _("Host"))]
+    NO = -1
+    MAYBE = 0
+    YES = 1
+    STATUSES = [(NO, _("No")), (MAYBE, _("Maybe")), (YES, _("Yes"))]
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    role = models.SmallIntegerField(_("Role"), choices=ROLES, default=NORMAL, db_index=True)
-    status = models.SmallIntegerField(_("Attending"), choices=STATUSES, default=YES, db_index=True)
-    actual = models.SmallIntegerField(_("Attended"), choices=STATUSES, default=MAYBE, db_index=True)
+    role = models.SmallIntegerField(
+        _("Role"), choices=ROLES, default=NORMAL, db_index=True
+    )
+    status = models.SmallIntegerField(
+        _("Attending"), choices=STATUSES, default=YES, db_index=True
+    )
+    actual = models.SmallIntegerField(
+        _("Attended"), choices=STATUSES, default=MAYBE, db_index=True
+    )
     joined_date = models.DateTimeField(default=timezone.now)
     last_reminded = models.DateTimeField(null=True, blank=True)
 
@@ -270,30 +334,36 @@ class Attendee(models.Model):
 
     @property
     def status_name(self):
-        return Attendee.STATUSES[self.status+1][1]
+        return Attendee.STATUSES[self.status + 1][1]
 
     @property
     def actual_name(self):
-        return Attendee.STATUSES[self.actual+1][1]
+        return Attendee.STATUSES[self.actual + 1][1]
 
     def __str__(self):
         return "%s at %s" % (self.user, self.event)
 
+
 class EventPhoto(models.Model):
-    uploader = models.ForeignKey(UserProfile, related_name="event_photos", on_delete=models.SET_NULL, null=True)
-    event = models.ForeignKey(Event, related_name='photos', on_delete=models.CASCADE)
+    uploader = models.ForeignKey(
+        UserProfile, related_name="event_photos", on_delete=models.SET_NULL, null=True
+    )
+    event = models.ForeignKey(Event, related_name="photos", on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     caption = models.TextField(null=True, blank=True)
-    src = models.ImageField(verbose_name=_('Photo'), upload_to='event_photos')
-    thumbnail = ImageSpecField(source='src',
-                                      processors=[ResizeToFill(250, 187)],
-                                      format='JPEG',
-                                      options={'quality': 60})
+    src = models.ImageField(verbose_name=_("Photo"), upload_to="event_photos")
+    thumbnail = ImageSpecField(
+        source="src",
+        processors=[ResizeToFill(250, 187)],
+        format="JPEG",
+        options={"quality": 60},
+    )
+
 
 class EventComment(MPTTModel):
-    REMOVED=-1
-    PENDING=0
-    APPROVED=1
+    REMOVED = -1
+    PENDING = 0
+    APPROVED = 1
 
     STATUSES = [
         (REMOVED, _("Removed")),
@@ -301,12 +371,19 @@ class EventComment(MPTTModel):
         (APPROVED, _("Approved")),
     ]
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, related_name='comments', on_delete=models.CASCADE)
-    body = models.TextField(help_text=_('Markdown formatting supported'))
+    event = models.ForeignKey(Event, related_name="comments", on_delete=models.CASCADE)
+    body = models.TextField(help_text=_("Markdown formatting supported"))
     created_time = models.DateTimeField(default=timezone.now, db_index=True)
     updated_time = models.DateTimeField(default=timezone.now, db_index=True)
     status = models.SmallIntegerField(choices=STATUSES, default=APPROVED, db_index=True)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.SET_NULL)
+    parent = TreeForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="children",
+        db_index=True,
+        on_delete=models.SET_NULL,
+    )
 
     @property
     def local_created_time(self):
@@ -317,7 +394,7 @@ class EventComment(MPTTModel):
         return self.event.localize_datetime(self.updated_time)
 
     def __str__(self):
-        return '%s at %s' % (self.author, self.created_time)
+        return "%s at %s" % (self.author, self.created_time)
 
     def save(self, *args, **kwargs):
         self.updated_time = timezone.now()
@@ -325,58 +402,94 @@ class EventComment(MPTTModel):
             self.created_time = self.updated_time
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
+
 class CommonEvent(models.Model):
-    name = models.CharField(max_length=150, verbose_name=_('Event Name'))
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
-    parent = models.ForeignKey('CommonEvent', related_name='sub_events', null=True, blank=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=150, verbose_name=_("Event Name"))
+    organization = models.ForeignKey(
+        Organization, null=True, blank=True, on_delete=models.CASCADE
+    )
+    parent = models.ForeignKey(
+        "CommonEvent",
+        related_name="sub_events",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
-    start_time = models.DateTimeField(verbose_name=_('Start Time'), db_index=True)
-    end_time = models.DateTimeField(verbose_name=_('End Time'), db_index=True)
-    summary = models.TextField(help_text=_('Markdown formatting supported'), blank=True, null=True)
+    start_time = models.DateTimeField(verbose_name=_("Start Time"), db_index=True)
+    end_time = models.DateTimeField(verbose_name=_("End Time"), db_index=True)
+    summary = models.TextField(
+        help_text=_("Markdown formatting supported"), blank=True, null=True
+    )
 
-    continent = models.ForeignKey(Continent, null=True, blank=True, on_delete=models.SET_NULL)
-    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
+    continent = models.ForeignKey(
+        Continent, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    country = models.ForeignKey(
+        Country, null=True, blank=True, on_delete=models.SET_NULL
+    )
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.SET_NULL)
     city = models.ForeignKey(City, null=True, blank=True, on_delete=models.SET_NULL)
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.SET_NULL)
 
-    web_url = models.URLField(verbose_name=_('Website URL'), max_length=200, blank=True, null=True)
-    announce_url = models.URLField(verbose_name=_('Announcement URL'), max_length=200, blank=True, null=True)
+    web_url = models.URLField(
+        verbose_name=_("Website URL"), max_length=200, blank=True, null=True
+    )
+    announce_url = models.URLField(
+        verbose_name=_("Announcement URL"), max_length=200, blank=True, null=True
+    )
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
+    created_time = models.DateTimeField(
+        help_text=_("the date and time when the event was created"),
+        default=timezone.now,
+        db_index=True,
+    )
 
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=False, null=True)
-    topics = models.ManyToManyField('Topic', blank=True)
-    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
+    category = models.ForeignKey(
+        "Category", on_delete=models.SET_NULL, blank=False, null=True
+    )
+    topics = models.ManyToManyField("Topic", blank=True)
+    tags = models.CharField(
+        verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128
+    )
 
     def get_absolute_url(self):
-        return reverse('show-common-event', kwargs={'event_id': self.id, 'event_slug': self.slug})
+        return reverse(
+            "show-common-event", kwargs={"event_id": self.id, "event_slug": self.slug}
+        )
 
     def get_full_url(self):
         site = self.organization.site
         if settings.DEBUG:
-            schema = 'http'
+            schema = "http"
         else:
-            schema = 'https'
+            schema = "https"
         return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
     @property
     def full_img_url(self):
-        if self.organization.tile_img is not None and self.organization.tile_img .name is not None:
-            if self.organization.tile_img .url.startswith('http'):
-                return self.organization.tile_img .url
+        if (
+            self.organization.tile_img is not None
+            and self.organization.tile_img.name is not None
+        ):
+            if self.organization.tile_img.url.startswith("http"):
+                return self.organization.tile_img.url
             else:
                 site = self.organization.site
                 if settings.DEBUG:
-                    schema = 'http'
+                    schema = "http"
                 else:
-                    schema = 'https'
-                return "%s://%s%s" % (schema, site.domain, self.organization.tile_img .url)
+                    schema = "https"
+                return "%s://%s%s" % (
+                    schema,
+                    site.domain,
+                    self.organization.tile_img.url,
+                )
         elif self.category and self.category.img_url:
             return self.category.img_url
         else:
-            return static('img/team_placeholder.png')
+            return static("img/team_placeholder.png")
 
     def location(self):
         if self.city:
@@ -388,7 +501,7 @@ class CommonEvent(models.Model):
         elif self.continent:
             return self.continent
         else:
-            return _('Global')
+            return _("Global")
 
     @property
     def slug(self):
@@ -397,26 +510,54 @@ class CommonEvent(models.Model):
     def __str__(self):
         return self.name
 
+
 class EventSeries(models.Model):
     class Meta:
-        verbose_name_plural = 'Event series'
-    name = models.CharField(max_length=150, verbose_name=_('Event Name'))
+        verbose_name_plural = "Event series"
+
+    name = models.CharField(max_length=150, verbose_name=_("Event Name"))
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    parent = models.ForeignKey('CommonEvent', related_name='planned_events', null=True, blank=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey(
+        "CommonEvent",
+        related_name="planned_events",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     recurrences = RecurrenceField(null=True)
-    last_time = models.DateTimeField(help_text=_('Date and time of the last created instance in this series'), default=timezone.now, db_index=True)
-    start_time = models.TimeField(help_text=_('Local time that the event starts'), verbose_name=_('Start Time'), db_index=True)
-    end_time = models.TimeField(help_text=_('Local time that the event ends'), verbose_name=_('End Time'), db_index=True)
+    last_time = models.DateTimeField(
+        help_text=_("Date and time of the last created instance in this series"),
+        default=timezone.now,
+        db_index=True,
+    )
+    start_time = models.TimeField(
+        help_text=_("Local time that the event starts"),
+        verbose_name=_("Start Time"),
+        db_index=True,
+    )
+    end_time = models.TimeField(
+        help_text=_("Local time that the event ends"),
+        verbose_name=_("End Time"),
+        db_index=True,
+    )
 
-    summary = models.TextField(help_text=_('Summary of the Event'), blank=True, null=True)
+    summary = models.TextField(
+        help_text=_("Summary of the Event"), blank=True, null=True
+    )
 
     place = models.ForeignKey(Place, blank=True, null=True, on_delete=models.CASCADE)
 
     created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    created_time = models.DateTimeField(help_text=_('the date and time when the event was created'), default=timezone.now, db_index=True)
+    created_time = models.DateTimeField(
+        help_text=_("the date and time when the event was created"),
+        default=timezone.now,
+        db_index=True,
+    )
 
-    tags = models.CharField(verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128)
+    tags = models.CharField(
+        verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128
+    )
 
     @classmethod
     def from_event(klass, event, recurrences):
@@ -440,8 +581,20 @@ class EventSeries(models.Model):
             return None
         event_tz = pytz.timezone(self.tz)
 
-        next_start = pytz.utc.localize(timezone.make_naive(event_tz.localize(datetime.datetime.combine(next_date.date(), self.start_time))))
-        next_end = pytz.utc.localize(timezone.make_naive(event_tz.localize(datetime.datetime.combine(next_date.date(), self.end_time))))
+        next_start = pytz.utc.localize(
+            timezone.make_naive(
+                event_tz.localize(
+                    datetime.datetime.combine(next_date.date(), self.start_time)
+                )
+            )
+        )
+        next_end = pytz.utc.localize(
+            timezone.make_naive(
+                event_tz.localize(
+                    datetime.datetime.combine(next_date.date(), self.end_time)
+                )
+            )
+        )
         next_event = Event(
             series=self,
             team=self.team,
@@ -453,20 +606,27 @@ class EventSeries(models.Model):
             created_by=self.created_by,
         )
         next_event.save()
-        Attendee.objects.create(event=next_event, user=self.created_by, role=Attendee.HOST, status=Attendee.YES)
+        Attendee.objects.create(
+            event=next_event,
+            user=self.created_by,
+            role=Attendee.HOST,
+            status=Attendee.YES,
+        )
         self.last_time = next_event.start_time
         self.save()
         return next_event
 
     def get_absolute_url(self):
-        return reverse('show-series', kwargs={'series_id': self.id, 'series_slug': self.slug})
+        return reverse(
+            "show-series", kwargs={"series_id": self.id, "series_slug": self.slug}
+        )
 
     def get_full_url(self):
         site = Site.objects.get(id=1)
         if settings.DEBUG:
-            schema = 'http'
+            schema = "http"
         else:
-            schema = 'https'
+            schema = "https"
         return "%s://%s%s" % (schema, site.domain, self.get_absolute_url())
 
     @property
@@ -483,6 +643,4 @@ class EventSeries(models.Model):
             return settings.TIME_ZONE
 
     def __str__(self):
-        return u'%s by %s at %s' % (self.name, self.team.name, self.start_time)
-
-
+        return u"%s by %s at %s" % (self.name, self.team.name, self.start_time)

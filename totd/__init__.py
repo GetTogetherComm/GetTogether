@@ -1,1 +1,1 @@
-default_app_config = 'totd.apps.TotdConfig'
+default_app_config = "totd.apps.TotdConfig"

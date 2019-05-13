@@ -6,7 +6,7 @@ from events.utils import slugify
 
 
 def add_team_slug(apps, schema_editor):
-    Team = apps.get_model('events', 'Team')
+    Team = apps.get_model("events", "Team")
     for team in Team.objects.all():
         team.slug = slugify(team.name)
         team.save()
@@ -14,21 +14,19 @@ def add_team_slug(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0031_add_sponsors'),
-    ]
+    dependencies = [("events", "0031_add_sponsors")]
 
     operations = [
         migrations.AddField(
-            model_name='team',
-            name='slug',
+            model_name="team",
+            name="slug",
             field=models.CharField(max_length=256, null=True),
         ),
         migrations.RunPython(add_team_slug, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
-            model_name='team',
-            name='slug',
-            field=models.CharField(default='', max_length=256),
+            model_name="team",
+            name="slug",
+            field=models.CharField(default="", max_length=256),
             preserve_default=False,
         ),
     ]
