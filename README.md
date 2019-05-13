@@ -31,9 +31,11 @@ virtualenv --python=python3 ./env
 
 Pre-commit is a tools that helps us commiting better code. Before writing any code first install the hooks to your repo using:
 
-`pre-commit install`
+`./env/bin/pre-commit install`
 
-From now on everytime you commit some code this will be checked by our pre-commit hooks.
+From now on everytime you commit some code this will be checked by our pre-commit hooks. 
+
+On the first commit after installing Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
 
 ### Code formatters
 
