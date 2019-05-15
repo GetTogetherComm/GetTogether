@@ -204,6 +204,20 @@ textarea {
             </div>
             {% endif %}
 
+            {% if event.place and settings.GOOGLE_MAPS_API_KEY %}
+            <div class="row mb-2">
+              <div class="col-12">
+                <iframe
+                  width="100%"
+                  height="300"
+                  frameborder="0" style="border:0"
+                  src="https://www.google.com/maps/embed/v1/place?key={{ settings.GOOGLE_MAPS_API_KEY }}&q={{event.place.address|urlencode}}%2C%20{{event.place.city|urlencode}}&zoom=14"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+            {% endif %}
+
             {% if event.enable_presentations %}
             <div class="row mb-2">
 	            <div class="col-3" width="120px"><b>{% trans "Presentations:" %}</b></div>
