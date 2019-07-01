@@ -143,6 +143,14 @@ class Event(models.Model):
     attendees = models.ManyToManyField(
         UserProfile, through="Attendee", related_name="attending", blank=True
     )
+    attendee_limit = models.PositiveSmallIntegerField(
+        verbose_name=_("Attendee Limit"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "If set, will limit the number of people who can register as attending your event."
+        ),
+    )
 
     sponsors = models.ManyToManyField("Sponsor", related_name="events", blank=True)
 
@@ -555,6 +563,15 @@ class EventSeries(models.Model):
         db_index=True,
     )
 
+    attendee_limit = models.PositiveSmallIntegerField(
+        verbose_name=_("Attendee Limit"),
+        blank=True,
+        null=True,
+        help_text=_(
+            "If set, will limit the number of people who can register as attending your event."
+        ),
+    )
+
     tags = models.CharField(
         verbose_name=_("Keyword Tags"), blank=True, null=True, max_length=128
     )
@@ -571,6 +588,7 @@ class EventSeries(models.Model):
             summary=event.summary,
             place=event.place,
             created_by=event.created_by,
+            attendee_limit=event.attendee_limit,
             recurrences=recurrences,
         )
         return new_series
@@ -604,6 +622,7 @@ class EventSeries(models.Model):
             summary=self.summary,
             place=self.place,
             created_by=self.created_by,
+            attendee_limit=self.attendee_limit,
         )
         next_event.save()
         Attendee.objects.create(

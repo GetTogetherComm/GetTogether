@@ -126,17 +126,20 @@ textarea {
                 {% if can_edit_team or is_email_confirmed %}
                     <a href="{% url 'invite-attendees' event.id %}" class="btn btn-danger btn-sm"><i class="fa fa-envelope"></i> {% trans "Invite" %}</a>
                 {% endif %}
+
                 {% if not is_attending %}
+                {% if not event.attendee_limit or attendee_count < event.attendee_limit %}
                     <div class="btn-group">
-                      <a id="attendEventButton" href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> {% trans "Attend" %}</a>
-                      <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a id="attendEventButton" href="{% url 'attend-event' event.id %}?csrftoken={{csrf_token}}" class="btn btn-success btn-sm"><i class="fa fa-check-square-o"></i> {% trans "Attend" %}</a>
+                    <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Attendance options</span>
-                      </button>
-                      <div class="dropdown-menu">
+                    </button>
+                    <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
                         <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">{% trans "No" %}</a>
-                      </div>
                     </div>
+                    </div>
+                {% endif %}
                 {% endif %}
             {% endif %}
             {% if can_edit_event %}
@@ -196,6 +199,7 @@ textarea {
                       {% endif %}
 	            </div>
             </div>
+
             {% if event.web_url %}
             <div class="row mb-2">
 	            <div class="col-3" width="120px"><b>{% trans "Website:" %}</b></div><div class="col-9"><a href="{{ event.web_url }}" target="_blank">{{ event.web_url }}</a></div>
@@ -307,6 +311,11 @@ textarea {
                 <div class="row">
                     <div class="col"><h4>{% trans "Attendees" %} ({{attendee_count}})</h4></div>
                 </div>
+                {% if event.attendee_limit %}
+                <div class="row">
+                        <div class="col text-muted mb-3">{% trans "Limit:" %} {{event.attendee_limit}}</div>
+                    </div>
+                    {% endif %}
                 {% for attendee in attendee_list %}
                 <div class="row mb-3">
                     <div class="col media gt-profile">
@@ -319,7 +328,7 @@ textarea {
                               {% if attendee.status == attendee.YES %}
                                   <span class="badge badge-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
+                                    {% if not event.attendee_limit %}<a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>{% endif %}
                                     <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=no&csrftoken={{csrf_token}}">{% trans "No" %}</a>
                                   </div>
                               {% elif attendee.status == attendee.MAYBE %}
@@ -332,7 +341,7 @@ textarea {
                                   <span class="badge badge-danger dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
                                   <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=yes&csrftoken={{csrf_token}}">{% trans "Yes" %}</a>
-                                    <a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>
+                                    {% if not event.attendee_limit %}<a class="dropdown-item" href="{% url 'attend-event' event.id %}?response=maybe&csrftoken={{csrf_token}}">{% trans "Maybe" %}</a>{% endif %}
                                   </div>
                               {% endif %}
                           {% else %}

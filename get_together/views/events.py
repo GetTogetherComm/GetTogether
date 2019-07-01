@@ -14,9 +14,8 @@ from django.utils.datastructures import OrderedSet
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-import simplejson
-
 import simple_ga as ga
+import simplejson
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
@@ -571,6 +570,32 @@ def attend_event(request, event_id):
             request,
             messages.WARNING,
             message=_("You can not change your status on an event that has ended."),
+        )
+        return redirect(event.get_absolute_url())
+
+    if (
+        event.attendee_limit is not None
+        and request.GET.get("response", None) == "maybe"
+    ):
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_(
+                'Because there is limited space at this event, you can not mark yourself as "Maybe" attending'
+            ),
+        )
+        return redirect(event.get_absolute_url())
+
+    if (
+        event.attendee_limit is not None
+        and Attendee.objects.filter(event=event, status=Attendee.YES).count()
+        >= event.attendee_limit
+        and request.GET.get("response", None) != "no"
+    ):
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_("This event already has the maximum number of attendees."),
         )
         return redirect(event.get_absolute_url())
 

@@ -277,6 +277,7 @@ class TeamEventForm(forms.ModelForm):
             "summary",
             "web_url",
             "announce_url",
+            "attendee_limit",
             "enable_comments",
             "enable_photos",
             "enable_presentations",
@@ -383,6 +384,7 @@ class NewEventDetailsForm(forms.ModelForm):
             "recurrences",
             "web_url",
             "announce_url",
+            "attendee_limit",
             "enable_comments",
             "enable_photos",
             "enable_presentations",
@@ -392,7 +394,12 @@ class NewEventDetailsForm(forms.ModelForm):
 class EventSettingsForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ["enable_comments", "enable_photos", "enable_presentations"]
+        fields = [
+            "attendee_limit",
+            "enable_comments",
+            "enable_photos",
+            "enable_presentations",
+        ]
 
 
 class DeleteEventForm(forms.Form):
@@ -428,7 +435,14 @@ class EventContactForm(forms.Form):
 class EventSeriesForm(forms.ModelForm):
     class Meta:
         model = EventSeries
-        fields = ["name", "start_time", "end_time", "recurrences", "summary"]
+        fields = [
+            "name",
+            "start_time",
+            "end_time",
+            "recurrences",
+            "summary",
+            "attendee_limit",
+        ]
         widgets = {"start_time": TimeWidget, "end_time": TimeWidget}
 
 
