@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import get_template, render_to_string
@@ -72,7 +73,11 @@ def events_list(request, *args, **kwargs):
 
 
 def events_list_all(request, *args, **kwargs):
-    events = Event.objects.filter(end_time__gt=timezone.now()).order_by("start_time")
+    events = Event.objects.filter(
+        Q(team__access=Team.PUBLIC) | Q(attendees=request.user.profile),
+        end_time__gt=timezone.now(),
+        status__gt=Event.CANCELED,
+    ).order_by("start_time")
     geo_ip = location.get_geoip(request)
     context = {
         "active": "all",

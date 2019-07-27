@@ -219,13 +219,14 @@ class TeamForm(forms.ModelForm):
 class NewTeamForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ["name", "city", "tz", "cover_img"]
+        fields = ["name", "city", "tz", "cover_img", "access"]
         widgets = {"city": Lookup(source=City)}
         raw_id_fields = "city"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["city"].required = True
+        self.fields["access"].choices = [(0, "Public"), (2, "Private")]
 
 
 class TeamDefinitionForm(forms.ModelForm):

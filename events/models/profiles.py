@@ -436,7 +436,7 @@ class Team(models.Model):
         on_delete=models.CASCADE,
     )
     access = models.SmallIntegerField(
-        verbose_name=_("Access"), choices=TYPES, default=PUBLIC
+        verbose_name=_("Visibility"), choices=TYPES, default=PUBLIC
     )
 
     cover_img = models.ImageField(
@@ -592,8 +592,44 @@ class Team(models.Model):
             self.slug = "%s-%s" % (new_slug, self.id)
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
+        if self.access == Team.PRIVATE:
+            for event in self.event_set.all():
+                delete_event_searchable(event)
+        else:
+            for event in self.event_set.all():
+                update_event_searchable(event)
+
     def get_absolute_url(self):
         return reverse("show-team-by-slug", kwargs={"team_slug": self.slug})
+
+
+class TeamMemberInvite(models.Model):
+    team = models.ForeignKey(
+        "Team", related_name="member_invites", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "UserProfile", related_name="team_invites", on_delete=models.CASCADE
+    )
+    invite_key = models.UUIDField(default=uuid.uuid4, editable=True)
+
+    invited_by = models.ForeignKey(
+        UserProfile,
+        related_name="invited_team_memberships",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+    )
+    invite_date = models.DateTimeField(default=datetime.datetime.now)
+    accepted_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def can_resend(self):
+        return self.invited_date.replace(tzinfo=None) < (
+            datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+
+    def __str__(self):
+        return "%s in %s" % (self.user, self.team)
 
 
 class TeamSerializer(serializers.ModelSerializer):

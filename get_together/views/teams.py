@@ -6,13 +6,12 @@ from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
-
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
@@ -22,7 +21,15 @@ from events.forms import (
     TeamForm,
     TeamInviteForm,
 )
-from events.models.events import Attendee, CommonEvent, Event, EventSeries, Place
+from events.models.events import (
+    Attendee,
+    CommonEvent,
+    Event,
+    EventSeries,
+    Place,
+    delete_event_searchable,
+    update_event_searchable,
+)
 from events.models.profiles import Member, Organization, Team, UserProfile
 from events.utils import slugify, verify_csrf
 
@@ -44,7 +51,12 @@ def teams_list(request, *args, **kwargs):
 
 
 def teams_list_all(request, *args, **kwargs):
-    teams = Team.public_objects.all()
+    teams = [
+        team
+        for team in Team.objects.all()
+        if team.access == Team.PUBLIC
+        or (team.access == Team.PRIVATE and request.user.profile.is_in_team(team))
+    ]
     geo_ip = location.get_geoip(request)
     context = {
         "active": "all",
@@ -59,6 +71,8 @@ def show_team_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
     if team.access == Team.PERSONAL:
         return redirect("show-profile", team.owner_profile.id)
+    if team.access == Team.PRIVATE and not request.user.profile.is_in_team(team):
+        raise Http404()
     return show_team(request, team)
 
 

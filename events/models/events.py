@@ -218,6 +218,8 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save() method.
+        if self.team.access == Team.PRIVATE:
+            return
         if self.status > self.CANCELED:
             update_event_searchable(self)
         else:
