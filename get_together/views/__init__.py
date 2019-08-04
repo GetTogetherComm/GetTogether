@@ -11,9 +11,8 @@ from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy as _
 
 import geocoder
-import simplejson
-
 import simple_ga as ga
+import simplejson
 from accounts.decorators import setup_wanted
 from events import location
 from events.forms import SearchForm, SearchTeamsByName
@@ -170,14 +169,14 @@ def home(request, *args, **kwards):
                     ),
                 )[:3]
 
-            near_teams = Team.public_objects.filter(
+            near_teams = Team.objects.filter(
                 city__latitude__gte=minlat,
                 city__latitude__lte=maxlat,
                 city__longitude__gte=minlng,
                 city__longitude__lte=maxlng,
             ).filter(
                 Q(access=Team.PUBLIC)
-                | Q(access=Team.PRIVATE, owner_profile=request.user.profile)
+                | Q(access=Team.PRIVATE, members=request.user.profile)
             )
             if context["name"]:
                 near_teams = near_teams.filter(name__icontains=context["name"])

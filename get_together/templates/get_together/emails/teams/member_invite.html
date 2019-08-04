@@ -7,6 +7,6 @@
 </p>
 
 <br>
-<a href="https://{{site.domain}}{% url 'show-team' team.id %}" title="{{ team.name|striptags }} page.">View and join this team.</a>
+<a href="https://{{site.domain}}{% url 'accept-invite-to-join-team' invite_key %}" title="{{ team.name|striptags }} page.">View and join this team.</a>
 </p>
 {% endblock %}

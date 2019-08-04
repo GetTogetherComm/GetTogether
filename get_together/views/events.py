@@ -45,10 +45,9 @@ from events.models.events import (
     EventPhoto,
     EventSeries,
     Place,
-    delete_event_searchable,
-    update_event_searchable,
 )
 from events.models.profiles import Member, Organization, Sponsor, Team, UserProfile
+from events.models.search import delete_event_searchable, update_event_searchable
 from events.models.speakers import Presentation, Speaker, SpeakerRequest, Talk
 from events.utils import verify_csrf
 
@@ -90,6 +89,10 @@ def events_list_all(request, *args, **kwargs):
 
 def show_event(request, event_id, event_slug):
     event = get_object_or_404(Event, id=event_id)
+    if event.team.access == Team.PRIVATE and not request.user.profile.is_in_team(
+        event.team
+    ):
+        raise Http404()
     comment_form = EventCommentForm()
     context = {
         "team": event.team,

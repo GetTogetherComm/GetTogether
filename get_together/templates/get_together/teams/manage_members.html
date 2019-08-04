@@ -70,6 +70,29 @@
             </table>
             <hr/>
 
+            {% if invites %}
+            <h3>{% trans "Pending invitations" %}</h3>
+            <table class="table">
+            <tr>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Invited" %}</th>
+                <th></th>
+            </tr>
+            {% for req in invites %}
+            <tr>
+                <td><a href="mailto:{{req.invite_email}}"></a>{{req.invite_email}}</a></td>
+                <td>
+                    {{req.requested_date}}
+                </td>
+                <td>
+                    {% if req.can_resend %}
+                    <a href="{% url 'resend-member-invite' req.id %}?csrftoken={{csrf_token}}" >Resend</a>
+                    {% endif %}
+                </td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
         </div>
 
         <div class="col-sm-3">

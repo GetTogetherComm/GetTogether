@@ -15,6 +15,8 @@ import simplejson
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
+    AcceptInviteToJoinTeamForm,
+    AcceptRequestToJoinTeamForm,
     DeleteTeamForm,
     NewTeamForm,
     TeamContactForm,
@@ -30,7 +32,13 @@ from events.models.events import (
     delete_event_searchable,
     update_event_searchable,
 )
-from events.models.profiles import Member, Organization, Team, UserProfile
+from events.models.profiles import (
+    Member,
+    Organization,
+    Team,
+    TeamMembershipRequest,
+    UserProfile,
+)
 from events.utils import slugify, verify_csrf
 
 
@@ -82,6 +90,8 @@ def show_team_by_id(request, team_id):
 
 
 def show_team(request, team):
+    if team.access == Team.PRIVATE and not request.user.profile.is_in_team(team):
+        raise Http404()
     upcoming_events = Event.objects.filter(
         team=team, end_time__gt=datetime.datetime.now()
     ).order_by("start_time")
@@ -307,9 +317,11 @@ def manage_members(request, team_id):
         contact_form = TeamContactForm()
         contact_form.fields["to"].choices = default_choices + member_choices
 
+    invites = TeamMembershipRequest.objects.filter(team=team, joined_date__isnull=True)
     context = {
         "team": team,
         "members": members,
+        "invites": invites,
         "contact_form": contact_form,
         "can_edit_team": request.user.profile.can_edit_team(team),
     }
@@ -341,7 +353,13 @@ def invite_members(request, team_id):
         if invite_form.is_valid():
             to = invite_form.cleaned_data["to"]
             for email in to:
-                invite_member(email, team, request.user.profile)
+                invitation = TeamMembershipRequest.objects.create(
+                    invite_email=email,
+                    team=team,
+                    request_origin=TeamMembershipRequest.TEAM,
+                    requested_by=request.user.profile,
+                )
+                invite_member(invitation)
 
             messages.add_message(
                 request, messages.SUCCESS, message=_("Sent %s invites" % len(to))
@@ -359,8 +377,16 @@ def invite_members(request, team_id):
     return render(request, "get_together/teams/invite_members.html", context)
 
 
-def invite_member(email, team, sender):
-    context = {"sender": sender, "team": team, "site": Site.objects.get(id=1)}
+def invite_member(invitation):
+    email = invitation.invite_email
+    team = invitation.team
+    sender = invitation.requested_by
+    context = {
+        "sender": sender,
+        "team": team,
+        "invite_key": invitation.request_key,
+        "site": Site.objects.get(id=1),
+    }
     email_subject = "Invitation to join: %s" % team
     email_body_text = render_to_string(
         "get_together/emails/teams/member_invite.txt", context
@@ -390,6 +416,106 @@ def invite_member(email, team, sender):
         body=email_body_text,
         ok=success,
     )
+
+
+@login_required
+@verify_csrf(token_key="csrftoken")
+def resend_member_invite(request, invite_id):
+    invite = get_object_or_404(TeamMembershipRequest, id=invite_id)
+    invite_member(invite)
+    invite.requested_date = datetime.datetime.now()
+    invite.save()
+    messages.add_message(
+        request, messages.SUCCESS, message=_("Your request has been resent.")
+    )
+    return redirect("manage-members", team_id=invite.team.id)
+
+
+@login_required
+def confirm_request_to_join_team(request, invite_key):
+    invite = get_object_or_404(TeamMembershipRequest, request_key=invite_key)
+    if invite.accepted_by is not None:
+        messages.add_message(
+            request, messages.WARNING, message=_("Invalid team membership request.")
+        )
+        return redirect("home")
+
+    if invite.request_origin == invite.TEAM:
+        return accept_invite_to_join_team(request, invite)
+    else:
+        return accept_request_to_join_team(request, invite)
+
+
+@login_required
+def accept_invite_to_join_team(request, invite):
+    if request.user.profile.is_in_team(invite.team):
+        messages.add_message(
+            request, messages.INFO, message=_("You are already a member of this team.")
+        )
+        return redirect("show-team-by-slug", team_slug=invite.team.slug)
+
+    if request.method == "GET":
+        form = AcceptInviteToJoinTeamForm()
+
+        context = {"invite": invite, "team": invite.team, "invite_form": form}
+        return render(request, "get_together/teams/accept_invite.html", context)
+    elif request.method == "POST":
+        form = AcceptInviteToJoinTeamForm(request.POST)
+        if form.is_valid() and form.cleaned_data["confirm"]:
+            invite.accepted_by = request.user.profile
+            invite.joined_date = datetime.datetime.now()
+            invite.save()
+            new_member = Member.objects.create(
+                team=invite.team, user=request.user.profile, role=Member.NORMAL
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                message=_("You have been added to %s." % invite.team.name),
+            )
+            return redirect("show-team-by-slug", team_slug=invite.team.slug)
+        else:
+            context = {"invite": invite, "team": req.team, "invite_form": form}
+            return render(request, "get_together/teams/accept_invite.html", context)
+    else:
+        return redirect("home")
+
+
+@login_required
+def accept_request_to_join_team(request, invite):
+    if not request.user.profile.can_edit_team(invite.team):
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_("You do not have permission to accept new members to this team."),
+        )
+        return redirect("show-team-by-slug", team_slug=invite.team.slug)
+
+    if request.method == "GET":
+        form = AcceptRequestToJoinTeamForm()
+
+        context = {"invite": invite, "team": invite.team, "request_form": form}
+        return render(request, "get_together/teams/accept_request.html", context)
+    elif request.method == "POST":
+        form = AcceptRequestToJoinTeamForm(request.POST)
+        if form.is_valid() and form.cleaned_data["confirm"]:
+            invite.accepted_by = request.user.profile
+            invite.joined_date = datetime.datetime.now()
+            invite.save()
+            new_member = Member.objects.create(
+                team=invite.team, user=request.user.profile, role=Member.NORMAL
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                message=_("%s has been added to your team." % invite.user),
+            )
+            return redirect("manage-members", team_id=invite.team.id)
+        else:
+            context = {"invite": invite, "team": invite.team, "request_form": form}
+            return render(request, "get_together/teams/accept_request.html", context)
+    else:
+        return redirect("home")
 
 
 def contact_member(member, body, sender):

@@ -12,7 +12,6 @@ from django.template.loader import get_template, render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
-
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
@@ -109,7 +108,9 @@ def request_to_join_org(request, org_slug):
     if request.method == "GET":
         form = RequestToJoinOrgForm(instance=req)
         form.fields["team"].queryset = Team.objects.filter(
-            member__user=request.user.profile, member__role=Member.ADMIN
+            access=Team.PUBLIC,
+            member__user=request.user.profile,
+            member__role=Member.ADMIN,
         ).order_by("name")
 
         context = {"org": org, "request_form": form}
@@ -178,6 +179,14 @@ def send_org_request(req):
 @login_required
 def invite_to_join_org(request, team_id):
     team = get_object_or_404(Team, id=team_id)
+    if not team.access == Team.PUBLIC:
+        messages.add_message(
+            request,
+            messages.WARNING,
+            message=_("Private teams can not be members of an organization."),
+        )
+        return redirect("show-team", team_id=team_id)
+
     if not request.user.profile.owned_orgs.count() > 0:
         messages.add_message(
             request,

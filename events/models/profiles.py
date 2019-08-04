@@ -19,6 +19,7 @@ from rest_framework import serializers
 from .. import location
 from ..utils import slugify
 from .locale import *
+from .search import delete_event_searchable, update_event_searchable
 
 
 class UserProfile(models.Model):
@@ -603,28 +604,45 @@ class Team(models.Model):
         return reverse("show-team-by-slug", kwargs={"team_slug": self.slug})
 
 
-class TeamMemberInvite(models.Model):
-    team = models.ForeignKey(
-        "Team", related_name="member_invites", on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        "UserProfile", related_name="team_invites", on_delete=models.CASCADE
-    )
-    invite_key = models.UUIDField(default=uuid.uuid4, editable=True)
+class TeamMembershipRequest(models.Model):
+    TEAM = 0
+    USER = 1
+    ORIGINS = [(TEAM, _("Team")), (USER, _("User"))]
 
-    invited_by = models.ForeignKey(
+    team = models.ForeignKey("Team", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        "UserProfile", on_delete=models.CASCADE, null=True, blank=True
+    )
+    invite_email = models.EmailField(null=False, blank=False)
+    request_origin = models.SmallIntegerField(
+        _("Request from"), choices=ORIGINS, default=TEAM, db_index=True
+    )
+    request_key = models.UUIDField(default=uuid.uuid4, editable=True)
+
+    requested_by = models.ForeignKey(
         UserProfile,
-        related_name="invited_team_memberships",
+        related_name="requested_team_memberships",
         on_delete=models.SET_NULL,
         null=True,
         blank=False,
     )
-    invite_date = models.DateTimeField(default=datetime.datetime.now)
-    accepted_date = models.DateTimeField(null=True, blank=True)
+    requested_date = models.DateTimeField(default=datetime.datetime.now)
+    accepted_by = models.ForeignKey(
+        UserProfile,
+        related_name="accepted_team_memberships",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    joined_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def origin_name(self):
+        return TeamMembershipRequest.ORIGINS[self.request_origin][1]
 
     @property
     def can_resend(self):
-        return self.invited_date.replace(tzinfo=None) < (
+        return self.requested_date.replace(tzinfo=None) < (
             datetime.datetime.now() - datetime.timedelta(days=1)
         )
 

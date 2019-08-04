@@ -4,6 +4,6 @@
 
 {{ sender }} has invited you to join their Get Together team: {{team.name}}.
 
-Click here to view and join this team: https://{{site.domain}}{% url 'show-team' team.id %}
+Click here to view and join this team: https://{{site.domain}}{% url 'accept-invite-to-join-team' invite_key %}
 
 {% endblock %}
