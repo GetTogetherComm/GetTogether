@@ -146,6 +146,11 @@ urlpatterns = [
         feeds.TeamEventsCalendar(),
         name="team-event-ical",
     ),
+    path(
+        "team/<int:team_id>/<str:account_secret>/events.ics",
+        feeds.PrivateTeamEventsCalendar(),
+        name="private-team-event-ical",
+    ),
     path("+create-team/", views.start_new_team, name="create-team"),
     path("team/<int:team_id>/+define/", views.define_new_team, name="define-team"),
     path(
