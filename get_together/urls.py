@@ -66,6 +66,7 @@ urlpatterns = [
     path("api/find_city/", event_views.find_city),
     path("api/teams/", event_views.teams_list),
     path("api/org/<int:org_id>/", event_views.org_member_list),
+    path("api/upcoming_events/", event_views.upcoming_events),
     path(
         "profile/+confirm_profile",
         views.setup_1_confirm_profile,

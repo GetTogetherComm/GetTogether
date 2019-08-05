@@ -210,17 +210,17 @@
                 map = new google.maps.Map($(html_element)[0], options.mapOptions),
                 ll = null;
 
-                $.getJSON("/api/teams/", function(data) {
-                    for (let team of data) {
-                        var position = new google.maps.LatLng(team['latitude'], team['longitude'])
+                $.getJSON("/api/upcoming_events/", function(data) {
+                    for (let event of data) {
+                        var position = new google.maps.LatLng(event['latitude'], event['longitude'])
                         var marker = new google.maps.Marker({
                           position: position,
-                          title: team['name'],
+                          title: event['event_title'],
                           map: map,
                         });
                         options.markers.push(marker);
                         google.maps.event.addListener(marker, 'click',function(event) {
-                          document.location.href = team['web_url'];
+                          document.location.href = event['event_url'];
                         });
                     }
                     var markerCluster = new MarkerClusterer(map, options.markers,
