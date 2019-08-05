@@ -1,6 +1,9 @@
+import datetime
+
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
@@ -41,6 +44,26 @@ def events_list(request, *args, **kwargs):
     events = Event.objects.all()
     context = {"events_list": events}
     return render(request, "events/event_list.html", context)
+
+
+def upcoming_events(request):
+    searchables = (
+        Searchable.objects.exclude(location_name="")
+        .filter(end_time__gte=timezone.now())
+        .order_by("start_time")
+    )
+    unique_events = dict()
+    for event in searchables:
+        if event.group_name not in unique_events:
+            unique_events[event.group_name] = event
+    serializer = SearchableSerializer(unique_events.values(), many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["GET"])
+def teams_list(request):
+    serializer = TeamSerializer(Team.public_objects.all(), many=True)
+    return Response(serializer.data)
 
 
 @api_view(["GET"])

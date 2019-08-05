@@ -11,9 +11,8 @@ from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy as _
 
 import geocoder
-import simplejson
-
 import simple_ga as ga
+import simplejson
 from accounts.decorators import setup_wanted
 from events import location
 from events.forms import SearchForm, SearchTeamsByName
@@ -198,6 +197,7 @@ def home(request, *args, **kwards):
     initial_search = {"distance": near_distance}
     if city is not None and city.id > 0:
         initial_search["city"] = city.id
+        context["search_by_city"] = city
     if context["name"]:
         initial_search["name"] = context["name"]
     search_form = SearchTeamsByName(initial=initial_search)
