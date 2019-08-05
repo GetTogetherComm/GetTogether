@@ -7,7 +7,8 @@
 
 {% block content %}
     <div class="container">
-        <div class="row navbar-inverse bg-inverse mb-3">
+      <div id="map" class="col-sm-12 mb-2" style="height: 300px;"></div>
+      <div class="row navbar-inverse bg-inverse mb-3">
             <div class="col-12 navbar-text">
                 <form action="{% url 'home' %}" method="GET">{{search_form}} <input type="submit" value="{% trans "Search" %}" class="btn btn-primary btn-sm"></form>
             </div>
@@ -166,6 +167,79 @@
 {% endblock %}
 
 {% block javascript %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{settings.GOOGLE_MAPS_API_KEY}}&libraries=places"></script>
+<script src="{% static 'js/markerclusterer.js' %}"></script>
+<script type="text/javascript">
+/*
+ * jQuery Google Map Plugin 0.2.3
+ * https://wiki.ubuntu.com/ubuntu-django-foundations/map
+ * Requires jQuery 1.4.2
+ *
+ * Copyright 2011, Ronnie van den Crommenacker
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
+
+(function ($) {
+    $.fn.extend({
+        selectLocation: function (options) {
+            var defaults = {
+                html_lng: null,
+                html_lat: null,
+                html_tz: null,
+                html_country: null,
+                html_continent: null,
+                marker_icon: null,
+                markers: [],
+                html_addr: null,
+                mapOptions: {
+                    {% if search_by_city %}
+                    zoom: 5.0,
+                    center: {lat: {{search_by_city.latitude}}, lng: {{search_by_city.longitude}}},
+                    {% else %}
+                    zoom: 1.8,
+                    center: {lat: 13.0, lng: 10.0},
+                    {% endif %}
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControl: false
+                }
+            };
+            options = $.extend(defaults, options);
+
+            return $(this).each(function (i, html_element) {
+                map = new google.maps.Map($(html_element)[0], options.mapOptions),
+                ll = null;
+
+                $.getJSON("/api/teams/", function(data) {
+                    for (let team of data) {
+                        var position = new google.maps.LatLng(team['latitude'], team['longitude'])
+                        var marker = new google.maps.Marker({
+                          position: position,
+                          title: team['name'],
+                          map: map,
+                        });
+                        options.markers.push(marker);
+                        google.maps.event.addListener(marker, 'click',function(event) {
+                          document.location.href = team['web_url'];
+                        });
+                    }
+                    var markerCluster = new MarkerClusterer(map, options.markers,
+                        {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+
+                    return;
+                });
+            });
+
+        }
+    });
+}(jQuery));
+$("#map").selectLocation({
+    html_lat: 0.0,
+    html_lng: 0.0
+});
+</script>
+
 <script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){

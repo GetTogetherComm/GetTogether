@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
@@ -41,6 +42,12 @@ def events_list(request, *args, **kwargs):
     events = Event.objects.all()
     context = {"events_list": events}
     return render(request, "events/event_list.html", context)
+
+
+@api_view(["GET"])
+def teams_list(request):
+    serializer = TeamSerializer(Team.public_objects.all(), many=True)
+    return Response(serializer.data)
 
 
 @api_view(["GET"])
