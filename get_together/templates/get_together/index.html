@@ -194,7 +194,7 @@
                 html_addr: null,
                 mapOptions: {
                     {% if search_by_city %}
-                    zoom: 5.0,
+                    zoom: 8.0,
                     center: {lat: {{search_by_city.latitude}}, lng: {{search_by_city.longitude}}},
                     {% else %}
                     zoom: 1.8,
@@ -211,16 +211,16 @@
                 ll = null;
 
                 $.getJSON("/api/upcoming_events/", function(data) {
-                    for (let event of data) {
-                        var position = new google.maps.LatLng(event['latitude'], event['longitude'])
+                    for (let searchable of data) {
+                        var position = new google.maps.LatLng(searchable['latitude'], searchable['longitude'])
                         var marker = new google.maps.Marker({
                           position: position,
-                          title: event['event_title'],
+                          title: searchable['event_title'],
                           map: map,
                         });
                         options.markers.push(marker);
                         google.maps.event.addListener(marker, 'click',function(event) {
-                          document.location.href = event['event_url'];
+                          document.location.href = searchable['event_url'];
                         });
                     }
                     var markerCluster = new MarkerClusterer(map, options.markers,
