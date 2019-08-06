@@ -180,6 +180,7 @@ def home(request, *args, **kwards):
             )
             if context["name"]:
                 near_teams = near_teams.filter(name__icontains=context["name"])
+            near_teams = near_teams.distinct()
             context["near_teams"] = sorted(
                 near_teams, key=lambda team: location.team_distance_from(ll, team)
             )
