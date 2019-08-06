@@ -19,6 +19,7 @@ from rest_framework import serializers
 from .. import location
 from ..utils import slugify
 from .locale import *
+from .search import delete_event_searchable, update_event_searchable
 
 
 class UserProfile(models.Model):
@@ -436,7 +437,7 @@ class Team(models.Model):
         on_delete=models.CASCADE,
     )
     access = models.SmallIntegerField(
-        verbose_name=_("Access"), choices=TYPES, default=PUBLIC
+        verbose_name=_("Visibility"), choices=TYPES, default=PUBLIC
     )
 
     cover_img = models.ImageField(
@@ -592,8 +593,61 @@ class Team(models.Model):
             self.slug = "%s-%s" % (new_slug, self.id)
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
+        if self.access == Team.PRIVATE:
+            for event in self.event_set.all():
+                delete_event_searchable(event)
+        else:
+            for event in self.event_set.all():
+                update_event_searchable(event)
+
     def get_absolute_url(self):
         return reverse("show-team-by-slug", kwargs={"team_slug": self.slug})
+
+
+class TeamMembershipRequest(models.Model):
+    TEAM = 0
+    USER = 1
+    ORIGINS = [(TEAM, _("Team")), (USER, _("User"))]
+
+    team = models.ForeignKey("Team", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        "UserProfile", on_delete=models.CASCADE, null=True, blank=True
+    )
+    invite_email = models.EmailField(null=False, blank=False)
+    request_origin = models.SmallIntegerField(
+        _("Request from"), choices=ORIGINS, default=TEAM, db_index=True
+    )
+    request_key = models.UUIDField(default=uuid.uuid4, editable=True)
+
+    requested_by = models.ForeignKey(
+        UserProfile,
+        related_name="requested_team_memberships",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+    )
+    requested_date = models.DateTimeField(default=datetime.datetime.now)
+    accepted_by = models.ForeignKey(
+        UserProfile,
+        related_name="accepted_team_memberships",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    joined_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def origin_name(self):
+        return TeamMembershipRequest.ORIGINS[self.request_origin][1]
+
+    @property
+    def can_resend(self):
+        return self.requested_date.replace(tzinfo=None) < (
+            datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+
+    def __str__(self):
+        return "%s in %s" % (self.user, self.team)
 
 
 class TeamSerializer(serializers.ModelSerializer):

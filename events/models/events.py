@@ -218,99 +218,12 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save() method.
+        if self.team.access == Team.PRIVATE:
+            return
         if self.status > self.CANCELED:
             update_event_searchable(self)
         else:
             delete_event_searchable(self)
-
-
-def update_event_searchable(event):
-    site = Site.objects.get(id=1)
-    if settings.DEBUG:
-        schema = "http"
-    else:
-        schema = "https"
-
-    event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
-    origin_url = "%s://%s%s" % (schema, site.domain, reverse("searchables"))
-
-    md5 = hashlib.md5()
-    federation_url = event_url.split("/")
-    federation_node = "/".join(federation_url[:3])
-    federation_id = "/".join(federation_url[:5])
-    md5.update(bytes(federation_id, "utf8"))
-    event_uri = federation_node + "/" + md5.hexdigest()
-
-    try:
-        searchable = Searchable.objects.get(event_uri=event_uri)
-    except:
-        searchable = Searchable(event_uri)
-        searchable.origin_node = origin_url
-        searchable.federation_node = origin_url
-        searchable.federation_time = timezone.now()
-
-    searchable.event_url = event_url
-
-    if event.team.card_img_url.startswith(
-        "http:"
-    ) or event.team.card_img_url.startswith("https:"):
-        searchable.img_url = event.team.card_img_url
-    else:
-        searchable.img_url = "%s://%s%s" % (
-            schema,
-            site.domain,
-            event.team.card_img_url,
-        )
-
-    searchable.event_title = event.name
-    searchable.group_name = event.team.name
-    searchable.start_time = event.start_time
-    searchable.end_time = event.end_time
-    searchable.tz = event.tz
-    searchable.cost = 0
-    searchable.tags = event.tags
-    if event.place is not None:
-        searchable.location_name = str(event.place.city)
-        searchable.venue_name = event.place.name
-        if event.place.longitude is not None and event.place.latitude is not None:
-            searchable.longitude = event.place.longitude
-            searchable.latitude = event.place.latitude
-        elif event.place.city is not None:
-            searchable.longitude = event.place.city.longitude
-            searchable.latitude = event.place.city.latitude
-    else:
-        searchable.location_name = event.team.location_name
-
-    if event.team.city is not None and (
-        searchable.longitude is None or searchable.latitude is None
-    ):
-        searchable.longitude = event.team.city.longitude
-        searchable.latitude = event.team.city.latitude
-
-    searchable.save()
-
-
-def delete_event_searchable(event):
-    site = Site.objects.get(id=1)
-    if settings.DEBUG:
-        schema = "http"
-    else:
-        schema = "https"
-    event_url = "%s://%s%s" % (schema, site.domain, event.get_absolute_url())
-    origin_url = "%s://%s%s" % (schema, site.domain, reverse("searchables"))
-
-    md5 = hashlib.md5()
-    federation_url = event_url.split("/")
-    federation_node = "/".join(federation_url[:3])
-    federation_id = "/".join(federation_url[:5])
-    md5.update(bytes(federation_id, "utf8"))
-    event_uri = federation_node + "/" + md5.hexdigest()
-
-    try:
-        searchable = Searchable.objects.get(event_uri=event_uri)
-        searchable.delete()
-    except:
-        pass
 
 
 class Attendee(models.Model):

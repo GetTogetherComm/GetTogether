@@ -65,7 +65,23 @@ class TeamEventsCalendar(AbstractEventCalendarFeed):
     timezone = "UTC"
 
     def get_object(self, request, team_id):
-        return Team.objects.get(id=team_id)
+        return Team.public_objects.get(id=team_id)
+
+    def items(self, team):
+        return Event.objects.filter(team=team, end_time__gt=timezone.now()).order_by(
+            "-start_time"
+        )
+
+
+class PrivateTeamEventsCalendar(AbstractEventCalendarFeed):
+    timezone = "UTC"
+
+    def get_object(self, request, team_id, account_secret):
+        request_user = UserProfile.objects.get(secret_key=account_secret)
+        team = Team.objects.get(id=team_id)
+        if team.access == Team.PRIVATE and not request_user.is_in_team(team):
+            return None
+        return team
 
     def items(self, team):
         return Event.objects.filter(team=team, end_time__gt=timezone.now()).order_by(

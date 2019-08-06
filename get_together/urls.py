@@ -134,9 +134,24 @@ urlpatterns = [
     ),
     path("team/<int:team_id>/+invite/", views.invite_members, name="invite-members"),
     path(
+        "team/invite/<int:invite_id>/+resend/",
+        views.resend_member_invite,
+        name="resend-member-invite",
+    ),
+    path(
+        "team/+accept_invite/<str:invite_key>/",
+        views.confirm_request_to_join_team,
+        name="accept-invite-to-join-team",
+    ),
+    path(
         "team/<int:team_id>/events.ics",
         feeds.TeamEventsCalendar(),
         name="team-event-ical",
+    ),
+    path(
+        "team/<int:team_id>/<str:account_secret>/events.ics",
+        feeds.PrivateTeamEventsCalendar(),
+        name="private-team-event-ical",
     ),
     path("+create-team/", views.start_new_team, name="create-team"),
     path("team/<int:team_id>/+define/", views.define_new_team, name="define-team"),

@@ -21,6 +21,7 @@ from .models.profiles import (
     OrgTeamRequest,
     Sponsor,
     Team,
+    TeamMembershipRequest,
     Topic,
     UserProfile,
 )
@@ -201,6 +202,23 @@ class TeamAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Team, TeamAdmin)
+
+
+class TeamMembershipRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "team",
+        "user",
+        "invite_email",
+        "request_origin",
+        "requested_by",
+        "requested_date",
+        "accepted_by",
+        "joined_date",
+    )
+    list_filter = ("team", "request_origin")
+
+
+admin.site.register(TeamMembershipRequest, TeamMembershipRequestAdmin)
 
 
 class SearchableAdmin(admin.ModelAdmin):

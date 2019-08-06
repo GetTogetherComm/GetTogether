@@ -200,6 +200,7 @@ class TeamForm(forms.ModelForm):
         model = Team
         fields = [
             "name",
+            "access",
             "description",
             "about_page",
             "category",
@@ -214,18 +215,20 @@ class TeamForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["city"].required = True
+        self.fields["access"].choices = [(0, "Public"), (2, "Private")]
 
 
 class NewTeamForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ["name", "city", "tz", "cover_img"]
+        fields = ["name", "city", "tz", "cover_img", "access"]
         widgets = {"city": Lookup(source=City)}
         raw_id_fields = "city"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["city"].required = True
+        self.fields["access"].choices = [(0, "Public"), (2, "Private")]
 
 
 class TeamDefinitionForm(forms.ModelForm):
@@ -583,6 +586,16 @@ class InviteToJoinOrgForm(forms.ModelForm):
 class AcceptInviteToJoinOrgForm(forms.Form):
     confirm = forms.BooleanField(
         label=_("Yes, add my team to this organization"), required=True
+    )
+
+
+class AcceptInviteToJoinTeamForm(forms.Form):
+    confirm = forms.BooleanField(label=_("Yes, add me to this team"), required=True)
+
+
+class AcceptRequestToJoinTeamForm(forms.Form):
+    confirm = forms.BooleanField(
+        label=_("Yes, add this person to my team"), required=True
     )
 
 

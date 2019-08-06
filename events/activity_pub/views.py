@@ -6,13 +6,12 @@ from django.shortcuts import resolve_url
 from django.utils import timezone
 
 import pytz
+from events.models import Event, Place, Team
 from rest_framework import serializers
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.utils import representation
 from rest_framework.utils.serializer_helpers import ReturnDict
-
-from events.models import Event, Place, Team
 
 
 def localized_time(dt, tz="UTC"):
@@ -151,7 +150,8 @@ class APEventSerializer(serializers.ModelSerializer):
 @api_view(["GET"])
 def events_list(request):
     serializer = APEventSerializer(
-        Event.objects.filter(end_time__gte=timezone.now()), many=True
+        Event.objects.filter(end_time__gte=timezone.now(), team__access=Team.PUBLIC),
+        many=True,
     )
     return Response(serializer.data)
 

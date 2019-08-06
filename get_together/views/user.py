@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
-
 from events.forms import UserForm, UserProfileForm
 from events.models.events import Attendee, Event, Place
 from events.models.profiles import Member, Team, UserProfile
@@ -64,7 +63,7 @@ def login(request):
 def show_profile(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
 
-    teams = user.memberships.all()
+    teams = user.memberships.filter(access=Team.PUBLIC)
     talks = Talk.objects.filter(speaker__user=user)
     badges = user.user.account.badges.all()
     upcoming_events = Event.objects.filter(

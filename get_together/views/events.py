@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import get_template, render_to_string
@@ -44,10 +45,9 @@ from events.models.events import (
     EventPhoto,
     EventSeries,
     Place,
-    delete_event_searchable,
-    update_event_searchable,
 )
 from events.models.profiles import Member, Organization, Sponsor, Team, UserProfile
+from events.models.search import delete_event_searchable, update_event_searchable
 from events.models.speakers import Presentation, Speaker, SpeakerRequest, Talk
 from events.utils import verify_csrf
 
@@ -72,7 +72,11 @@ def events_list(request, *args, **kwargs):
 
 
 def events_list_all(request, *args, **kwargs):
-    events = Event.objects.filter(end_time__gt=timezone.now()).order_by("start_time")
+    events = Event.objects.filter(
+        Q(team__access=Team.PUBLIC) | Q(attendees=request.user.profile),
+        end_time__gt=timezone.now(),
+        status__gt=Event.CANCELED,
+    ).order_by("start_time")
     geo_ip = location.get_geoip(request)
     context = {
         "active": "all",
@@ -85,6 +89,10 @@ def events_list_all(request, *args, **kwargs):
 
 def show_event(request, event_id, event_slug):
     event = get_object_or_404(Event, id=event_id)
+    if event.team.access == Team.PRIVATE and not request.user.profile.is_in_team(
+        event.team
+    ):
+        raise Http404()
     comment_form = EventCommentForm()
     context = {
         "team": event.team,
