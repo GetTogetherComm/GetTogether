@@ -123,6 +123,10 @@ def show_event(request, event_id, event_slug):
 
 def show_series(request, series_id, series_slug):
     series = get_object_or_404(EventSeries, id=series_id)
+    if series.team.access == Team.PRIVATE and not request.user.profile.is_in_team(
+        series.team
+    ):
+        raise Http404()
     context = {
         "team": series.team,
         "series": series,

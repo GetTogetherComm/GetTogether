@@ -114,6 +114,8 @@ def show_team(request, team):
 
 def show_team_events_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
+    if team.access == Team.PRIVATE and not request.user.profile.is_in_team(team):
+        raise Http404()
     upcoming_events = Event.objects.filter(
         team=team, end_time__gt=datetime.datetime.now()
     ).order_by("start_time")
@@ -139,6 +141,8 @@ def show_team_events_by_slug(request, team_slug):
 
 def show_team_about_by_slug(request, team_slug):
     team = get_object_or_404(Team, slug=team_slug)
+    if team.access == Team.PRIVATE and not request.user.profile.is_in_team(team):
+        raise Http404()
     if team.about_page:
         return show_team_about(request, team)
     else:
