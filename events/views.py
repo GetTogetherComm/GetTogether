@@ -1,7 +1,7 @@
 import datetime
 
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -157,6 +157,9 @@ def sponsor_list(request):
 @verify_csrf(token_key="csrftoken")
 def join_team(request, team_id):
 
+    team = Team.objects.get(id=team_id)
+    if team.access == Team.PRIVATE:
+        raise Http404()
     if request.user.is_anonymous:
         messages.add_message(
             request,
@@ -164,7 +167,6 @@ def join_team(request, team_id):
             message=_("You must be logged in to join a team."),
         )
         return redirect("show-team", team_id=team_id)
-    team = Team.objects.get(id=team_id)
     if request.user.profile in team.members.all():
         messages.add_message(
             request, messages.INFO, message=_("You are already a member of this team.")

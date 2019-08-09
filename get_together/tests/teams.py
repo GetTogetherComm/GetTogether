@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import resolve_url
 from django.test import Client, TestCase
@@ -85,6 +86,23 @@ class TeamDisplayTests(TestCase):
 
         response = c.get(show_team_url)
         assert response.status_code == 200
+
+    def test_private_team_unjoinable(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+
+        testuser = mommy.make(User, email="test@gettogether.community")
+        userProfile = mommy.make(UserProfile, user=testuser, send_notifications=True)
+
+        show_team_url = reverse("join-team", kwargs={"team_id": team.id})
+
+        c = Client()
+        c.force_login(testuser)
+
+        settings.CSRF_VERIFY_TOKEN = False
+        response = c.get(show_team_url)
+        assert response.status_code == 404
 
 
 class TeamInternalsTests(TestCase):
