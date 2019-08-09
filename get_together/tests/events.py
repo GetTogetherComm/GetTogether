@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import resolve_url
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 import mock
@@ -128,3 +129,24 @@ class EventDisplayTests(TestCase):
 
         response = c.get(event.get_absolute_url())
         assert response.status_code == 200
+
+    def test_private_team_event_in_place(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+        place = mommy.make(Place, name="Test Place", latitude=0.0, longitude=0.0)
+        event = mommy.make(
+            Event,
+            name="Private Event",
+            team=team,
+            place=place,
+            start_time=timezone.now() + datetime.timedelta(days=1),
+            end_time=timezone.now() + datetime.timedelta(days=2),
+        )
+        event.save()
+
+        c = Client()
+        response = c.get(reverse("show-place", kwargs={"place_id": place.id}))
+        assert response.status_code == 200
+
+        self.assertContains(response, "Private Event", 0)

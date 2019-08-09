@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
-
 from events.forms import NewPlaceForm
 from events.models.events import Attendee, Event, Place
 from events.models.profiles import Member, Team, UserProfile
@@ -24,7 +23,9 @@ def show_place(request, place_id):
     place = get_object_or_404(Place, id=place_id)
     context = {
         "place": place,
-        "event_list": Event.objects.filter(place=place).order_by("-start_time"),
+        "event_list": Event.objects.filter(
+            place=place, team__access=Team.PUBLIC
+        ).order_by("-start_time"),
     }
     return render(request, "get_together/places/show_place.html", context)
 
