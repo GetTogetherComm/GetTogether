@@ -7,10 +7,9 @@ from django.urls import reverse
 from django.utils import timezone
 
 import mock
-from model_mommy import mommy
-
 from events.ipstack import get_ipstack_geocoder
-from events.models import Team, UserProfile
+from events.models import Member, Team, UserProfile
+from model_mommy import mommy
 
 # Create your tests here.
 
@@ -57,6 +56,35 @@ class TeamDisplayTests(TestCase):
         c = Client()
         response = c.get(team_about_url)
         assert response.status_code == 302
+
+    def test_private_team_hidden_for_non_members(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+
+        show_team_url = reverse("show-team-by-slug", kwargs={"team_slug": team.slug})
+
+        c = Client()
+        response = c.get(show_team_url)
+        assert response.status_code == 404
+
+    def test_private_team_visible_for_members(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+
+        testuser = mommy.make(User, email="test@gettogether.community")
+        userProfile = mommy.make(UserProfile, user=testuser, send_notifications=True)
+
+        member = mommy.make(Member, team=team, user=userProfile, role=Member.NORMAL)
+
+        show_team_url = reverse("show-team-by-slug", kwargs={"team_slug": team.slug})
+
+        c = Client()
+        c.force_login(testuser)
+
+        response = c.get(show_team_url)
+        assert response.status_code == 200
 
 
 class TeamInternalsTests(TestCase):

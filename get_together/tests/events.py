@@ -7,10 +7,9 @@ from django.test import Client, TestCase
 from django.utils import timezone
 
 import mock
-from model_mommy import mommy
-
 from events.ipstack import IPStackResult
-from events.models import Attendee, Event, Place, UserProfile
+from events.models import Attendee, Event, Member, Place, Team, UserProfile
+from model_mommy import mommy
 
 # Create your tests here.
 
@@ -96,5 +95,36 @@ class EventDisplayTests(TestCase):
         attendee.save()
 
         c = Client()
+        response = c.get(event.get_absolute_url())
+        assert response.status_code == 200
+
+    def test_private_team_event_hidden_for_non_members(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+
+        event = mommy.make(Event, team=team)
+        event.save()
+
+        c = Client()
+        response = c.get(event.get_absolute_url())
+        assert response.status_code == 404
+
+    def test_private_team_event_visible_for_members(self):
+        team = mommy.make(Team, slug="private_team")
+        team.access = Team.PRIVATE
+        team.save()
+
+        event = mommy.make(Event, team=team)
+        event.save()
+
+        testuser = mommy.make(User, email="test@gettogether.community")
+        userProfile = mommy.make(UserProfile, user=testuser, send_notifications=True)
+
+        member = mommy.make(Member, team=team, user=userProfile, role=Member.NORMAL)
+
+        c = Client()
+        c.force_login(testuser)
+
         response = c.get(event.get_absolute_url())
         assert response.status_code == 200
