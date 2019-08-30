@@ -107,9 +107,9 @@ textarea {
             <h2>{{ event.name }}</h2>
             {% endif %}
             {% if team.access == team.PERSONAL %}
-            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
+            <p class="text-muted">{{ theme.text_labels.hosted_by }} <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
             {% else %}
-            <p class="text-muted">{% trans "Hosted by" %} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
+            <p class="text-muted">{{ theme.text_labels.hosted_by }} <a href="{% url "show-team-by-slug" team.slug %}">{{ team.name }}</a></p>
             {% endif %}
             {% if event.status != event.CANCELED and not request.user.profile.do_not_track %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}
@@ -149,7 +149,7 @@ textarea {
                 </button>
                 <div class="dropdown-menu" aria-labelledby="editMenuButton">
                         <a href="{% url 'edit-event' event.id %}" class="dropdown-item">{% trans "Event Details" %}</a>
-                        <a href="{% url 'change-team' event.id %}" class="dropdown-item">{% trans "Change Host" %}</a>
+                        <a href="{% url 'change-team' event.id %}" class="dropdown-item">{{ theme.text_labels.change_host }}</a>
                         <a href="{% url 'manage-event-sponsors' event.id %}" class="dropdown-item">{% trans "Manage Sponsors" %}</a>
                         <a href="{% url 'schedule-event-talks' event.id %}" class="dropdown-item">{% trans "Manage Talks" %}</a>
                         <a href="{% url 'manage-attendees' event.id %}" class="dropdown-item">{% trans "Manage Attendees" %}</a>
@@ -286,6 +286,7 @@ textarea {
                 </div>
             </div>
         {% endif %}
+            </div>
         </div>
 
         <div class="col-md-4">

@@ -24,7 +24,7 @@
           <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">{% blocktrans count member_count=team.members.count %}{{ members_count }} member{% plural %}{{ members_count }} members{% endblocktrans %}</small>
             <div class="btn-group">
-                <a class="btn btn-success" href="{% url 'create-event' team.id %}?common={{common_event_id}}">{% trans "Host Event" %}</a></span>
+                <a class="btn btn-success" href="{% url 'create-event' team.id %}?common={{common_event_id}}">{{ theme.text_labels.host_event }}</a></span>
             </div>
           </div>
         </div>
@@ -34,4 +34,3 @@
   </div>
 </div>
 {% endblock %}
-
