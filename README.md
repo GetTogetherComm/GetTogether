@@ -4,8 +4,6 @@
 
 Get Together is an open source event manager for local communities.
 
-Get Together is version _0.9.0_.
-
 Try it free at https://gettogether.community
 
 ## Goals
@@ -108,7 +106,7 @@ You can import live event data into your "Searchable" table with this command:
 ## Getting Involved
 
 To contribute to Get Together, you can file issues here on GitHub, work on
-features you want it to have, or contact us on [Gitter](https://gitter.im/GetTogetherComm/Lobby) to learn more.
+features you want it to have, or contact us on [Telegram](https://t.me/joinchat/AlruIk5yiQizaJ0YtYehzA) to learn more.
 
 Currently the project needs:
 
