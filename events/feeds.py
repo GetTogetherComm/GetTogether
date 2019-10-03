@@ -48,6 +48,11 @@ class AbstractEventCalendarFeed(ICalFeed):
             return (latitude, longitude)
         return None
 
+    def __call__(self, request, *args, **kwargs):
+        response = ICalFeed.__call__(self, request, *args, **kwargs)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
 
 class UserEventsCalendar(AbstractEventCalendarFeed):
     timezone = "UTC"
