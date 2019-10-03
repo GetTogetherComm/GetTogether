@@ -97,6 +97,7 @@ admin.site.register(City, CityAdmin)
 
 
 class ProfileAdmin(admin.ModelAdmin):
+    search_fields = ("user__username", "user__email", "realname")
     raw_id_fields = ("city",)
     list_display = (
         "user",
@@ -154,6 +155,7 @@ admin.site.register(Sponsor, SponsorAdmin)
 
 
 class TeamAdmin(admin.ModelAdmin):
+    search_fields = ("name",)
     raw_id_fields = (
         "country",
         "spr",
@@ -222,6 +224,7 @@ admin.site.register(TeamMembershipRequest, TeamMembershipRequestAdmin)
 
 
 class SearchableAdmin(admin.ModelAdmin):
+    search_fields = ("event_title",)
     list_display = ("event_url", "start_time", "federation_node", "federation_time")
     list_filter = ("federation_node",)
     ordering = ("-start_time",)
@@ -231,13 +234,22 @@ admin.site.register(Searchable, SearchableAdmin)
 
 
 class PlaceAdmin(admin.ModelAdmin):
+    search_fields = ("name",)
+    list_display = ("name", "event_count", "city", "place_url")
+    list_filter = ("city__spr__country",)
     raw_id_fields = ("city",)
+
+    def event_count(self, place):
+        return place.event_set.all().count()
+
+    event_count.short_description = "Events"
 
 
 admin.site.register(Place, PlaceAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
+    search_fields = ("name",)
     raw_id_fields = ("place", "created_by", "sponsors")
     list_display = (
         "__str__",

@@ -6,6 +6,7 @@ from .models import Account, Badge, BadgeGrant, EmailConfirmation, EmailRecord
 
 # Register your models here.
 class AccountAdmin(admin.ModelAdmin):
+    search_fields = ("user__username", "user__email", "acctname")
     list_display = (
         "user",
         "acctname",
