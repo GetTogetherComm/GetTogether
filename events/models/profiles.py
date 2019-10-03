@@ -573,6 +573,10 @@ class Team(models.Model):
     def get_absolute_url(self):
         return reverse("show-team", kwargs={"team_id": self.id})
 
+    def get_full_url(self):
+        site = Site.objects.get(id=1)
+        return "https://%s%s" % (site.domain, self.get_absolute_url())
+
     def __str__(self):
         return u"%s" % (self.name)
 

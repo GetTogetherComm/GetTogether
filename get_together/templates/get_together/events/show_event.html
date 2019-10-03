@@ -9,6 +9,30 @@
   <meta property="og:title"         content="{{event.name}}" />
   <meta property="og:description"   content="{{event.summary}}" />
   <meta property="og:image"         content="{{event.team.full_img_url}}" />
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "url": "{{event.get_full_url}}",
+      "name": "{{event.name}}",
+      "description": "{{event.summary}}",
+      "image": "{{event.team.full_img_url}}",
+      "organizer": {
+          "@type": "Organization",
+          "name": "{{event.team.name}}",
+          "url": "{{event.team.get_full_url}}"
+      },
+      {% if event.place %}
+      "location": {
+        "@type": "Place",
+        "name": "{{event.place.name}}",
+        "address": "{{event.place.address}}"
+      },
+      {% endif %}
+      "startDate": "{{event.start_time|date:'c'}}",
+      "endDate": "{{event.end_time|date:'c'}}"
+    }
+</script>
 {% endblock %}
 
 {% block styles %}
