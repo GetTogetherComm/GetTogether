@@ -106,6 +106,7 @@ TEMPLATES = [
                 "simple_ga.context_processors.events",
                 "totd.context_processors.tips",
                 "accounts.decorators.check_setup",
+                "get_together.context_processors.theme_engine",
             ]
         },
     }
@@ -207,6 +208,26 @@ MESSAGE_TAGS = {
     messages.SUCCESS: "alert-success",
     messages.WARNING: "alert-warning",
     messages.ERROR: "alert-danger",
+}
+
+THEME_CONFIG = {
+    "actions": {
+        "host_event": {
+            "label": _("Host a Get Together"),
+            "icon": "far fa-calendar-plus",
+        }
+    },
+    "text_labels": {
+        "host": _("Host"),
+        "host_verb": _("host"),
+        "hosted_by": _("Hosted by"),
+        "change_host": _("Change Host"),
+        "change_host_for": _("Change host for"),
+        "host_as_myself": _("Host this event as myself"),
+        "which_team_hosting": _("Which team is hosting this event"),
+        "host_event": _("Host Event"),
+    },
+    "images": {"nav_logo": "img/logo_b_v1.png"},
 }
 
 # Keep this at the end of settings.py to allow overriding settings in local deployments

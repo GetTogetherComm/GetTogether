@@ -179,7 +179,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">{% trans "Host an event" %}</a>
+                        <a href="{% url 'create-common-event-team-select' common_event.id %}" class="btn btn-success">{{ theme.text_labels.host_event }}</a>
                     </div>
                 </div>
             </div>
@@ -188,4 +188,3 @@
     </div>
 </div>
 {% endblock %}
-
