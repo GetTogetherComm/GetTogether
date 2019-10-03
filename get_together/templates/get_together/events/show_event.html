@@ -188,7 +188,7 @@ textarea {
             {% endif %}
 
             {% if event.summary %}
-            <div class="container container-secondary mt-3">
+            <div class="container container-secondary mt-3 gt-usertext">
             <p>{{ event.summary|markdown }}</p>
             </div>
             {% endif %}
@@ -270,7 +270,7 @@ textarea {
                                   </div>
                               </div>
                               <div class="row">
-                                  <div id="comment-box-{{node.id}}" class="col ml-5">
+                                  <div id="comment-box-{{node.id}}" class="col ml-5 gt-usertext">
                                       <p id="comment-body-{{node.id}}" style="white-space: pre-wrap;">{{ node.body }}</p>
                                       <span class="gt-hover-expose">
                                       {% if request.user.profile == node.author %}
