@@ -218,13 +218,13 @@ THEME_CONFIG = {
         }
     },
     "text_labels": {
-        "host": _("host"),
-        "host_verb": _("moderate"),
+        "host": _("Host"),
+        "host_verb": _("host"),
         "hosted_by": _("Hosted by"),
         "change_host": _("Change Host"),
-        "change_host_for": _("Change host for:"),
+        "change_host_for": _("Change host for"),
         "host_as_myself": _("Host this event as myself"),
-        "which_team_hosting": _("Which team is moderating this event"),
+        "which_team_hosting": _("Which team is hosting this event"),
         "host_event": _("Host Event"),
     },
     "images": {"nav_logo": "img/logo_b_v1.png"},

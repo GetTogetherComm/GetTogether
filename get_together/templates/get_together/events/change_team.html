@@ -1,7 +1,7 @@
 {% extends "get_together/base.html" %}
 {% load static i18n %}
 {% block content %}
-<h2>{{ theme.text_labels.change_host_for }} {{event.name}} </h2>
+<h2>{{ theme.text_labels.change_host_for }}: {{event.name}} </h2>
 <p>{% blocktrans %}Select which of your teams you would like to host this event.{% endblocktrans %}</p>
 <form action="{% url "change-team" event.id %}" enctype="multipart/form-data" method="post">
 {% csrf_token %}
