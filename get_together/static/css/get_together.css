@@ -195,3 +195,7 @@ main.container {
     border: #efefef 1px solid;
     padding: 10px;
 }
+
+.container-secondary img {
+    max-width: 100%;
+}
