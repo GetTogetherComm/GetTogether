@@ -64,7 +64,7 @@ $(document).ready(function(){
 
     $("#id_do_not_track").change(function(event) {
         if (this.checked) {
-            if (!window.confirm("{% trans "By opting out of tracking, your activity will not be included in site analytics that we use to improve GetTogether, and you will not you be shown sharing buttons that make it easy to promote teams and events to your social media accounts." %}\n\n{% trans "Are you sure you want to do this?" %}")) {
+            if (!window.confirm("{% trans "By opting out of tracking, your activity will not be included in site analytics that we use to improve GetTogether, and you will not be shown sharing buttons that make it easy to promote teams and events to your social media accounts." %}\n\n{% trans "Are you sure you want to do this?" %}")) {
                 this.checked = false;
             }
         }
