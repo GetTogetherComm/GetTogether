@@ -433,6 +433,27 @@ def invite_attendees(request, event_id):
         email_form = EventInviteEmailForm(request.POST)
         if email_form.is_valid():
             to = email_form.cleaned_data["emails"]
+            remaining_emails = request.user.account.remaining_emails_allowed()
+            if remaining_emails <= 0:
+                messages.add_message(
+                    request,
+                    messages.WARNING,
+                    message=_(
+                        "You have exceeded the %s email messages you are allowed to send in one day. Please try again tomorrow."
+                        % settings.ALLOWED_EMAILS_PER_DAY
+                    ),
+                )
+                return redirect("invite-attendees", event_id=event_id)
+            if len(to) > remaining_emails:
+                messages.add_message(
+                    request,
+                    messages.WARNING,
+                    message=_(
+                        "You can only send %s more email messages today. Please choose fewer recipients or try again tomorrow."
+                        % remaining_emails
+                    ),
+                )
+                return redirect("invite-attendees", event_id=event_id)
             for email in to:
                 invite_attendee(email, event, request.user)
             messages.add_message(

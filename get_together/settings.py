@@ -32,6 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 SITE_ID = 1
 ADMINS = ["mhall119"]
+ALLOWED_EMAILS_PER_DAY = 100
 
 # Application definition
 
