@@ -8,7 +8,7 @@
             <h2>{% trans "Manage email notifications" %}</h2>
 
             <p>{% blocktrans with email=request.user.email %}GetTogether can send notifications to <strong>{{email}}</strong> about your upcoming events or new events for teams you are a member of.{% endblocktrans %}</p>
-            <p>{% trans "Please confirm whether or not you would like to receive these notifcation emails." %}</p>
+            <p>{% trans "Please confirm whether or not you would like to receive these notification emails." %}</p>
 
             <p>
                 <form action={% url 'confirm-notifications' %} method="POST">
