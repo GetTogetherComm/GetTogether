@@ -58,6 +58,16 @@ class Account(models.Model):
             print(e)
             return False
 
+    def remaining_emails_allowed(self):
+        recently_sent = EmailRecord.objects.filter(
+            sender=self.user,
+            when__gte=datetime.datetime.now() - datetime.timedelta(hours=24),
+        ).count()
+        if recently_sent < settings.ALLOWED_EMAILS_PER_DAY:
+            return settings.ALLOWED_EMAILS_PER_DAY - recently_sent
+        else:
+            return 0
+
     def __str__(self):
         try:
             if self.acctname:
