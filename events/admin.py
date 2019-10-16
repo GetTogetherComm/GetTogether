@@ -114,6 +114,7 @@ admin.site.register(UserProfile, ProfileAdmin)
 
 
 class OrgAdmin(admin.ModelAdmin):
+    raw_id_fields = ("owner_profile",)
     list_display = ("name", "slug", "team_count", "owner_profile", "site")
 
     def team_count(self, org):
