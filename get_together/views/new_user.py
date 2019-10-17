@@ -10,9 +10,9 @@ from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-import simplejson
-
 import simple_ga as ga
+import simplejson
+from accounts.email_lists import is_blocked_email
 from accounts.models import EmailRecord
 from events.forms import ConfirmProfileForm, SendNotificationsForm, UserForm
 from events.models.events import Attendee, Event, Place
@@ -160,6 +160,16 @@ def setup_complete(request):
 # These views are for confirming a user's email address before sending them mail
 @login_required
 def user_send_confirmation_email(request):
+    if is_blocked_email(request.user.email):
+        messages.add_message(
+            request,
+            messages.ERROR,
+            message=_(
+                "Your email address is from a blocked domain. Please use a valid permanent email address."
+            ),
+        )
+        return redirect("edit-profile")
+
     confirmation_request = request.user.account.new_confirmation_request()
     site = Site.objects.get(id=1)
     confirmation_url = "https://%s%s" % (
