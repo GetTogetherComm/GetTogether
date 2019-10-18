@@ -13,6 +13,11 @@ Try it free at https://gettogether.community
 - Provide sustainable, cost-effective hosting for FOSS communites
 - Be developed and maintained by the communities using it
 
+## Stack
+This project has been built using <a href="https://www.djangoproject.com/" target="_blank">Django 2</a> and <a href="https://www.python.org/downloads/" target="_blank">Python 3</a>.
+
+For more details on dependencies, please check <a href="requirements.txt" target="_blank">requirements.txt</a>.
+
 ## Getting Started
 
 To start running the service use the following commands:
