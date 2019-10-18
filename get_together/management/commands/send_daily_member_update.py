@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
 
 from accounts.models import EmailRecord
 from events.models import Event, Member
@@ -48,7 +49,7 @@ def send_new_members(team, new_members):
         return
     context = {"team": team, "members": new_members, "site": Site.objects.get(id=1)}
 
-    email_subject = "New team members"
+    email_subject = "New members joined team %s" % strip_tags(team.name)
     email_body_text = render_to_string(
         "get_together/emails/teams/new_team_members.txt", context
     )
