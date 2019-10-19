@@ -14,20 +14,60 @@ Try it free at https://gettogether.community
 - Be developed and maintained by the communities using it
 
 ## Stack
-This project has been built using <a href="https://www.djangoproject.com/" target="_blank">Django 2</a> and <a href="https://www.python.org/downloads/" target="_blank">Python 3</a>.
+This project has been built using [Django 2](https://www.djangoproject.com) and [Python 3](https://www.python.org).
 
-For more details on dependencies, please check <a href="requirements.txt" target="_blank">requirements.txt</a>.
+For more details on dependencies, please check [requirements.txt](requirements.txt).
 
 ## Getting Started
 
-To start running the service use the following commands:
+First, make sure you have [Git](https://git-scm.com/downloads) already installed. It usually comes pre-installed in Mac and Linux but in Windows you need to do a manual install.
 
+Then, also make sure you have [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) in your computer by running:
+```
+virtualenv --version
+```
+
+If you get an error, use ```pip``` (included in Python3) with the following command:
+```
+pip install virtualenv
+```
+
+Then, if you haven't already, fork the project at https://github.com/GetTogetherComm/GetTogether
+
+Clone your forked repository in your computer (see detailed instructions [here](https://help.github.com/en/articles/cloning-a-repository)).
+
+Navigate to the repository's location using the command line.
+
+Add https://github.com/GetTogetherComm/GetTogether.git to remote following [these instructions](https://help.github.com/en/articles/adding-a-remote).
+
+Start the virtual environment:
+
+* If you have Python3 already configured as the default version for your computer, just run:
+```
+virtualenv ./env
+```
+
+* But if your default is Python2, then run:
 ```
 virtualenv --python=python3 ./env
+```
+
+If you are in Mac or Linux, start running the service with the following commands:
+
+```
 ./env/bin/pip install -r requirements.txt
 ./env/bin/python manage.py migrate
 ./env/bin/python manage.py createsuperuser
 ./env/bin/python manage.py runserver
+```
+
+If you are in Windows, start running the service with the following commands:
+
+```
+./env/Scripts/pip install -r requirements.txt
+./env/Scripts/python manage.py migrate
+./env/Scripts/python manage.py createsuperuser
+./env/Scripts/python manage.py runserver
 ```
 
 ## Installing pre-commit hooks
