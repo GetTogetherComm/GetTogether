@@ -76,7 +76,7 @@ Pre-commit is a tools that helps us commiting better code. Before writing any co
 
 `./env/bin/pre-commit install`
 
-From now on everytime you commit some code this will be checked by our pre-commit hooks. 
+From now on everytime you commit some code this will be checked by our pre-commit hooks.
 
 On the first commit after installing Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
 
@@ -129,7 +129,7 @@ file):
 
 ```
 docker build -t get_together .
-docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1" -d --name get_together -p 8000:8000 get_together
+docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0" -d --name get_together -p 8000:8000 get_together
 docker exec -it get_together venv/bin/python manage.py createsuperuser
 ```
 
@@ -137,7 +137,7 @@ docker exec -it get_together venv/bin/python manage.py createsuperuser
 
 ```
 docker-compose up -d
-docker-compose exec get_together python3 manage.py createsuperuser
+docker-compose exec get_together venv/bin/python manage.py createsuperuser
 ```
 
 You can then connect to the container by going to localhost:8000
