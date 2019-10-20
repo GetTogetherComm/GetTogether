@@ -6,3 +6,6 @@
 /static/
 /media/
 gettogether.code-workspace
+.vscode/
+venv/
+.envrc
