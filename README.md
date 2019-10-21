@@ -4,7 +4,7 @@
 
 Get Together is an open source event manager for local communities.
 
-Try it free at https://gettogether.community
+Try it free at <https://gettogether.community>
 
 ## Goals
 
@@ -14,59 +14,106 @@ Try it free at https://gettogether.community
 - Be developed and maintained by the communities using it
 
 ## Stack
+
 This project has been built using [Django 2](https://www.djangoproject.com) and [Python 3](https://www.python.org).
 
 For more details on dependencies, please check [requirements.txt](requirements.txt).
 
 ## Getting Started
 
-First, make sure you have [Git](https://git-scm.com/downloads) already installed. It usually comes pre-installed in Mac and Linux but in Windows you need to do a manual install.
+### Install Git
 
-Then, also make sure you have [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) in your computer by running:
-```
+First, make sure you have [Git](https://git-scm.com/downloads) already installed.
+
+It usually comes pre-installed in Mac and Linux but in Windows you need to run the installer available in the link above.
+
+### Install virtualenv
+
+Also make sure you have [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) in your computer by running:
+
+```bash
 virtualenv --version
 ```
 
 If you get an error, use ```pip``` (included in Python3) with the following command:
-```
+
+```bash
 pip install virtualenv
 ```
 
-Then, if you haven't already, fork the project at https://github.com/GetTogetherComm/GetTogether
+### Configure your local repository
+
+If you haven't already, fork the project at <https://github.com/GetTogetherComm/GetTogether>
 
 Clone your forked repository in your computer (see detailed instructions [here](https://help.github.com/en/articles/cloning-a-repository)).
 
-Navigate to the repository's location using the command line.
+Navigate to the repository's location using the command line: `cd GetTogether`
 
-Add https://github.com/GetTogetherComm/GetTogether.git to remote following [these instructions](https://help.github.com/en/articles/adding-a-remote).
+Add <https://github.com/GetTogetherComm/GetTogether.git> to remote following [these instructions](https://help.github.com/en/articles/configuring-a-remote-for-a-fork).
 
-Start the virtual environment:
+### Configure the virtual environment
 
-* If you have Python3 already configured as the default version for your computer, just run:
-```
+- If you have Python3 already configured as the default version for your computer, just run:
+
+```bash
 virtualenv ./env
 ```
 
-* But if your default is Python2, then run:
-```
+- But if your default is Python2, then run:
+
+```bash
 virtualenv --python=python3 ./env
 ```
 
-If you are in Mac or Linux, start running the service with the following commands:
+### Install dependecies and migrate the database
 
-```
+- If you are in Mac or Linux:
+
+```bash
 ./env/bin/pip install -r requirements.txt
 ./env/bin/python manage.py migrate
+```
+
+- If you are in Windows:
+
+```bash
+./env/Scripts/pip install -r requirements.txt
+./env/Scripts/python manage.py migrate
+```
+
+### Rename the local_settings file
+
+Find the file `local_settings.example` and rename it with the following command:
+
+```bash
+mv local_settings.example local_settings.py
+```
+
+### Create a super user
+
+- If you're in Mac or Linux run:
+
+```bash
 ./env/bin/python manage.py createsuperuser
+```
+
+- If you are in Windows:
+
+```bash
+winpty ./env/Scripts/python manage.py createsuperuser
+```
+
+### Start the server
+
+- If you're in Mac or Linux run:
+
+```bash
 ./env/bin/python manage.py runserver
 ```
 
-If you are in Windows, start running the service with the following commands:
+- If you're in Windows:
 
-```
-./env/Scripts/pip install -r requirements.txt
-./env/Scripts/python manage.py migrate
-./env/Scripts/python manage.py createsuperuser
+```bash
 ./env/Scripts/python manage.py runserver
 ```
 
@@ -89,7 +136,7 @@ On the first commit after installing Black and iSort it will create a new enviro
 
 In order to make it easier to create Places and Teams without having to manually
 enter records for Country, SPR (State/Province/Region) and City, you can preload
-them using data files from http://download.geonames.org/export/dump/
+them using data files from <http://download.geonames.org/export/dump/>
 
 The provided `load_spr` and `load_cities` commands will only load data if the
 parent country (or SPR for cities) exists in the database. This lets you choose
@@ -127,7 +174,7 @@ file):
 
 ### Using docker
 
-```
+```bash
 docker build -t get_together .
 docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1" -d --name get_together -p 8000:8000 get_together
 docker exec -it get_together venv/bin/python manage.py createsuperuser
@@ -135,7 +182,7 @@ docker exec -it get_together venv/bin/python manage.py createsuperuser
 
 ### Using docker-compose
 
-```
+```bash
 docker-compose up -d
 docker-compose exec get_together venv/bin/python manage.py createsuperuser
 ```

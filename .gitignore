@@ -9,3 +9,4 @@ gettogether.code-workspace
 .vscode/
 venv/
 .envrc
+settings.json
