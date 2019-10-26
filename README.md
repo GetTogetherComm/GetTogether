@@ -83,10 +83,10 @@ virtualenv --python=python3 ./env
 
 ### Rename the local_settings file
 
-Find the file `local_settings.example` and rename it with the following command:
+Find the file `local_settings.example` and copy it in `local_settings.py` with the following command:
 
 ```bash
-mv local_settings.example local_settings.py
+cp local_settings.example local_settings.py
 ```
 
 ### Create a super user
@@ -114,23 +114,37 @@ winpty ./env/Scripts/python manage.py createsuperuser
 - If you're in Windows:
 
 ```bash
-./env/Scripts/python manage.py runserver
+winpty ./env/Scripts/python manage.py runserver
 ```
 
 ## Installing pre-commit hooks
 
-Pre-commit is a tools that helps us commiting better code. Before writing any code first install the hooks to your repo using:
+Pre-commit is a tool that helps us commiting better code. Before writing any code first install the hooks to your repo.
 
-`./env/bin/pre-commit install`
+- If you're using Mac or Linux, run:
+
+```bash
+./env/bin/pre-commit install
+```
+
+- If you're in Windows:
+
+```bash
+./env/Scripts/pre-commit install
+```
 
 From now on everytime you commit some code this will be checked by our pre-commit hooks.
 
-On the first commit after installing Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
-
 ### Code formatters
 
-- [Black](https://github.com/ambv/black)
-- [iSort](https://github.com/timothycrosley/isort)
+We use the following code formatters:
+
+- [Black](https://black.readthedocs.io/en/stable/)
+- [iSort](https://timothycrosley.github.io/isort/)
+
+They are included in the requirements.txt so they were installed already when you [installed dependencies](#install-dependecies-and-migrate-the-database).
+
+On the first commit after installing `pre-commit`, Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
 
 ### Loading City data
 
