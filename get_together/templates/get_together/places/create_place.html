@@ -10,7 +10,7 @@
             <form action="{% url "add-place" event.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" id="id_id" name="id" value="" />
-            {% include "events/place_form.html" %}
+                {% include "events/place_form.html" %}
 	            <div class="fluid-layout" id="place-map"></div>
             <br />
             <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>

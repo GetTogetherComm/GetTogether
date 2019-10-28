@@ -893,11 +893,11 @@ def add_place_to_event(request, event_id):
         return render(request, "get_together/places/create_place.html", context)
     elif request.method == "POST":
         form = NewPlaceForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             if request.POST.get("id", None):
                 form.instance.id = request.POST.get("id")
             new_place = form.save()
-            event.place = new_place
+            event.set_place(new_place)
             event.save()
             if event.series is not None and event.series.place is None:
                 event.series.place = new_place

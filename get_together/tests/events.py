@@ -9,7 +9,7 @@ from django.utils import timezone
 
 import mock
 from events.ipstack import IPStackResult
-from events.models import Attendee, Event, Member, Place, Team, UserProfile
+from events.models import Attendee, City, Event, Member, Place, Team, UserProfile
 from model_mommy import mommy
 
 # Create your tests here.
@@ -32,6 +32,7 @@ class EventDisplayTests(TestCase):
 
     def tearDown(self):
         super().tearDown()
+        settings.USE_TZ = True
 
     @mock.patch(
         "events.location.get_geoip", mock_get_geoip(latitude=0.0, longitude=0.0)
@@ -150,3 +151,93 @@ class EventDisplayTests(TestCase):
         assert response.status_code == 200
 
         self.assertContains(response, "Private Event", 0)
+
+
+class EventTimesTests(TestCase):
+    def setUp(self):
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_place_set_when_user_is_utc(self):
+        testuser = mommy.make(User, email="test@gettogether.community")
+        userProfile = mommy.make(UserProfile, user=testuser, tz="UTC")
+
+        team = mommy.make(Team, slug="test_team")
+
+        place = mommy.make(
+            Place,
+            name="Test Place",
+            latitude=41.8796844,
+            longitude=-87.63822920000001,
+            tz="America/Chicago",
+        )
+
+        start_time = timezone.now() + datetime.timedelta(days=1)
+        event = mommy.make(
+            Event,
+            name="Test Event",
+            team=team,
+            start_time=start_time,
+            end_time=start_time + datetime.timedelta(hours=2),
+        )
+        localized_start_time = event.localize_datetime(start_time)
+        assert event.tz == "UTC"
+        assert event.local_start_time == localized_start_time
+
+        event.set_place(place)
+        event.save()
+        assert event.tz == "America/Chicago"
+        assert event.local_start_time == localized_start_time
+
+    def test_add_place_with_different_timezone(self):
+        testuser = mommy.make(User, email="test@gettogether.community")
+        userProfile = mommy.make(UserProfile, user=testuser, tz="UTC")
+
+        team = mommy.make(Team, owner_profile=userProfile, slug="test_team")
+
+        chicago = mommy.make(City, name="Chicago")
+        place = mommy.make(
+            Place,
+            name="Test Place",
+            city=chicago,
+            latitude=41.8796844,
+            longitude=-87.63822920000001,
+            tz="America/Chicago",
+        )
+
+        start_time = timezone.now() + datetime.timedelta(days=1)
+        event = mommy.make(
+            Event,
+            name="Test Event",
+            team=team,
+            start_time=start_time,
+            end_time=start_time + datetime.timedelta(hours=2),
+        )
+        localized_start_time = event.localize_datetime(start_time)
+        assert event.tz == "UTC"
+        assert event.local_start_time == localized_start_time
+
+        c = Client()
+        c.force_login(testuser)
+        form_data = {
+            "id": place.id,
+            "name": place.name,
+            "address": place.address,
+            "city": place.city.id,
+            "longitude": place.longitude,
+            "latitude": place.latitude,
+            "place_url": "",
+            "tz": place.tz,
+        }
+        response = c.post(
+            reverse("add-place", kwargs={"event_id": event.id}), data=form_data
+        )
+
+        assert response.status_code == 302
+        assert response.url == event.get_absolute_url()
+
+        event = Event.objects.get(id=event.id)
+        assert event.tz == "America/Chicago"
+        assert event.local_start_time == localized_start_time

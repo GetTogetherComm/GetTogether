@@ -160,6 +160,18 @@ class Event(models.Model):
         verbose_name=_("Presentations"), default=False
     )
 
+    def set_place(self, place):
+        # Changes an event's place, resetting start and end times to be localtime-consistent
+        old_tz = pytz.timezone(self.tz)
+        naive_start_time = timezone.make_naive(self.start_time, old_tz)
+        naive_end_time = timezone.make_naive(self.end_time, old_tz)
+        self.place = place
+        new_tz = pytz.timezone(self.tz)
+        self.start_time = timezone.make_aware(naive_start_time, new_tz).astimezone(
+            pytz.utc
+        )
+        self.end_time = timezone.make_aware(naive_end_time, new_tz).astimezone(pytz.utc)
+
     @property
     def is_over(self):
         return self.end_time <= timezone.now()
