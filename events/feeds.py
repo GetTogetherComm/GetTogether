@@ -78,6 +78,16 @@ class TeamEventsCalendar(AbstractEventCalendarFeed):
         )
 
 
+class SingleEventCalendar(AbstractEventCalendarFeed):
+    timezone = "UTC"
+
+    def get_object(self, request, event_id, event_slug):
+        return Event.objects.get(id=event_id)
+
+    def items(self, event):
+        return [event]
+
+
 class PrivateTeamEventsCalendar(AbstractEventCalendarFeed):
     timezone = "UTC"
 

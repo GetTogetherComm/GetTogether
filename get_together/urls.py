@@ -231,6 +231,11 @@ urlpatterns = [
     path(
         "events/<int:event_id>/<str:event_slug>/", views.show_event, name="show-event"
     ),
+    path(
+        "events/<int:event_id>/<str:event_slug>.ics",
+        feeds.SingleEventCalendar(),
+        name="single-event-ical",
+    ),
     path("series/<int:series_id>/+edit/", views.edit_series, name="edit-series"),
     path("series/<int:series_id>/+delete/", views.delete_series, name="delete-series"),
     path(
