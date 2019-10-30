@@ -125,10 +125,20 @@ textarea {
             {% if team.banner_img %}
             <div class="team-banner">
                 <img class="card-img-top" src="{{ team.banner_img.url }}" alt="{{team.name}}'s cover image" height="200px" width="825px">
-                <h2 class="team-title">{{ event.name }}{% if event.status == event.CANCELED %} ({% trans "Canceled" %}){% endif %}</h2>
+                <h2 class="team-title">
+                    {{ event.name }}{% if event.status == event.CANCELED %} ({% trans "Canceled" %}){% endif %}
+                    <small>
+                        <a href="{% url 'single-event-ical' event.id event.slug %}" class="far fa-calendar-alt" title="iCal"></a>
+                    </small>
+                </h2>
             </div>
             {% else %}
-            <h2>{{ event.name }}</h2>
+            <h2>
+                {{ event.name }}
+                <small>
+                    <a href="{% url 'single-event-ical' event.id event.slug %}" class="far fa-calendar-alt" title="iCal"></a>
+                </small>
+            </h2>
             {% endif %}
             {% if team.access == team.PERSONAL %}
             <p class="text-muted">{{ theme.text_labels.hosted_by }} <a href="{% url "show-profile" team.owner_profile.id %}">{{ team.owner_profile }}</a></p>
