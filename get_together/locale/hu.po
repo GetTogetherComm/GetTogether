@@ -1,8 +1,8 @@
-# GetTogether Hungarian translation
+# Hungarian translation for GetTogether.
 # Copyright (C) 2019 GetTogether
 # This file is distributed under the same license as the GetTogether package.
-# Meskó Balázs <mesko.balazs@fsf.hu>, 2019.
 #
+# Meskó Balázs <mesko.balazs@fsf.hu>, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -103,7 +103,7 @@ msgstr "Igen, a csapat hozzáadása a szervezetemhez"
 
 #: events/forms.py:588
 msgid "Yes, add my team to this organization"
-msgstr "Igen, a csapatam hozzáadása ehhez a szervezethez"
+msgstr "Igen, a csapatom hozzáadása ehhez a szervezethez"
 
 #: events/forms.py:593
 msgid "Yes, add me to this team"
@@ -203,7 +203,7 @@ msgstr "az esemény létrehozásának dátuma és ideje"
 #: events/models/events.py:138 events/models/events.py:387
 #: events/models/events.py:501
 msgid "Keyword Tags"
-msgstr "Kulcsszó címke"
+msgstr "Kulcsszó címkék"
 
 #: events/models/events.py:147 events/models/events.py:492
 msgid "Attendee Limit"
@@ -278,7 +278,7 @@ msgstr "Részt vesz"
 
 #: events/models/events.py:259
 msgid "Attended"
-msgstr "Résztvevő"
+msgstr "Részt vett"
 
 #: events/models/events.py:287
 msgid "Photo"
@@ -824,7 +824,7 @@ msgstr "E-mailben"
 #: get_together/templates/get_together/events/invite_attendees.html:15
 #: get_together/templates/get_together/teams/invite_members.html:12
 msgid "Add a list of emails, separated by commas"
-msgstr "Adja meg az e-mailek listájat, vesszőkkel elválasztva"
+msgstr "Adja meg az e-mailek listájat vesszőkkel elválasztva"
 
 #: get_together/templates/get_together/events/invite_attendees.html:19
 #: get_together/templates/get_together/teams/invite_members.html:16
@@ -833,7 +833,7 @@ msgstr "Meghívók küldése"
 
 #: get_together/templates/get_together/events/invite_attendees.html:29
 msgid "Select team member of members to invite"
-msgstr "Válassza ki a meghívandó tagokat"
+msgstr "Válassza ki a meghívandó csapattagokat"
 
 #: get_together/templates/get_together/events/invite_attendees.html:33
 msgid "Invite members"
@@ -841,7 +841,7 @@ msgstr "Tagok meghívása"
 
 #: get_together/templates/get_together/events/invite_attendees.html:36
 msgid "All invitable team members have responded."
-msgstr "Az összes meghívható tag válaszolt már."
+msgstr "Az összes meghívható csapattag válaszolt már."
 
 #: get_together/templates/get_together/events/invite_attendees.html:43
 msgid "You can not send invites for this event."
@@ -1181,7 +1181,7 @@ msgid ""
 "You don't have any teams that can host this event, would you like to start "
 "one now?"
 msgstr ""
-"Nincs egyetlen csapata sem, amely megtarthatná az eseményt, indít egyet?"
+"Nincs egyetlen csapata sem, amely megtarthatná az eseményt. Indít egyet?"
 
 #: get_together/templates/get_together/new_event/pick_team.html:57
 msgid "Create a new Team"
@@ -1214,7 +1214,7 @@ msgid ""
 "The confirmation link is invalid. Either it does not belong to <strong>"
 "%(email)s</strong> or the confirmation key has expired."
 msgstr ""
-"A megerősítő hivatkozás érvénytelen. Vagy nem az <strong>%(email)s</strong> "
+"A megerősítő hivatkozás érvénytelen. Vagy nem a(z) <strong>%(email)s</strong> "
 "e-mail címhez tartozik, vagy a megerősítő kulcs lejárt."
 
 #: get_together/templates/get_together/new_user/bad_email_confirmation.html:12
@@ -1232,7 +1232,7 @@ msgid ""
 "upcoming events or new events for teams you are a member of."
 msgstr ""
 "A GetTogether értesítéseket tud küldeni a(z) <strong>%(email)s</strong> "
-"címre a közelgő eseményekről, és a csapatai új eseményeiről."
+"címre a közelgő eseményekről és a csapatai új eseményeiről."
 
 #: get_together/templates/get_together/new_user/confirm_notifications.html:11
 msgid ""
@@ -1772,8 +1772,8 @@ msgid ""
 "If you opt out you will not receive emails reminding you of your upcoming "
 "events, when people join your team, or interact with your events."
 msgstr ""
-"Ha ezt nem teszi meg, akkor nem fog leveleket kapni, melyek emlékeztetnék a "
-"közelgő eseményekről, az új csapattagok csatlakozásáról, vagy az "
+"Ha ezt nem teszi meg, akkor nem fog leveleket kapni, amelyek emlékeztetnék "
+"a közelgő eseményekről, az új csapattagok csatlakozásáról vagy az "
 "eseményekkel kapcsolatos tevékenységekről."
 
 #: get_together/templates/get_together/users/edit_profile.html:59
@@ -1790,9 +1790,9 @@ msgid ""
 msgstr ""
 "A követés megszüntetésével a tevékenysége nem fog belekerülni az oldal "
 "elemzésébe, így nem fogjuk tudni felhasználni azokat a GetTogether jobbá "
-"tételéhez, és Ön nem fogja tudni megjeleníteni a megosztási gombokat, melyek "
-"könnyűvé teszik a csapatok és események népszerűsítését a közösségimédia-"
-"fiókjaival."
+"tételéhez, és Ön nem fogja tudni megjeleníteni a megosztási gombokat, "
+"amelyek könnyűvé teszik a csapatok és események népszerűsítését a "
+"közösségimédia-fiókjaival."
 
 #: get_together/templates/get_together/users/login.html:10
 msgid "Login to your account"
@@ -1996,7 +1996,7 @@ msgstr "Nem kezelheti az esemény szponzorait."
 
 #: get_together/views/events.py:282
 msgid "Already sponsoring this event."
-msgstr "Más szponzorálja ezt az eseményt."
+msgstr "Már szponzorálja ezt az eseményt."
 
 #: get_together/views/events.py:290
 msgid "Not sponsoring this event."
@@ -2054,7 +2054,7 @@ msgstr ""
 #: get_together/views/teams.py:390
 #, python-format
 msgid "Sent %s invites"
-msgstr "%s meghívó elküldve."
+msgstr "%s meghívó elküldve"
 
 #: get_together/views/events.py:491
 #, python-format
@@ -2142,7 +2142,7 @@ msgstr "Nem módosíthatja az esemény házigazdáját"
 
 #: get_together/views/events.py:1027
 msgid "Your event host has been changed."
-msgstr "Az eseménye megváltozott."
+msgstr "Az esemény házigazdája megváltozott."
 
 #: get_together/views/new_event.py:153
 msgid "Your event is ready! Now you can start inviting people to join you"
