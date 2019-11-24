@@ -98,7 +98,7 @@ class Talk(models.Model):
         )
 
     def __str__(self):
-        self.title
+        return self.title
 
 
 class SpeakerRequest(models.Model):
