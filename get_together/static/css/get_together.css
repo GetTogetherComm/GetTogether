@@ -134,6 +134,11 @@ ul.errorlist li {
     border-radius: 0.25em;
 }
 
+.team-banner .card-img-top {
+  max-width: 100%;
+  height: auto;
+}
+
 .team-banner .team-title {
     position: absolute;
     bottom: 0px;
