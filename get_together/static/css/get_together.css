@@ -137,6 +137,7 @@ ul.errorlist li {
 .team-banner .card-img-top {
   max-width: 100%;
   height: auto;
+  min-height: 120px;
 }
 
 .team-banner .team-title {
