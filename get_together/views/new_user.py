@@ -51,6 +51,8 @@ def setup_1_confirm_profile(request):
             ):
                 # Call the view to trigger sending a confirmation email, but ignore it's response
                 user_send_confirmation_email(request)
+            # Mark the account as completed setup, the rest of the steps are optional
+            request.user.account.setup_complete()
             return redirect("setup-2-pick-categories")
         else:
             context = {
