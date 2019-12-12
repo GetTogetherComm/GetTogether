@@ -54,9 +54,9 @@
                                 <strong>{{sponsor.name}}</strong><br/>
                                 <div class="btn-group">
                                     {% if sponsor in event.sponsors.all %}
-                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-danger" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Remove" %}</a></span>
+                                    <a id="sponsor-button-{{sponsor.id}}" data-action="remove" class="btn btn-danger" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Remove" %}</a></span>
                                     {% else %}
-                                    <a id="sponsor-button-{{sponsor.id}}" class="btn btn-success" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Add" %}</a></span>
+                                    <a id="sponsor-button-{{sponsor.id}}" data-action="add" class="btn btn-success" href="javascript:toggle_sponsor({{sponsor.id}});">{% trans "Add" %}</a></span>
                                     {% endif %}
                                 </div>
                               </div>
@@ -96,19 +96,21 @@
 function toggle_sponsor(sponsor_id) {
     var btn = $("#sponsor-button-"+sponsor_id)
     var value = ''
-    if (btn[0].innerText == 'Add') {
+    if (btn[0].dataset.action == 'add') {
         value = 'add'
-    } else if (btn[0].innerText == 'Remove') {
+    } else if (btn[0].dataset.action == 'remove') {
         value = 'remove'
     }
 	$.getJSON("{% url 'sponsor-event' event.id %}?sponsor="+sponsor_id+"&action="+value, function(data, status) {
 	    console.log(data)
 	    if (data.status == "OK") {
 	        if (data.action == "Added") {
-    	        btn[0].innerText = "Remove"
+    	        btn[0].innerText = "{% trans 'Remove' %}"
+                btn[0].dataset.action = 'remove'
     	        btn.removeClass('btn-success').addClass('btn-danger')
 	        } else if (data.action == "Removed") {
-    	        btn[0].innerText = "Add"
+    	        btn[0].innerText = "{% trans 'Add' %}"
+                btn[0].dataset.action = 'add'
     	        btn.removeClass('btn-danger').addClass('btn-success')
 	        }
 	    }
