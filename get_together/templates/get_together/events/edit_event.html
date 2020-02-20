@@ -14,7 +14,7 @@
 {% include "events/event_form.html" %}
 	<br />
 	<a href="{{ event.get_absolute_url }}" class="btn btn-secondary"><i class="fa fa-chevron-left"></i> {% trans "Back" %}</a>
-	<button type="submit" class="btn btn-primary">Update</button>
+	<button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
 </form>
 {% if event.status == event.CANCELED %}
 <a href="{% url 'restore-event' event.id %}" class="btn btn-success">{% trans "Restore" %}</a>

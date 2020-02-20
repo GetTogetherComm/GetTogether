@@ -215,7 +215,7 @@ class TeamForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["city"].required = True
-        self.fields["access"].choices = [(0, "Public"), (2, "Private")]
+        self.fields["access"].choices = [(0, _("Public")), (2, _("Private"))]
 
 
 class NewTeamForm(forms.ModelForm):
@@ -228,7 +228,7 @@ class NewTeamForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["city"].required = True
-        self.fields["access"].choices = [(0, "Public"), (2, "Private")]
+        self.fields["access"].choices = [(0, _("Public")), (2, _("Private"))]
 
 
 class TeamDefinitionForm(forms.ModelForm):

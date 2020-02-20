@@ -17,7 +17,7 @@
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}<a class="btn btn-twitter mb-1 col-8" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-twitter"></i> Twitter</a></br>{% endif %}
                 {% comment %}{% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}<a class="btn btn-linkedin mb-1 col-8" href="{% url 'social:begin' 'linkedin' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-linkedin"></i> LinkedIn</a></br>{% endif %}{% endcomment %}
                 {% if settings.SOCIAL_AUTH_GITHUB_KEY %}<a class="btn btn-github mb-1 col-8" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-github"></i> GitHub</a></br>{% endif %}
-            <p class="text-muted small mt-2">OR</p>
+            <p class="text-muted small mt-2">{% trans "OR" %}</p>
         <div>
             <ul class="nav nav-tabs justify-content-center mb-2" id="localTab" role="tablist">
               <li class="nav-item">
@@ -37,7 +37,7 @@
                     <button class="btn btn-primary" type="submit" name="action" value="login">{% trans "Login" %}</button>
                 </form>
                 <br /><br />
-                <a href="{% url 'password_reset' %}">Forgot my password</a>
+                <a href="{% url 'password_reset' %}">{% trans "Forgot my password" %}</a>
               </div>
               <div class="tab-pane fade {% if action == 'signup' %}show active{% endif %}" id="signup" role="tabpanel" aria-labelledby="signup-tab">
                 <form action="#" method="POST">

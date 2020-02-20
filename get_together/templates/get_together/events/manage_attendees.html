@@ -84,13 +84,13 @@
 
         <div class="col-sm-3">
             <div class="container">
-            <h4>Contact</h4><hr/>
+            <h4>{% trans "Contact" %}</h4><hr/>
                 <div class="row">
                     <div class="col">
                         <form action="{% url 'manage-attendees' event.id %}" method="POST">
                             {% csrf_token %}
                             {{ contact_form.as_p }}
-                            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                            <button type="submit" class="btn btn-primary btn-sm">{% trans "Send" %}</button>
                         </form>
                     </div>
                 </div>

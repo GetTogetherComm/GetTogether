@@ -316,13 +316,13 @@ def manage_attendees(request, event_id):
         if attendee.user.user.account.is_email_confirmed
     ]
     default_choices = [
-        ("all", "Everyone (%s)" % len(attendee_choices)),
-        ("hosts", "Only Hosts"),
+        ("all", _("Everyone (%s)" % len(attendee_choices))),
+        ("hosts", _("Only Hosts")),
     ]
     if event.is_over:
-        default_choices.append(("attended", "Only Attended"))
+        default_choices.append(("attended", _("Only Attended")))
     else:
-        default_choices.append(("attending", "Only Attending"))
+        default_choices.append(("attending", _("Only Attending")))
 
     if request.method == "POST":
         contact_form = EventContactForm(request.POST)

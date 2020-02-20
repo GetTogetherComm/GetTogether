@@ -262,8 +262,8 @@ def manage_members(request, team_id):
         if member.user.user.account.is_email_confirmed
     ]
     default_choices = [
-        ("all", "All Members (%s)" % len(member_choices)),
-        ("admins", "Only Administrators"),
+        ("all", _("All Members (%s)" % len(member_choices))),
+        ("admins", _("Only Administrators")),
     ]
     if request.method == "POST":
         contact_form = TeamContactForm(request.POST)
