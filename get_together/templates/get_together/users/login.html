@@ -6,18 +6,16 @@
 {% endblock %}
 
 {% block content %}
-<center>
-<h3>{% trans "Login to your account" %}</h3>
-<div class="container container-secondary box-shadow mt-4 mb-4 pt-4 pb-4" style="width: 400px">
-    <div >
-        <div >
-        <center>
+<h3 class="text-center">{% trans "Login to your account" %}</h3>
+<div class="container container-secondary box-shadow mt-4 mb-4 pt-4 pb-4" style="max-width: 400px">
+        <div class="d-flex flex-column align-items-center">
                 {% if settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY %}<a class="btn btn-googleplus mb-1 col-8" href="{% url 'social:begin' 'google-oauth2' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-google"></i> Google</a></br>{% endif %}
                 {% if settings.SOCIAL_AUTH_FACEBOOK_KEY %}<a class="btn btn-facebook mb-1 col-8" href="{% url 'social:begin' 'facebook' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-facebook"></i> Facebook</a></br>{% endif %}
                 {% if settings.SOCIAL_AUTH_TWITTER_KEY %}<a class="btn btn-twitter mb-1 col-8" href="{% url 'social:begin' 'twitter' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-twitter"></i> Twitter</a></br>{% endif %}
                 {% comment %}{% if settings.SOCIAL_AUTH_LINKEDIN_KEY %}<a class="btn btn-linkedin mb-1 col-8" href="{% url 'social:begin' 'linkedin' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-linkedin"></i> LinkedIn</a></br>{% endif %}{% endcomment %}
                 {% if settings.SOCIAL_AUTH_GITHUB_KEY %}<a class="btn btn-github mb-1 col-8" href="{% url 'social:begin' 'github' %}?{{ request.META.QUERY_STRING }}"><i class="fab fa-github"></i> GitHub</a></br>{% endif %}
-            <p class="text-muted small mt-2">{% trans "OR" %}</p>
+            <p class="text-center text-muted small mt-2">{% trans "OR" %}</p>
+        </div>
         <div>
             <ul class="nav nav-tabs justify-content-center mb-2" id="localTab" role="tablist">
               <li class="nav-item">
@@ -50,10 +48,7 @@
               </div>
             </div>
         </div>
-        </center>
         </div>
-    </div>
 </div>
-</center>
 {% endblock %}
 
