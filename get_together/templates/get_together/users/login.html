@@ -40,7 +40,7 @@
               <div class="tab-pane fade {% if action == 'signup' %}show active{% endif %}" id="signup" role="tabpanel" aria-labelledby="signup-tab">
                 <form action="#" method="POST">
                     {% csrf_token %}
-                    <table class="table">
+                    <table class="table" style="margin-left: -0.75rem; margin-right: -0.75rem">
                     {{ signup_form }}
                     </table>
                     <button class="btn btn-primary" type="submit" name="action" value="signup">{% trans "Signup" %}</button>
