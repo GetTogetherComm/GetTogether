@@ -27,7 +27,7 @@
             </ul>
             <div class="tab-content" id="localFormContent">
               <div class="tab-pane fade {% if action != 'signup' %}show active{% endif %}" id="login" role="tabpanel" aria-labelledby="login-tab">
-                <form action="#" method="POST">
+                <form action="#" method="POST" class="d-flex flex-column align-items-center">
                     {% csrf_token %}
                     <table>
                     {{ login_form }}
@@ -35,7 +35,7 @@
                     <button class="btn btn-primary" type="submit" name="action" value="login">{% trans "Login" %}</button>
                 </form>
                 <br /><br />
-                <a href="{% url 'password_reset' %}">{% trans "Forgot my password" %}</a>
+                <a class=" d-block text-center" href="{% url 'password_reset' %}">{% trans "Forgot my password" %}</a>
               </div>
               <div class="tab-pane fade {% if action == 'signup' %}show active{% endif %}" id="signup" role="tabpanel" aria-labelledby="signup-tab">
                 <form action="#" method="POST">
