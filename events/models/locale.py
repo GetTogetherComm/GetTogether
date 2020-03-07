@@ -84,6 +84,7 @@ class SPRSerializer(serializers.ModelSerializer):
 class City(models.Model):
     class Meta:
         ordering = ("name",)
+        verbose_name = _("City")
         verbose_name_plural = _("Cities")
 
     name = models.CharField(_("Name"), max_length=100)

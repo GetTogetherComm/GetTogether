@@ -39,7 +39,7 @@
                           <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">{{ event.local_start_time }}<br/>{{event.location_name}}</small>
                             <div class="btn-group">
-                                <a class="btn btn-primary" href="{{event.event_url}}">View</a></span>
+                                <a class="btn btn-primary" href="{{event.event_url}}">{% trans "View" %}</a></span>
                             </div>
                           </div>
                         </div>
@@ -55,7 +55,7 @@
                             {% blocktrans %}There are no events within {{ distance }}km of you.{% endblocktrans %}
                         {% endif %}
                         <a class="btn btn-success btn-sm" href="{% url 'create-event-team-select' %}">{% trans "Create one now" %}</a>
-                        or
+                        {% trans "or" %}
                         <a class="btn btn-primary btn-sm" href="{% url 'all-events' %}">{% trans "View all events" %}</a>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                             {% blocktrans %}There are no teams within {{ distance }}km of you.{% endblocktrans %}
                         {% endif %}
                         <a class="btn btn-success btn-sm" href="{% url 'create-team' %}">{% trans "Create one now" %}</a>
-                        or
+                        {% trans "or" %}
                         <a class="btn btn-primary btn-sm" href="{% url 'all-teams' %}">{% trans "View all teams" %}</a>
                     </div>
                 </div>
