@@ -274,7 +274,7 @@ textarea {
                                       <div class="media gt-profile">
                                           <img class="mr-1 gt-profile-avatar" src="{{node.author.avatar_url}}" width="32px" height="32px">
                                           <span class="gt-profile-badges">{% for badge in node.author.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
-                                          <a href="{% url 'show-profile' node.author.id %}" title="{{node.author}}'s profile">{{node.author}}</a>
+                                          <a href="{% url 'show-profile' node.author.id %}" title="{% blocktrans %}{{node.author}}'s profile{% endblocktrans %}">{{node.author}}</a>
                                       </div>
                                       <span class="gt-hover-expose">{% if node.created_time != node.updated_time %}<i class="far fa-edit text-muted" title="{% trans 'Updated:' %} {{ node.local_updated_time}}"></i> {% endif %}{{ node.local_created_time }}</span>
                                   </div>
@@ -284,10 +284,10 @@ textarea {
                                       <p id="comment-body-{{node.id}}" style="white-space: pre-wrap;">{{ node.body }}</p>
                                       <span class="gt-hover-expose">
                                       {% if request.user.profile == node.author %}
-                                      <small><a href="javascript:void(null)" onClick="editComment({{node.id}});"><i class="fa fa-edit"></i> Edit</a></small>&nbsp;
+                                      <small><a href="javascript:void(null)" onClick="editComment({{node.id}});"><i class="fa fa-edit"></i> {% trans "Edit" %}</a></small>&nbsp;
                                       {% endif %}
                                       {% if can_edit_team or request.user.profile == node.author %}
-                                      <small><a href="{% url 'comment-delete' node.id %}"><i class="fa fa-times"></i> Delete</a></small>
+                                      <small><a href="{% url 'comment-delete' node.id %}"><i class="fa fa-times"></i> {% trans "Delete" %}</a></small>
                                       {% endif %}
                                       </span>
                                   </div>
@@ -357,7 +357,7 @@ textarea {
                         <span class="gt-profile-badges">{% for badge in attendee.user.user.account.badges.all %}<img class="mr-0 gt-profile-badge" src="{{badge.img_url}}" title="{{badge.name}}" width="16px" height="16px">{% endfor %}</span>
                         <div class="media-body">
                         <h6 class="mt-2 mb-0">
-                          <a href="{% url 'show-profile' attendee.user.id %}" title="{{attendee.user}}'s profile">{{attendee.user}}</a>
+                          <a href="{% url 'show-profile' attendee.user.id %}" title="{% blocktrans %}{{attendee.user}}'s profile{% endblocktrans %}">{{attendee.user}}</a>
                           {% if attendee.user.user == request.user and not event.is_over %}
                               {% if attendee.status == attendee.YES %}
                                   <span class="badge badge-success dropdown-toggle align-top" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ attendee.status_name }}</span>
