@@ -41,9 +41,11 @@
                 {% endif %}
             </div>
 
+{% if settings.GOOGLE_MAPS_API_KEY %}
             <div id="map" class="col-sm-12 mb-2" style="height: 300px;">
 
             </div>
+{% endif%}
 
             {% if org.description %}
             <div class="container container-secondary mb-3 gt-usertext">
@@ -116,6 +118,7 @@
 {% endblock %}
 
 {% block javascript %}
+{% if settings.GOOGLE_MAPS_API_KEY %}
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{settings.GOOGLE_MAPS_API_KEY}}&libraries=places"></script>
 <script src="{% static 'js/markerclusterer.js' %}"></script>
 <script type="text/javascript">
@@ -183,6 +186,6 @@ $("#map").selectLocation({
     html_lng: 0.0
 });
 </script>
-
+{% endif %}
 
 {% endblock %}
