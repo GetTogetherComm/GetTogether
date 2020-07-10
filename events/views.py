@@ -35,7 +35,11 @@ from .utils import verify_csrf
 
 # Create your views here.
 def searchable_list(request, *args, **kwargs):
-    searchables = Searchable.objects.exclude(location_name="")
+    searchables = (
+        Searchable.objects.exclude(location_name="")
+        .filter(end_time__gte=timezone.now())
+        .order_by("start_time")
+    )
     serializer = SearchableSerializer(searchables, many=True)
     return JsonResponse(serializer.data, safe=False)
 
