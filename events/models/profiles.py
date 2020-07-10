@@ -328,7 +328,9 @@ class Organization(models.Model):
         format="PNG",
     )
 
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(
+        verbose_name=_("Description"), blank=True, null=True
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -394,7 +396,7 @@ class OrgTeamRequest(models.Model):
 
 class Sponsor(models.Model):
     name = models.CharField(_("Sponsor Name"), max_length=256, null=False, blank=False)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(verbose_name=_("Description"), blank=True, null=True)
     web_url = models.URLField(_("Website"), null=True, blank=True)
     logo = ProcessedImageField(
         verbose_name=_("Logo"),
@@ -455,15 +457,19 @@ class Team(models.Model):
         format="PNG",
     )
 
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(
+        verbose_name=_("Description"), blank=True, null=True
+    )
 
-    about_page = models.TextField(blank=True, null=True)
+    about_page = models.TextField(
+        verbose_name=_("About page"), blank=True, null=True
+    )
 
     country = models.ForeignKey(
         Country, null=True, blank=True, on_delete=models.CASCADE
     )
     spr = models.ForeignKey(SPR, null=True, blank=True, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, verbose_name=_("City"), null=True, blank=True, on_delete=models.CASCADE)
 
     web_url = models.URLField(_("Website"), null=True, blank=True)
     email = models.EmailField(_("Email Address"), null=True, blank=True)
@@ -659,6 +665,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
+        verbose_name = _("Team")
         fields = ("id", "name", "slug", "latitude", "longitude", "web_url")
 
 
@@ -693,6 +700,7 @@ class Category(models.Model):
     img_url = models.URLField(blank=False, null=False)
 
     class Meta:
+        verbose_name = "Category"
         verbose_name_plural = "Categories"
 
     def __str__(self):
@@ -705,7 +713,11 @@ class Category(models.Model):
 
 class Topic(models.Model):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, null=False, blank=False
+        Category,
+        verbose_name = "Category",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     name = models.CharField(max_length=256)
     slug = models.CharField(max_length=256, blank=True)
