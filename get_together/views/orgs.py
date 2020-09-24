@@ -12,6 +12,7 @@ from django.template.loader import get_template, render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
+
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
@@ -525,7 +526,7 @@ def create_common_event(request, org_slug):
         return render(request, "get_together/orgs/create_common_event.html", context)
     elif request.method == "POST":
         form = CommonEventForm(request.POST, instance=new_event)
-        if form.is_valid:
+        if form.is_valid():
             new_event = form.save()
             send_common_event_invite(new_event)
             return redirect("show-common-event", new_event.id, new_event.slug)
