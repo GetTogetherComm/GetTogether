@@ -45,6 +45,14 @@ msgstr ""
 msgid "PM"
 msgstr ""
 
+#: events/forms.py:218 events/forms.py:231 events/models/profiles.py:431
+msgid "Public"
+msgstr ""
+
+#: events/forms.py:218 events/forms.py:231 events/models/profiles.py:431
+msgid "Private"
+msgstr ""
+
 #: events/forms.py:241
 msgid "Yes, delete team"
 msgstr ""
@@ -91,7 +99,7 @@ msgid "Distance(km)"
 msgstr ""
 
 #: events/forms.py:549 events/models/locale.py:20 events/models/locale.py:30
-#: events/models/locale.py:58 events/models/locale.py:89
+#: events/models/locale.py:58 events/models/locale.py:90
 #: get_together/templates/get_together/teams/manage_members.html:30
 msgid "Name"
 msgstr ""
@@ -116,7 +124,8 @@ msgstr ""
 msgid "Name of the Place"
 msgstr ""
 
-#: events/models/events.py:29
+#: events/models/events.py:29 events/models/locale.py:87
+#: events/models/profiles.py:472
 msgid "City"
 msgstr ""
 
@@ -124,11 +133,11 @@ msgstr ""
 msgid "Address with Street and Number"
 msgstr ""
 
-#: events/models/events.py:37 events/models/locale.py:101
+#: events/models/events.py:37 events/models/locale.py:102
 msgid "Longitude in Degrees East"
 msgstr ""
 
-#: events/models/events.py:40 events/models/locale.py:104
+#: events/models/events.py:40 events/models/locale.py:105
 msgid "Latitude in Degrees North"
 msgstr ""
 
@@ -228,7 +237,7 @@ msgstr ""
 msgid "Presentations"
 msgstr ""
 
-#: events/models/events.py:245 events/models/profiles.py:670
+#: events/models/events.py:245 events/models/profiles.py:677
 #: get_together/templates/get_together/teams/manage_members.html:50
 #: get_together/templates/get_together/teams/manage_members.html:56
 msgid "Normal"
@@ -329,21 +338,21 @@ msgstr ""
 msgid "Admin Code"
 msgstr ""
 
-#: events/models/locale.py:87
+#: events/models/locale.py:88
 msgid "Cities"
 msgstr ""
 
-#: events/models/locale.py:93 events/models/profiles.py:489
+#: events/models/locale.py:94 events/models/profiles.py:495
 #: events/models/search.py:38
 msgid "Default Timezone"
 msgstr ""
 
-#: events/models/locale.py:98 events/models/profiles.py:494
+#: events/models/locale.py:99 events/models/profiles.py:500
 #: events/models/search.py:43
 msgid "The most commonly used timezone for this Team."
 msgstr ""
 
-#: events/models/locale.py:107
+#: events/models/locale.py:108
 msgid "Population"
 msgstr ""
 
@@ -375,91 +384,93 @@ msgstr ""
 msgid "Unknown Profile"
 msgstr ""
 
-#: events/models/profiles.py:317 events/models/profiles.py:444
+#: events/models/profiles.py:317 events/models/profiles.py:446
 msgid "Cover Image"
 msgstr ""
 
-#: events/models/profiles.py:355
+#: events/models/profiles.py:332 events/models/profiles.py:399
+#: events/models/profiles.py:461
+msgid "Description"
+msgstr ""
+
+#: events/models/profiles.py:357
 msgid "Organization"
 msgstr ""
 
-#: events/models/profiles.py:355 events/models/profiles.py:614
+#: events/models/profiles.py:357 events/models/profiles.py:620
+#: events/models/profiles.py:668
 #: get_together/templates/get_together/orgs/manage_teams.html:28
 #: get_together/templates/get_together/orgs/manage_teams.html:54
 #: get_together/templates/get_together/orgs/manage_teams.html:88
 msgid "Team"
 msgstr ""
 
-#: events/models/profiles.py:360 events/models/profiles.py:622
+#: events/models/profiles.py:362 events/models/profiles.py:628
 msgid "Request from"
 msgstr ""
 
-#: events/models/profiles.py:396
+#: events/models/profiles.py:398
 msgid "Sponsor Name"
 msgstr ""
 
-#: events/models/profiles.py:398 events/models/profiles.py:468
+#: events/models/profiles.py:400 events/models/profiles.py:474
 #: events/models/speakers.py:81
 msgid "Website"
 msgstr ""
 
-#: events/models/profiles.py:400
+#: events/models/profiles.py:402
 msgid "Logo"
 msgstr ""
 
-#: events/models/profiles.py:401
+#: events/models/profiles.py:403
 msgid "Will be scaled and cropped to max 250x200 px."
 msgstr ""
 
-#: events/models/profiles.py:429
-msgid "Public"
-msgstr ""
-
-#: events/models/profiles.py:429
+#: events/models/profiles.py:431
 msgid "Personal"
 msgstr ""
 
-#: events/models/profiles.py:429
-msgid "Private"
-msgstr ""
-
-#: events/models/profiles.py:430
+#: events/models/profiles.py:432
 msgid "Team Name"
 msgstr ""
 
-#: events/models/profiles.py:440
+#: events/models/profiles.py:442
 msgid "Visibility"
 msgstr ""
 
-#: events/models/profiles.py:469
+#: events/models/profiles.py:465
+msgid "About page"
+msgstr ""
+
+#: events/models/profiles.py:475
 msgid "Email Address"
 msgstr ""
 
-#: events/models/profiles.py:472
+#: events/models/profiles.py:478
 msgid "Date Created"
 msgstr ""
 
-#: events/models/profiles.py:486
+#: events/models/profiles.py:492
 msgid "Active Team"
 msgstr ""
 
-#: events/models/profiles.py:614
+#: events/models/profiles.py:620
 msgid "User"
 msgstr ""
 
-#: events/models/profiles.py:671
+#: events/models/profiles.py:678
 #: get_together/templates/get_together/teams/manage_members.html:49
 #: get_together/templates/get_together/teams/manage_members.html:62
 msgid "Moderator"
 msgstr ""
 
-#: events/models/profiles.py:672
+#: events/models/profiles.py:679
 #: get_together/templates/get_together/teams/manage_members.html:55
 #: get_together/templates/get_together/teams/manage_members.html:61
 msgid "Administrator"
 msgstr ""
 
-#: events/models/profiles.py:677
+#: events/models/profiles.py:684
 msgid "Member Role"
 msgstr ""
 
@@ -557,31 +568,36 @@ msgstr ""
 msgid "No places available."
 msgstr ""
 
+#: events/templates/events/team_list.html:10
+#, python-format
+msgid "%(team.owner_profile)s's profile"
+msgstr ""
+
 #: events/templates/events/team_list.html:16
 msgid "No team available."
 msgstr ""
 
-#: events/views.py:167
+#: events/views.py:171
 msgid "You must be logged in to join a team."
 msgstr ""
 
-#: events/views.py:172 get_together/views/teams.py:478
+#: events/views.py:176 get_together/views/teams.py:478
 msgid "You are already a member of this team."
 msgstr ""
 
-#: events/views.py:178
+#: events/views.py:182
 msgid "Welcome to the team!"
 msgstr ""
 
-#: events/views.py:188
+#: events/views.py:192
 msgid "You must be logged in to leave a team."
 msgstr ""
 
-#: events/views.py:194
+#: events/views.py:198
 msgid "You are not a member of this team."
 msgstr ""
 
-#: events/views.py:199
+#: events/views.py:203
 msgid "You are no longer on this team."
 msgstr ""
 
@@ -780,12 +796,20 @@ msgstr ""
 msgid "Updating %(event_name)s"
 msgstr ""
 
+#: get_together/templates/get_together/events/edit_event.html:17
+#: get_together/templates/get_together/events/edit_series.html:17
+#: get_together/templates/get_together/events/show_event.html:298
+#: get_together/templates/get_together/teams/edit_team.html:11
+msgid "Update"
+msgstr ""
+
 #: get_together/templates/get_together/events/edit_event.html:20
 msgid "Restore"
 msgstr ""
 
 #: get_together/templates/get_together/events/edit_event.html:24
 #: get_together/templates/get_together/events/edit_series.html:19
+#: get_together/templates/get_together/events/show_event.html:290
 #: get_together/templates/get_together/speakers/edit_speaker.html:20
 #: get_together/templates/get_together/speakers/edit_talk.html:19
 #: get_together/templates/get_together/teams/edit_team.html:13
@@ -795,12 +819,6 @@ msgstr ""
 #: get_together/templates/get_together/events/edit_series.html:11
 #, python-format
 msgid "Updating %(series_name)s"
-msgstr ""
-
-#: get_together/templates/get_together/events/edit_series.html:17
-#: get_together/templates/get_together/events/show_event.html:298
-#: get_together/templates/get_together/teams/edit_team.html:11
-msgid "Update"
 msgstr ""
 
 #: get_together/templates/get_together/events/invite_attendees.html:8
@@ -847,6 +865,7 @@ msgid "All Events"
 msgstr ""
 
 #: get_together/templates/get_together/events/list_events.html:32
+#: get_together/templates/get_together/index.html:42
 #: get_together/templates/get_together/index.html:82
 #: get_together/templates/get_together/index.html:118
 #: get_together/templates/get_together/index.html:154
@@ -872,16 +891,31 @@ msgstr ""
 msgid "Attended:"
 msgstr ""
 
+#: get_together/templates/get_together/events/manage_attendees.html:87
+#: get_together/templates/get_together/orgs/manage_teams.html:29
+#: get_together/templates/get_together/orgs/manage_teams.html:122
+#: get_together/templates/get_together/teams/manage_members.html:100
+msgid "Contact"
+msgstr ""
+
+#: get_together/templates/get_together/events/manage_attendees.html:93
+#: get_together/templates/get_together/orgs/manage_teams.html:128
+#: get_together/templates/get_together/teams/manage_members.html:106
+msgid "Send"
+msgstr ""
+
 #: get_together/templates/get_together/events/manage_event_sponsors.html:29
 #, python-format
 msgid "Sponsors for <a href=\"%(event_url)s\">%(event_name)s</a>"
 msgstr ""
 
 #: get_together/templates/get_together/events/manage_event_sponsors.html:58
+#: get_together/templates/get_together/events/manage_event_sponsors.html:109
 msgid "Remove"
 msgstr ""
 
 #: get_together/templates/get_together/events/manage_event_sponsors.html:60
+#: get_together/templates/get_together/events/manage_event_sponsors.html:113
 #: get_together/templates/get_together/new_user/setup_2_pick_categories.html:35
 msgid "Add"
 msgstr ""
@@ -963,11 +997,12 @@ msgid "Invite"
 msgstr ""
 
 #: get_together/templates/get_together/events/show_event.html:167
-#: get_together/templates/get_together/new_user/setup_4_attend_events.html:39
+#: get_together/templates/get_together/new_user/setup_4_attend_events.html:40
 msgid "Attend"
 msgstr ""
 
 #: get_together/templates/get_together/events/show_event.html:182
+#: get_together/templates/get_together/events/show_event.html:287
 #: get_together/templates/get_together/users/show_profile.html:21
 msgid "Edit"
 msgstr ""
@@ -1030,6 +1065,11 @@ msgid_plural "%(pending_presentations)s proposed talks"
 msgstr[0] ""
 msgstr[1] ""
 
+#: get_together/templates/get_together/events/show_event.html:277
+#, python-format
+msgid "%(node.author)s's profile"
+msgstr ""
+
 #: get_together/templates/get_together/events/show_event.html:279
 msgid "Updated:"
 msgstr ""
@@ -1048,6 +1088,11 @@ msgstr ""
 
 #: get_together/templates/get_together/events/show_event.html:350
 msgid "Limit:"
+msgstr ""
+
+#: get_together/templates/get_together/events/show_event.html:360
+#, python-format
+msgid "%(attendee.user)s's profile"
 msgstr ""
 
 #: get_together/templates/get_together/events/show_event.html:413
@@ -1083,6 +1128,11 @@ msgstr ""
 #: get_together/templates/get_together/index.html:57
 #: get_together/templates/get_together/index.html:133
 msgid "Create one now"
+msgstr ""
+
+#: get_together/templates/get_together/index.html:58
+#: get_together/templates/get_together/index.html:134
+msgid "or"
 msgstr ""
 
 #: get_together/templates/get_together/index.html:59
@@ -1170,8 +1220,8 @@ msgstr ""
 #: get_together/templates/get_together/new_team/start_new_team.html:16
 #: get_together/templates/get_together/new_user/setup_1_confirm_profile.html:18
 #: get_together/templates/get_together/new_user/setup_2_pick_categories.html:47
-#: get_together/templates/get_together/new_user/setup_3_find_teams.html:51
-#: get_together/templates/get_together/new_user/setup_4_attend_events.html:51
+#: get_together/templates/get_together/new_user/setup_3_find_teams.html:52
+#: get_together/templates/get_together/new_user/setup_4_attend_events.html:52
 msgid "Continue"
 msgstr ""
 
@@ -1252,7 +1302,12 @@ msgstr ""
 msgid "Here are some nearby teams you might want to join"
 msgstr ""
 
-#: get_together/templates/get_together/new_user/setup_3_find_teams.html:39
+#: get_together/templates/get_together/new_user/setup_3_find_teams.html:17
+#: get_together/templates/get_together/new_user/setup_4_attend_events.html:17
+msgid "Skip and choose later"
+msgstr ""
+
+#: get_together/templates/get_together/new_user/setup_3_find_teams.html:40
 msgid "Join"
 msgstr ""
 
@@ -1321,12 +1376,6 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: get_together/templates/get_together/orgs/manage_teams.html:29
-#: get_together/templates/get_together/orgs/manage_teams.html:122
-#: get_together/templates/get_together/teams/manage_members.html:100
-msgid "Contact"
-msgstr ""
-
 #: get_together/templates/get_together/orgs/manage_teams.html:30
 #: get_together/templates/get_together/orgs/manage_teams.html:55
 #: get_together/templates/get_together/orgs/manage_teams.html:89
@@ -1363,11 +1412,6 @@ msgstr ""
 #: get_together/templates/get_together/orgs/manage_teams.html:91
 #: get_together/templates/get_together/teams/manage_members.html:78
 msgid "Invited"
-msgstr ""
-
-#: get_together/templates/get_together/orgs/manage_teams.html:128
-#: get_together/templates/get_together/teams/manage_members.html:106
-msgid "Send"
 msgstr ""
 
 #: get_together/templates/get_together/orgs/request_to_join.html:5
@@ -1694,6 +1738,11 @@ msgstr ""
 msgid "Join Team"
 msgstr ""
 
+#: get_together/templates/get_together/teams/team_page_base.html:70
+#, python-format
+msgid "%(member.user)s's profile"
+msgstr ""
+
 #: get_together/templates/get_together/users/edit_profile.html:9
 msgid "Profile:"
 msgstr ""
@@ -1735,6 +1784,10 @@ msgstr ""
 msgid "Login to your account"
 msgstr ""
 
+#: get_together/templates/get_together/users/login.html:21
+msgid "OR"
+msgstr ""
+
 #: get_together/templates/get_together/users/login.html:25
 #: get_together/templates/get_together/users/login.html:38
 msgid "Login"
@@ -1743,6 +1796,10 @@ msgstr ""
 #: get_together/templates/get_together/users/login.html:28
 #: get_together/templates/get_together/users/login.html:49
 msgid "Signup"
+msgstr ""
+
+#: get_together/templates/get_together/users/login.html:41
+msgid "Forgot my password"
 msgstr ""
 
 #: get_together/templates/get_together/users/show_profile.html:24
@@ -1928,6 +1985,23 @@ msgstr ""
 msgid "You can not manage this event's attendees."
 msgstr ""
 
+#: get_together/views/events.py:319
+#, python-format
+msgid "Everyone (%s)"
+msgstr ""
+
+#: get_together/views/events.py:320
+msgid "Only Hosts"
+msgstr ""
+
+#: get_together/views/events.py:323
+msgid "Only Attended"
+msgstr ""
+
+#: get_together/views/events.py:325
+msgid "Only Attending"
+msgstr ""
+
 #: get_together/views/events.py:337
 msgid "You can not contact this events's attendees."
 msgstr ""
@@ -1938,7 +2012,7 @@ msgstr ""
 msgid "Emailed %s attendees"
 msgstr ""
 
-#: get_together/views/events.py:389 get_together/views/orgs.py:418
+#: get_together/views/events.py:389 get_together/views/orgs.py:419
 #: get_together/views/teams.py:304
 #, python-format
 msgid "Emailed %s"
@@ -1949,7 +2023,7 @@ msgstr ""
 msgid "Error sending message: Unknown user (%s)"
 msgstr ""
 
-#: get_together/views/events.py:403 get_together/views/orgs.py:432
+#: get_together/views/events.py:403 get_together/views/orgs.py:433
 #: get_together/views/teams.py:318
 #, python-format
 msgid "Error sending message: %s"
@@ -2075,85 +2149,85 @@ msgstr ""
 msgid "Your new team is ready to go! Now it's time to plan your first event."
 msgstr ""
 
-#: get_together/views/new_user.py:154
+#: get_together/views/new_user.py:156
 msgid "Your setup is complete, welcome to GetTogether!"
 msgstr ""
 
-#: get_together/views/new_user.py:168
+#: get_together/views/new_user.py:170
 msgid ""
 "Your email address is from a blocked domain. Please use a valid permanent "
 "email address."
 msgstr ""
 
-#: get_together/views/new_user.py:221
+#: get_together/views/new_user.py:223
 msgid "Your email address has been confirmed."
 msgstr ""
 
-#: get_together/views/orgs.py:71
+#: get_together/views/orgs.py:72
 msgid "You can not make changes to this organization."
 msgstr ""
 
-#: get_together/views/orgs.py:99
+#: get_together/views/orgs.py:100
 msgid "You are not the administrator for any teams."
 msgstr ""
 
-#: get_together/views/orgs.py:130
+#: get_together/views/orgs.py:131
 msgid "Your request has been send to the organization administrators."
 msgstr ""
 
-#: get_together/views/orgs.py:186
+#: get_together/views/orgs.py:187
 msgid "Private teams can not be members of an organization."
 msgstr ""
 
-#: get_together/views/orgs.py:194
+#: get_together/views/orgs.py:195
 msgid "You are not the administrator for any organizations."
 msgstr ""
 
-#: get_together/views/orgs.py:217
+#: get_together/views/orgs.py:218
 msgid "Your request has been send to the team administrators."
 msgstr ""
 
-#: get_together/views/orgs.py:237
+#: get_together/views/orgs.py:238
 msgid "Your request has been resent to the team administrators."
 msgstr ""
 
-#: get_together/views/orgs.py:298
+#: get_together/views/orgs.py:299
 msgid "You do not have permission to accept new teams to this organization."
 msgstr ""
 
-#: get_together/views/orgs.py:324
+#: get_together/views/orgs.py:325
 #, python-format
 msgid "%s has been added to your organization."
 msgstr ""
 
-#: get_together/views/orgs.py:345
+#: get_together/views/orgs.py:346
 msgid "You do not have permission to add this team to an orgnization."
 msgstr ""
 
-#: get_together/views/orgs.py:370
+#: get_together/views/orgs.py:371
 #, python-format
 msgid "You team has been added to %s."
 msgstr ""
 
-#: get_together/views/orgs.py:392
+#: get_together/views/orgs.py:393
 msgid "You can not manage this organization's members."
 msgstr ""
 
-#: get_together/views/orgs.py:411
+#: get_together/views/orgs.py:412
 #, python-format
 msgid "Emailed %s teams"
 msgstr ""
 
-#: get_together/views/orgs.py:424
+#: get_together/views/orgs.py:425
 #, python-format
 msgid "Error sending message: Unknown team (%s)"
 msgstr ""
 
-#: get_together/views/orgs.py:516
+#: get_together/views/orgs.py:517
 msgid "You can not create events for this org."
 msgstr ""
 
-#: get_together/views/orgs.py:611
+#: get_together/views/orgs.py:612
 msgid "You can not edit events for this org."
 msgstr ""
 
@@ -2187,6 +2261,15 @@ msgstr ""
 
 #: get_together/views/teams.py:254 get_together/views/teams.py:342
 msgid "You can not manage this team's members."
+msgstr ""
+
+#: get_together/views/teams.py:265
+#, python-format
+msgid "All Members (%s)"
+msgstr ""
+
+#: get_together/views/teams.py:266
+msgid "Only Administrators"
 msgstr ""
 
 #: get_together/views/teams.py:278
