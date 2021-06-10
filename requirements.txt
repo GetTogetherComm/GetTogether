@@ -5,7 +5,7 @@ click==6.7
 decorator==4.2.1
 defusedxml==0.5.0
 dj-database-url==0.4.2
-Django==2.0.12
+Django==2.2.24
 django-appconf==1.0.2
 django-ical==1.4
 django-imagekit==4.0.2
