@@ -6,6 +6,7 @@ from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
@@ -63,12 +64,15 @@ def teams_list(request, *args, **kwargs):
 
 
 def teams_list_all(request, *args, **kwargs):
-    teams = [
-        team
-        for team in Team.objects.all().select_related("city")
-        if team.access == Team.PUBLIC
-        or (team.access == Team.PRIVATE and request.user.profile.is_in_team(team))
-    ]
+    if request.user.is_authenticated:
+        teams = Team.objects.filter(
+            Q(access=Team.PUBLIC)
+            | Q(access=Team.PRIVATE, member__user=request.user.profile)
+        )
+    else:
+        teams = Team.objects.filter(access=Team.PUBLIC)
+    teams = teams.select_related("city")
+
     try:
         geo_ip = location.get_geoip(request)
         context = {
