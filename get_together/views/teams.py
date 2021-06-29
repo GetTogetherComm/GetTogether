@@ -65,9 +65,13 @@ def teams_list(request, *args, **kwargs):
 
 def teams_list_all(request, *args, **kwargs):
     if request.user.is_authenticated:
+        member_in = (
+            request.user.profile.memberships.all()
+            .values("id")
+            .values_list("id", flat=True)
+        )
         teams = Team.objects.filter(
-            Q(access=Team.PUBLIC)
-            | Q(access=Team.PRIVATE, member__user=request.user.profile)
+            Q(access=Team.PUBLIC) | Q(access=Team.PRIVATE, id__in=member_in)
         )
     else:
         teams = Team.objects.filter(access=Team.PUBLIC)
