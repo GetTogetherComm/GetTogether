@@ -279,6 +279,7 @@ class EventAdmin(admin.ModelAdmin):
     raw_id_fields = ("place", "created_by", "sponsors")
     list_display = (
         "__str__",
+        "access",
         "open_link",
         "attendee_count",
         "start_time",
@@ -286,6 +287,7 @@ class EventAdmin(admin.ModelAdmin):
         "created_time",
     )
     list_filter = (
+        "team__access",
         "created_time",
         "start_time",
         countFilter("attendee"),
@@ -320,6 +322,9 @@ class EventAdmin(admin.ModelAdmin):
         )
 
     open_link.short_description = "Link"
+
+    def access(self, event):
+        return Team.TYPES[event.team.access][1]
 
 
 admin.site.register(Event, EventAdmin)
