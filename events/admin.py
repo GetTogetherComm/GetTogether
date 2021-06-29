@@ -1,6 +1,6 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,6 +31,15 @@ from .models.speakers import Presentation, Speaker, SpeakerRequest, Talk
 admin.site.register(Language)
 admin.site.register(Continent)
 admin.site.register(Country)
+
+
+def ban_user(banned_user):
+    banned_user.is_active = False
+    banned_user.save()
+    for team in Team.objects.filter(owner_profile__user=banned_user):
+        team.access = Team.PRIVATE
+        team.save()
+    return True
 
 
 def countFilter(field_name):
@@ -186,6 +195,22 @@ class TeamAdmin(admin.ModelAdmin):
     )
     ordering = ("-created_date",)
 
+    actions = ("ban_team_owner",)
+
+    def ban_team_owner(self, request, queryset):
+        ban_count = 0
+        try:
+            for team in queryset.all():
+                if ban_user(team.owner_profile.user):
+                    ban_count += 1
+            self.message_user(request, "%s users banned" % ban_count)
+        except Exception as e:
+            self.message_user(
+                request=request,
+                message="Error banning users: %s" % e,
+                level=messages.WARNING,
+            )
+
     def member_count(self, team):
         return team.members.all().count()
 
@@ -267,6 +292,22 @@ class EventAdmin(admin.ModelAdmin):
         ("team__country", admin.RelatedOnlyFieldListFilter),
     )
     ordering = ("-start_time",)
+
+    actions = ("ban_event_creator",)
+
+    def ban_event_creator(self, request, queryset):
+        ban_count = 0
+        try:
+            for event in queryset.all():
+                if ban_user(event.created_by.user):
+                    ban_count += 1
+            self.message_user(request, "%s users banned" % ban_count)
+        except Exception as e:
+            self.message_user(
+                request=request,
+                message="Error banning users: %s" % e,
+                level=messages.WARNING,
+            )
 
     def attendee_count(self, event):
         return event.attendees.all().count()
