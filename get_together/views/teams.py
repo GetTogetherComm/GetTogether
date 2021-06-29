@@ -12,6 +12,7 @@ from django.template.loader import get_template, render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 import simplejson
+
 from accounts.models import EmailRecord
 from events import location
 from events.forms import (
@@ -47,7 +48,7 @@ def teams_list(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect("all-teams")
 
-    teams = request.user.profile.memberships.all().distinct()
+    teams = request.user.profile.memberships.all().select_related("city").distinct()
     geo_ip = location.get_geoip(request)
     context = {
         "active": "my",
@@ -61,7 +62,7 @@ def teams_list(request, *args, **kwargs):
 def teams_list_all(request, *args, **kwargs):
     teams = [
         team
-        for team in Team.objects.all()
+        for team in Team.objects.all().select_related("city")
         if team.access == Team.PUBLIC
         or (team.access == Team.PRIVATE and request.user.profile.is_in_team(team))
     ]
