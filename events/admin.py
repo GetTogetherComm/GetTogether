@@ -165,7 +165,7 @@ admin.site.register(Sponsor, SponsorAdmin)
 
 
 class TeamAdmin(admin.ModelAdmin):
-    search_fields = ("name",)
+    search_fields = ("name", "description", "about_page")
     raw_id_fields = (
         "country",
         "spr",
@@ -275,7 +275,7 @@ admin.site.register(Place, PlaceAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
-    search_fields = ("name",)
+    search_fields = ("name", "summary")
     raw_id_fields = ("place", "created_by", "sponsors")
     list_display = (
         "__str__",
