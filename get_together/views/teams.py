@@ -49,13 +49,16 @@ def teams_list(request, *args, **kwargs):
         return redirect("all-teams")
 
     teams = request.user.profile.memberships.all().select_related("city").distinct()
-    geo_ip = location.get_geoip(request)
-    context = {
-        "active": "my",
-        "teams": sorted(
-            teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)
-        ),
-    }
+    try:
+        geo_ip = location.get_geoip(request)
+        context = {
+            "active": "my",
+            "teams": sorted(
+                teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)
+            ),
+        }
+    except:
+        context = {"active": "my", "teams": teams}
     return render(request, "get_together/teams/list_teams.html", context)
 
 
@@ -66,13 +69,16 @@ def teams_list_all(request, *args, **kwargs):
         if team.access == Team.PUBLIC
         or (team.access == Team.PRIVATE and request.user.profile.is_in_team(team))
     ]
-    geo_ip = location.get_geoip(request)
-    context = {
-        "active": "all",
-        "teams": sorted(
-            teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)
-        ),
-    }
+    try:
+        geo_ip = location.get_geoip(request)
+        context = {
+            "active": "all",
+            "teams": sorted(
+                teams, key=lambda team: location.team_distance_from(geo_ip.latlng, team)
+            ),
+        }
+    except:
+        context = {"active": "all", "teams": teams}
     return render(request, "get_together/teams/list_teams.html", context)
 
 

@@ -112,8 +112,8 @@ def get_ipstack_geocoder(ip):
         return IPStackResult({})
     call_url = IPSTACK_URL.format(ip, ipstack_key)
 
-    session = requests.Session()
-    response = session.get(call_url)
+    response = requests.get(call_url)
+
     if response.status_code != 200:
         raise Exception(
             "Call to ipstack.com returned status code {0}".format(response.status_code)
