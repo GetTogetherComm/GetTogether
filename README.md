@@ -29,7 +29,7 @@ It usually comes pre-installed in Mac and Linux but in Windows you need to run t
 
 ### Install virtualenv
 
-Also make sure you have [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) in your computer by running:
+Also make sure you have [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) in your computer by running:
 
 ```bash
 virtualenv --version
