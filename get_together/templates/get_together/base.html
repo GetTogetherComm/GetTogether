@@ -24,6 +24,8 @@
     <meta name="theme-color" content="#ffffff">
     <!-- FAVICON ENDS -->
 
+    <script src="{% url 'jsi18n' %}"></script>
+
     {% block meta %}{% endblock %}
 
     {% if settings.GOOGLE_ANALYTICS_ID and not request.user.profile.do_not_track %}
@@ -120,7 +122,7 @@
       </div>
     </nav>
 
-    <main role="main" class="container">
+    <main role="main" class="container" id="container">
 
       {% block account_setup_alert %}
       {% if account_needs_setup %}

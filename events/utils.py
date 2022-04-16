@@ -3,7 +3,7 @@ import unicodedata
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from django.middleware.csrf import _compare_salted_tokens, _sanitize_token
+from django.middleware.csrf import _compare_masked_tokens, _sanitize_token
 
 SLUG_OK = "-_~"
 
@@ -29,7 +29,7 @@ def verify_csrf(token_key="csrftoken"):
     def wrap_view(view_func):
         def check_csrf_token(request, *args, **kwargs):
             csrf_token = _sanitize_token(request.GET.get(token_key, ""))
-            match = _compare_salted_tokens(
+            match = _compare_masked_tokens(
                 csrf_token, request.COOKIES.get(settings.CSRF_COOKIE_NAME, "")
             )
             if not match and getattr(settings, "CSRF_VERIFY_TOKEN", True):
