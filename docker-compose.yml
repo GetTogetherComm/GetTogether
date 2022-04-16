@@ -12,3 +12,5 @@ services:
       - DEBUG_MODE=True
       - SECRET_KEY=xxxxx
       - ALLOWED_HOSTS=localhost,127.0.0.1
+    volumes:
+      - ./:/home/python
