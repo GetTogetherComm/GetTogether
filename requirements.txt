@@ -3,7 +3,7 @@ certifi==2017.11.5
 chardet==3.0.4
 click==6.7
 decorator==4.2.1
-defusedxml==0.5.0
+defusedxml==0.6.0
 dj-database-url==0.4.2
 Django==2.0.12
 django-appconf==1.0.2
