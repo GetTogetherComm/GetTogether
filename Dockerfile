@@ -1,13 +1,13 @@
-FROM python:3-alpine
+FROM python:3.9-slim
 
 WORKDIR /home/python
 
-RUN apk add --no-cache zlib-dev build-base python-dev jpeg-dev
+RUN apt update && apt install -y zlib1g-dev build-essential libjpeg-dev
 
-ADD requirements.txt /home/python/
+ADD requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-ADD . /home/python/
+ADD . .
 RUN python manage.py migrate
 
 STOPSIGNAL SIGINT
