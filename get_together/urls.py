@@ -15,13 +15,20 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.views.i18n import JavaScriptCatalog
 
 from events import feeds, views as event_views
 
 from . import views
+
+js_info_dict = {
+    'packages': ('recurrence', ),
+}
+
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -310,6 +317,7 @@ urlpatterns = [
         views.show_team_events_by_slug,
         name="show-team-events-by-slug",
     ),
+    path('jsi18n.js', JavaScriptCatalog.as_view(packages=['recurrence']), name='jsi18n'),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(

@@ -144,13 +144,13 @@ We use the following code formatters:
 
 They are included in the requirements.txt so they were installed already when you [installed dependencies](#install-dependecies-and-migrate-the-database).
 
-On the first commit after installing `pre-commit`, Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
+On the first commit after doing `pre-commit install`, Black and iSort it will create a new environment, which may take a few minutes. This environment will be reused for all subsequent commits.
 
 ### Loading City data
 
 In order to make it easier to create Places and Teams without having to manually
 enter records for Country, SPR (State/Province/Region) and City, you can preload
-them using data files from <http://download.geonames.org/export/dump/>
+them using data files from <https://download.geonames.org/export/dump/>
 
 The provided `load_spr` and `load_cities` commands will only load data if the
 parent country (or SPR for cities) exists in the database. This lets you choose
@@ -159,24 +159,30 @@ for select SPRs.
 
 #### Countries
 
-Download the [countryInfo.txt](http://download.geonames.org/export/dump/countryInfo.txt)
-file from GeoNames, then run:
+Download the [countryInfo.txt](https://download.geonames.org/export/dump/countryInfo.txt)
+file from GeoNames, and load it:
 
-`./env/bin/python manage.py load_countries countryInfo.txt`
+```bash
+wget https://download.geonames.org/export/dump/countryInfo.txt
+./env/bin/python manage.py load_countries countryInfo.txt
+```
 
 #### SPR
 
-Download the [admin1CodesASCII.txt](http://download.geonames.org/export/dump/admin1CodesASCII.txt)
+Download the [admin1CodesASCII.txt](https://download.geonames.org/export/dump/admin1CodesASCII.txt)
 file from GeoNames, then run:
 
-`./env/bin/python manage.py load_spr admin1CodesASCII.txt`
+```bash
+wget https://download.geonames.org/export/dump/admin1CodesASCII.txt
+./env/bin/python manage.py load_spr admin1CodesASCII.txt
+```
 
 #### Cities
 
 You have a few choices for City data files. GeoNames provides data files for
-cities with [more than 15,000](http://download.geonames.org/export/dump/cities15000.zip)
-residents, cities with [more than 5,000](http://download.geonames.org/export/dump/cities5000.zip)
-residents, and cities [with more than 1,000](http://download.geonames.org/export/dump/cities1000.zip)
+cities with [more than 15,000](https://download.geonames.org/export/dump/cities15000.zip)
+residents, cities with [more than 5,000](https://download.geonames.org/export/dump/cities5000.zip)
+residents, and cities [with more than 1,000](https://download.geonames.org/export/dump/cities1000.zip)
 residents. The smaller the number, the more cities there will be in the data
 file (and the longer it will take to import them all).
 
@@ -191,14 +197,14 @@ file):
 ```bash
 docker build -t get_together .
 docker run -e "DEBUG_MODE=True" -e "SECRET_KEY=xxxxx" -e "ALLOWED_HOSTS=localhost,127.0.0.1" -d --name get_together -p 8000:8000 get_together
-docker exec -it get_together venv/bin/python manage.py createsuperuser
+docker exec -it get_together python manage.py createsuperuser
 ```
 
 ### Using docker-compose
 
 ```bash
 docker-compose up -d
-docker-compose exec get_together python3 manage.py createsuperuser
+docker-compose exec get_together python manage.py createsuperuser
 ```
 
 You can then connect to the container by going to localhost:8000

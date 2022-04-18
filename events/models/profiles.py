@@ -5,7 +5,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, Group, User
 from django.contrib.sites.models import Site
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.db import models
 from django.shortcuts import reverse
 from django.utils import timezone

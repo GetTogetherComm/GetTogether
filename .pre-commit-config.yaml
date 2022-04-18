@@ -6,6 +6,6 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: "master" # Use the revision sha / tag you want to point at
+    rev: "main" # Use the revision sha / tag you want to point at
     hooks:
       - id: isort

@@ -232,6 +232,8 @@ THEME_CONFIG = {
     "images": {"nav_logo": "img/logo_b_v1.png"},
 }
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # Keep this at the end of settings.py to allow overriding settings in local deployments
 try:
     from local_settings import *
