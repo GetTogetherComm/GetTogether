@@ -209,6 +209,12 @@ docker-compose exec get_together python manage.py createsuperuser
 
 You can then connect to the container by going to localhost:8000
 
+## Changing name and hostname
+
+If you want to use this software with an own hostname you need to change the site settings:
+
+`./env/bin/python manage.py shell -c "from django.contrib.sites.models import Site; Site.objects.filter(domain='example.com').update(name='My Site', domain='mysite.tld')"`
+
 ## Test Federation
 
 You can import live event data into your "Searchable" table with this command:

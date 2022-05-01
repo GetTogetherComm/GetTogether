@@ -11,7 +11,9 @@
             {% csrf_token %}
             <input type="hidden" id="id_id" name="id" value="" />
             {% include "events/place_form.html" %}
+{% if settings.GOOGLE_MAPS_API_KEY %}
 	            <div class="fluid-layout" id="place-map"></div>
+{% endif %}
             <br />
             <button type="submit" class="btn btn-primary">{% trans "Add Place" %}</button>
             </form>
@@ -23,6 +25,7 @@
 {% endblock %}
 
 {% block javascript %}
+{% if settings.GOOGLE_MAPS_API_KEY %}
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{settings.GOOGLE_MAPS_API_KEY}}&libraries=places"></script>
 <script type="text/javascript">
 /*
@@ -203,6 +206,7 @@ $("#map").selectLocation({
     html_lng: $("#id_longitude")
 });
 </script>
+{% endif %}
 
 <script src="{% static 'js/jquery-ui-lookup.js' %}"></script>
 <script type="text/javascript">
