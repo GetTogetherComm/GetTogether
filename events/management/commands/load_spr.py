@@ -36,6 +36,6 @@ class Command(BaseCommand):
                                 name=spr[NAME], code=SPR_CODE, country=country
                             )
                     else:
-                        print("Short line (%s): %s" % (len(spr), spr_line))
+                        print(f"Short line ({len(spr)}): {spr_line}")
         else:
             print("No File in options!")
